@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -32,6 +34,7 @@ import javax.swing.ToolTipManager;
 // Основной класс программы.
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import ru.cyberbiology.test.gene.GeneMutate;
 
 import ru.cyberbiology.test.prototype.IWindow;
 import ru.cyberbiology.test.prototype.gene.IBotGeneController;
@@ -43,6 +46,7 @@ import ru.cyberbiology.test.view.ViewMultiCell;
 public class MainWindow extends JFrame implements IWindow
 {
 	JMenuItem runItem;
+    JMenuItem mutateItem;
 	
 	 public static MainWindow window;
 	
@@ -90,7 +94,7 @@ public class MainWindow extends JFrame implements IWindow
 
 		
         setTitle("CyberBiologyTest 1.0.0");
-        setSize(new Dimension(1800, 900));
+        setSize(new Dimension(640, 480));
         Dimension sSize = Toolkit.getDefaultToolkit().getScreenSize(), fSize = getSize();
         if (fSize.height > sSize.height) { fSize.height = sSize.height; }
         if (fSize.width  > sSize.width)  { fSize.width = sSize.width; }
@@ -174,6 +178,46 @@ public class MainWindow extends JFrame implements IWindow
             	
             }           
         });
+
+        mutateItem = new JMenuItem("случайная мутация");
+        fileMenu.add(mutateItem);
+        mutateItem.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // мутацию проводим при отключенном мире
+                world.stop();
+
+                // получить список живых ботов
+                ArrayList<Bot> aliveBots = new ArrayList();
+                int width = world.getWidth();
+                int height = world.getHeight();
+                for (int x=0; x<width; x++) {
+                    for (int y=0; y<height; y++) {
+                        Bot bot = world.getBot(x, y);
+                        if (bot != null && bot.alive == bot.LV_ALIVE)
+                            aliveBots.add(bot);
+                    }
+                }
+
+                // размер группы мутирующих ботов 10% от живых
+                int aliveBotsCount = aliveBots.size();
+                int mutantsCount = (int) Math.round(aliveBotsCount * 0.1);
+                System.out.println("Mutating 10% of alive bots (" + mutantsCount + " of " + aliveBotsCount + ")");
+
+                // мутация
+                Random rnd = new Random();
+                GeneMutate mutagen = new GeneMutate();
+                for (int i=0; i<mutantsCount; i++) {
+                    Bot bot = aliveBots.get(rnd.nextInt(aliveBotsCount-1));
+                    mutagen.onGene(bot);
+                    //System.out.println("Mutating " + bot);
+                }
+
+                world.start();
+            }
+        });
+
         snapShotItem = new JMenuItem("Сделать снимок");
         fileMenu.add(snapShotItem);
         snapShotItem.setEnabled(false);
