@@ -42,6 +42,7 @@ import ru.cyberbiology.test.prototype.view.IView;
 import ru.cyberbiology.test.util.ProjectProperties;
 import ru.cyberbiology.test.view.ViewBasic;
 import ru.cyberbiology.test.view.ViewMultiCell;
+import ru.cyberbiology.test.view.ViewPest;
 
 public class MainWindow extends JFrame implements IWindow
 {
@@ -75,7 +76,8 @@ public class MainWindow extends JFrame implements IWindow
     IView[]  views = new IView[]
 		{
 			new ViewBasic(),
-			new ViewMultiCell()
+			new ViewMultiCell(),
+            new ViewPest()
 		};
     JMenuItem recordItem;
     JMenuItem snapShotItem;
