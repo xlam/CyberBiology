@@ -47,22 +47,24 @@ public class MainWindow extends JFrame implements IWindow
 {
 	JMenuItem runItem;
     JMenuItem mutateItem;
-	
+
 	 public static MainWindow window;
-	
+
 	public static final int BOTW	= 4;
 	public static final int BOTH	= 4;
-	
+
     public static World world;
    // JPanel paintPanel = new JPanel(new FlowLayout());
 
     public JLabel generationLabel = new JLabel(" Generation: 0 ");
     public JLabel populationLabel = new JLabel(" Population: 0 ");
     public JLabel organicLabel = new JLabel(" Organic: 0 ");
-    
+    public JLabel pestsLabel = new JLabel(" Pests: 0 ");
+    public JLabel pestGenesLabel = new JLabel(" Pest genes: 0 ");
+
     public JLabel recorderBufferLabel = new JLabel("");
     public JLabel memoryLabel = new JLabel("");
-    
+
     public JLabel frameSavedCounterLabel = new JLabel("");
     public JLabel frameSkipSizeLabel = new JLabel("");
     /** буфер для отрисовки ботов */
@@ -85,14 +87,14 @@ public class MainWindow extends JFrame implements IWindow
     	{
     		g.drawImage(buffer, 0, 0, null);
     	};
-    }; 
+    };
     ProjectProperties properties;
     public MainWindow()
     {
     	window	= this;
 		properties	= new ProjectProperties("properties.xml");
 
-		
+
         setTitle("CyberBiologyTest 1.0.0");
         setSize(new Dimension(640, 480));
         Dimension sSize = Toolkit.getDefaultToolkit().getScreenSize(), fSize = getSize();
@@ -100,8 +102,8 @@ public class MainWindow extends JFrame implements IWindow
         if (fSize.width  > sSize.width)  { fSize.width = sSize.width; }
         //setLocation((sSize.width - fSize.width)/2, (sSize.height - fSize.height)/2);
         setSize(new Dimension(sSize.width, sSize.height));
-        
-        
+
+
         setDefaultCloseOperation (WindowConstants.EXIT_ON_CLOSE);
 
         Container container = getContentPane();
@@ -109,51 +111,59 @@ public class MainWindow extends JFrame implements IWindow
         container.setLayout(new BorderLayout());// у этого лейаута приятная особенность - центральная часть растягивается автоматически
         container.add(paintPanel, BorderLayout.CENTER);// добавляем нашу карту в центр
         //container.add(paintPanel);
-        
-        
+
+
         JPanel statusPanel = new JPanel(new FlowLayout());
         statusPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         statusPanel.setBorder(BorderFactory.createLoweredBevelBorder());
         container.add(statusPanel, BorderLayout.SOUTH);
-        
+
         generationLabel.setPreferredSize(new Dimension(140, 18));
         generationLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         statusPanel.add(generationLabel);
-        
+
         populationLabel.setPreferredSize(new Dimension(140, 18));
         populationLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         statusPanel.add(populationLabel);
-        
+
         organicLabel.setPreferredSize(new Dimension(140, 18));
         organicLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         statusPanel.add(organicLabel);
 
+        pestsLabel.setPreferredSize(new Dimension(140, 18));
+        pestsLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+        statusPanel.add(pestsLabel);
+
+        pestGenesLabel.setPreferredSize(new Dimension(140, 18));
+        pestGenesLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+        statusPanel.add(pestGenesLabel);
+
         memoryLabel.setPreferredSize(new Dimension(140, 18));
         memoryLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         statusPanel.add(memoryLabel);
-        
+
         recorderBufferLabel.setPreferredSize(new Dimension(140, 18));
         recorderBufferLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         statusPanel.add(recorderBufferLabel);
-        
+
         frameSavedCounterLabel.setPreferredSize(new Dimension(140, 18));
         frameSavedCounterLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         statusPanel.add(frameSavedCounterLabel);
-        
+
         frameSkipSizeLabel.setPreferredSize(new Dimension(140, 18));
         frameSkipSizeLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         statusPanel.add(frameSkipSizeLabel);
-        
+
         paintPanel.addMouseListener(new CustomListener());
-        
+
         JMenuBar menuBar = new JMenuBar();
-        
+
         JMenu fileMenu = new JMenu("File");
-         
+
         runItem = new JMenuItem("Запустить");
         fileMenu.add(runItem);
         runItem.addActionListener(new ActionListener()
-        {           
+        {
             public void actionPerformed(ActionEvent e)
             {
             	if(world==null)
@@ -168,15 +178,15 @@ public class MainWindow extends JFrame implements IWindow
             	{
             		world.start();//Запускаем его
             		runItem.setText("Пауза");
-            		
+
             	}else
             	{
             		world.stop();
             		runItem.setText("Продолжить");
             		snapShotItem.setEnabled(true);
             	}
-            	
-            }           
+
+            }
         });
 
         mutateItem = new JMenuItem("случайная мутация");
@@ -222,7 +232,7 @@ public class MainWindow extends JFrame implements IWindow
         fileMenu.add(snapShotItem);
         snapShotItem.setEnabled(false);
         snapShotItem.addActionListener(new ActionListener()
-        {           
+        {
             public void actionPerformed(ActionEvent e)
             {
             	if(world==null)
@@ -236,14 +246,14 @@ public class MainWindow extends JFrame implements IWindow
             	world.stop();
             	runItem.setText("Продолжить");
             	world.makeSnapShot();
-            }           
+            }
         });
-        
+
         recordItem = new JMenuItem("Начать запись");
         fileMenu.add(recordItem);
-        
+
         recordItem.addActionListener(new ActionListener()
-        {           
+        {
             public void actionPerformed(ActionEvent e)
             {
             	if(world==null)
@@ -261,7 +271,7 @@ public class MainWindow extends JFrame implements IWindow
             	}else
             	{
             		recordItem.setText("Начать запись");
-            		
+
             		world.stopRecording();
             		if(world.haveRecord())
             		{
@@ -277,7 +287,7 @@ public class MainWindow extends JFrame implements IWindow
         fileMenu.add(saveItem);
         saveItem.setEnabled(false);
         saveItem.addActionListener(new ActionListener()
-        {           
+        {
             public void actionPerformed(ActionEvent e)
             {
             	/ *FileNameExtensionFilter filter = new FileNameExtensionFilter("*.cb.zip","*.*");
@@ -294,7 +304,7 @@ public class MainWindow extends JFrame implements IWindow
             	saveItem.setEnabled(false);
             	deleteItem.setEnabled(false);
             	recordItem.setEnabled(true);
-            }           
+            }
         });
         */
         /*
@@ -302,15 +312,15 @@ public class MainWindow extends JFrame implements IWindow
         fileMenu.add(deleteItem);
         deleteItem.setEnabled(false);
         deleteItem.addActionListener(new ActionListener()
-        {           
+        {
             public void actionPerformed(ActionEvent e)
             {
             	world.deleteRecord();
-            	
+
             	saveItem.setEnabled(false);
             	deleteItem.setEnabled(false);
             	recordItem.setEnabled(true);
-            }           
+            }
         });*/
         /**/
         JMenuItem openItem = new JMenuItem("Открыть плеер");
@@ -331,30 +341,30 @@ public class MainWindow extends JFrame implements IWindow
                 }/*/
             	PlayerWindow fw	= new PlayerWindow();
             	//fw.openFile(new File(world.getProperties().getFileDirectory()+"test.cb.zip"));
-            }           
+            }
         });
 
         fileMenu.addSeparator();
-        
+
         JMenuItem optionItem = new JMenuItem("Настройки");
         fileMenu.add(optionItem);
         optionItem.addActionListener(new ActionListener()
-        {           
+        {
             public void actionPerformed(ActionEvent e)
             {
             	showPropertyDialog();
 
-            }           
+            }
         });
-        
+
 
         fileMenu.addSeparator();
-         
+
         JMenuItem exitItem = new JMenuItem("Выйти");
         fileMenu.add(exitItem);
-         
+
         exitItem.addActionListener(new ActionListener()
-        {           
+        {
             public void actionPerformed(ActionEvent e)
             {
             	// Попытка корректно заверишть запись, если она велась
@@ -371,16 +381,16 @@ public class MainWindow extends JFrame implements IWindow
 						e1.printStackTrace();
 					}
             	}
-            	System.exit(0);             
-            }           
+            	System.exit(0);
+            }
         });
-         
+
         menuBar.add(fileMenu);
-        
-        
+
+
         JMenu ViewMenu = new JMenu("Вид");
         menuBar.add(ViewMenu);
-        
+
         JMenuItem item;
         for(int i=0;i<views.length;i++)
         {
@@ -388,14 +398,14 @@ public class MainWindow extends JFrame implements IWindow
         	ViewMenu.add(item);
             item.addActionListener(new ViewMenuActionListener(this, views[i]));
         }
-        
+
         this.setJMenuBar(menuBar);
-        
+
         view = new ViewBasic();
         this.pack();
         this.setVisible(true);
         setExtendedState(MAXIMIZED_BOTH);
-        
+
         String tmp = this.getFileDirectory();
         if(tmp==null||tmp.length()==0)
         	showPropertyDialog();
@@ -424,15 +434,15 @@ public class MainWindow extends JFrame implements IWindow
     	return this.properties.getFileDirectory();
 	}
 	class CustomListener implements MouseListener {
-    	 
+
         public void mouseClicked(MouseEvent e) {
         	if(world.started()) return;//Если идет обсчет не суетимся, выводить ничего не надо.
-        	
+
         	Point p	= e.getPoint();
         	int x	= (int) p.getX();
         	int y	= (int) p.getY();
         	int botX=(x-2)/BOTW;
-        	int botY=(y-2)/BOTH;	
+        	int botY=(y-2)/BOTH;
         	Bot bot	= world.getBot(botX,botY);
         	if(bot!=null)
         	{
@@ -468,15 +478,15 @@ public class MainWindow extends JFrame implements IWindow
         		buf.append("<p>direction="+bot.direction);
         		buf.append("<p>health="+bot.health);
         		buf.append("<p>mineral="+bot.mineral);
-        		
-        		
+
+
         	    //buf.append("");
-       	    
+
         	    IBotGeneController cont;
                 for (int i = 0; i < Bot.MIND_SIZE; i++)
                 {//15
                     int command = bot.mind[i];  // текущая команда
-                    
+
                     // Получаем обработчика команды
                     cont	= Bot.geneController[command];
                     if(cont!=null)// если обработчик такой команды назначен
@@ -488,7 +498,7 @@ public class MainWindow extends JFrame implements IWindow
                     	buf.append("</p>");
                     }
                 }
-        	    
+
         	    buf.append("</html>");
 	        	JComponent component = (JComponent)e.getSource();
 	        	//System.out.println(bot);
@@ -502,10 +512,10 @@ public class MainWindow extends JFrame implements IWindow
 	                    y,
 	                    0,
 	                    false);
-	
+
 	            ToolTipManager.sharedInstance().mouseMoved(phantom);
         	}
-        
+
         }
 
         public void mouseEntered(MouseEvent e) {}
@@ -526,15 +536,17 @@ public class MainWindow extends JFrame implements IWindow
         generationLabel.setText(" Generation: " + String.valueOf(world.generation));
         populationLabel.setText(" Population: " + String.valueOf(world.population));
         organicLabel.setText(" Organic: " + String.valueOf(world.organic));
+        pestsLabel.setText(" Pests: " + String.valueOf(world.pests));
+        pestGenesLabel.setText(" Pest genes: " + String.valueOf(world.pestGenes));
         recorderBufferLabel.setText(" Buffer: " + String.valueOf(world.recorder.getBufferSize()));
-        
+
         Runtime runtime = Runtime.getRuntime();
         long memory = runtime.totalMemory() - runtime.freeMemory();
         memoryLabel.setText(" Memory MB: " + String.valueOf(memory/(1024L * 1024L)));
-        
+
         frameSavedCounterLabel.setText(" Saved frames: " + String.valueOf(world.world.recorder.getFrameSavedCounter()));
         frameSkipSizeLabel.setText(" Skip frames: " + String.valueOf(world.world.recorder.getFrameSkipSize()));
-        
+
 
         paintPanel.repaint();
     	/*
@@ -544,7 +556,7 @@ public class MainWindow extends JFrame implements IWindow
     	Image buf = canvas.createImage(w, h);
     	//подеменяем графику на временный буфер
     	Graphics g = buf.getGraphics();
-    	
+
         g.drawRect(0, 0, width * 4 + 1, height * 4 + 1);
 
         population = 0;
@@ -574,11 +586,11 @@ public class MainWindow extends JFrame implements IWindow
                 }
             }
         }
-        
+
         generationLabel.setText(" Generation: " + String.valueOf(generation));
         populationLabel.setText(" Population: " + String.valueOf(population));
         organicLabel.setText(" Organic: " + String.valueOf(organic));
-        
+
         buffer = buf;
         canvas.repaint();
         */

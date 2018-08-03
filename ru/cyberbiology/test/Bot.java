@@ -84,7 +84,7 @@ public class Bot implements IBot
 	    geneController[46]	= new GeneIsMultiCell();//46  многоклеточный
 	    geneController[47]	= new GeneMineralToEnergy();//47  преобразовать минералы в энерию
 	    geneController[48]	= new GeneMutate();//48  мутировать
-	    geneController[49]	= new GenePest();//48  паразитировать
+	    geneController[49]	= new GenePest();//49  паразитировать
 
 
     }
@@ -149,7 +149,7 @@ public class Bot implements IBot
 		    	return;   //Это труп - выходим!
 		  }
 
-        IBotGeneController cont	= null;
+        IBotGeneController cont;
 
         for (int cyc = 0; cyc < MIND_SIZE/4; cyc++)
         {//15
@@ -1180,14 +1180,17 @@ public class Bot implements IBot
 	{
 		return botGive(this, drct, i);
 	}
+    @Override
 	public int getY()
 	{
 		return y;
 	}
+    @Override
 	public int getHealth()
 	{
 		return health;
 	}
+    @Override
 	public int getMineral()
 	{
 		return mineral;
@@ -1220,6 +1223,12 @@ public class Bot implements IBot
 	@Override
 	public void setMind(byte ma, byte mc)
 	{
+        /*
+        if (mc == 49 && this.mind[ma] != 49)
+            world.pestGenes++;
+        else if (mc != 49 && this.mind[ma] == 49)
+            world.pestGenes--;
+        */
 		this.mind[ma]=mc;
 	}
 	@Override
@@ -1237,11 +1246,11 @@ public class Bot implements IBot
         if ((yt >= 0) && (yt < world.height) && (world.matrix[xt][yt] != null)) {
             Bot victim = world.matrix[xt][yt];
             if (victim.alive == LV_ALIVE) { // если там живой бот
-                int health = victim.health > 100 ? 100 : victim.health;
-                this.health = this.health + health;
+                int healthDrain = victim.health > 100 ? 100 : victim.health;
+                this.health = this.health + healthDrain;
                 if (this.health > 1000)
                     this.health = 1000;
-                victim.health = victim.health - health;
+                victim.health = victim.health - healthDrain;
             }
         }
     }

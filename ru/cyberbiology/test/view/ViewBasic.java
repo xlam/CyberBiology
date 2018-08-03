@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import javax.swing.JPanel;
+import ru.cyberbiology.test.Bot;
 
 import ru.cyberbiology.test.MainWindow;
 import ru.cyberbiology.test.World;
@@ -30,11 +31,13 @@ public class ViewBasic implements IView
     	Image buf = canvas.createImage(w, h);
     	//подеменяем графику на временный буфер
     	Graphics g = buf.getGraphics();
-    	
+
         g.drawRect(0, 0, world.width * World.BOTW + 1, world.height * World.BOTH + 1);
 
         world.population = 0;
         world.organic = 0;
+        world.pests = 0;
+        world.pestGenes = 0;
         for (int y = 0; y < world.height; y++) {
             for (int x = 0; x < world.width; x++) {
                 if (world.matrix[x][y] == null) {
@@ -57,6 +60,17 @@ public class ViewBasic implements IView
 //                    g.setColor(new Color(matrix[x][y].c_red, matrix[x][y].c_green, matrix[x][y].c_blue));
                     g.fillRect(x * World.BOTW + 1, y * World.BOTH + 1,World.BOTW-1, World.BOTH-1);
                     world.population = world.population + 1;
+
+                    int pestGenes = 0;
+                    for (int i=0; i<Bot.MIND_SIZE; i++)
+                        if (world.matrix[x][y].mind[i] == 49)
+                            pestGenes++;
+
+                    if (pestGenes > 0)
+                        world.pests++;
+
+                    world.pestGenes += pestGenes;
+
                 }
             }
         }

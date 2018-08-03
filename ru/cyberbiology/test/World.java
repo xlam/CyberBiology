@@ -13,7 +13,7 @@ public class World implements IWorld
 {
 	public World world;
 	public IWindow window;
-	
+
 	PlaybackManager playback;
 	IRecordManager recorder;
 
@@ -27,6 +27,8 @@ public class World implements IWorld
 	public int generation;
 	public int population;
 	public int organic;
+	public int pests;
+    public int pestGenes;
 
 	boolean started;
 	Worker thread;
@@ -37,6 +39,8 @@ public class World implements IWorld
 		population = 0;
 		generation = 0;
 		organic = 0;
+		pests = 0;
+        pestGenes = 0;
 		recorder = new RecordManager(this);
 	}
 	public World(IWindow win, int width, int height)
