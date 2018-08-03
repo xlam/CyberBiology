@@ -20,6 +20,7 @@ import ru.cyberbiology.test.gene.GeneMutate;
 import ru.cyberbiology.test.gene.GeneMyHealth;
 import ru.cyberbiology.test.gene.GeneMyLevel;
 import ru.cyberbiology.test.gene.GeneMyMineral;
+import ru.cyberbiology.test.gene.GenePest;
 import ru.cyberbiology.test.gene.GenePhotosynthesis;
 import ru.cyberbiology.test.gene.GeneStepInAbsolutelyDirection;
 import ru.cyberbiology.test.gene.GeneStepInRelativeDirection;
@@ -57,19 +58,19 @@ public class Bot implements IBot
 	    geneController[28]	= new GeneEatRelativeDirection();//28 шаг  съесть в относительном направлении
 	    geneController[29]	= new GeneEatAbsoluteDirection();//29 шаг  съесть в абсолютном направлении
 	    geneController[30]	= new GeneLookRelativeDirection();//30 шаг  посмотреть в относительном направлении
-	    
+
 	    geneController[32]	= new GeneCareRelativeDirection();//32 шаг делится   в относительном напралении
 	    geneController[42]	= geneController[32];
-	    
+
 	    geneController[33]	= new GeneCareAbsolutelyDirection();//33 шаг делится   в абсолютном напралении
 	    geneController[50]	= geneController[33];
-	    
+
 	    geneController[34]	= new GeneGiveRelativeDirection();//34 шаг отдать   в относительном напралении
 	    geneController[51]	= geneController[34];
-	    
+
 	    geneController[35]	= new GeneGiveAbsolutelyDirection();//35 шаг отдать   в абсолютном напралении
 	    geneController[52]	= geneController[35];
-	    
+
 	    geneController[36]	= new GeneFlattenedHorizontally();//36 выравнится по горизонтали
 	    geneController[37]	= new GeneMyLevel();//37 высота бота
 	    geneController[38]	= new GeneMyHealth();//38 здоровье бота
@@ -83,13 +84,14 @@ public class Bot implements IBot
 	    geneController[46]	= new GeneIsMultiCell();//46  многоклеточный
 	    geneController[47]	= new GeneMineralToEnergy();//47  преобразовать минералы в энерию
 	    geneController[48]	= new GeneMutate();//48  мутировать
-	    
-	    
+	    geneController[49]	= new GenePest();//48  паразитировать
+
+
     }
-    
+
     public static final int MIND_SIZE = 64; //Объем генома
     public byte[] mind = new byte[MIND_SIZE];                // геном бота содержит 64 команды
-    
+
     //===================          BOT.LIVING                 ======================
     //======= состяние бота, которое отмеченно для каждого бота в массиве bots[] ====================
     /**
@@ -99,7 +101,7 @@ public class Bot implements IBot
     /**
      * бот погиб и представляет из себя органику в подвешенном состоянии
      */
-    public int LV_ORGANIC_HOLD = 1;  
+    public int LV_ORGANIC_HOLD = 1;
     /**
      * ораника начинает тонуть, пока не встретит препятствие, после чего остается в подвешенном состоянии(LV_ORGANIC_HOLD)
      */
@@ -108,7 +110,7 @@ public class Bot implements IBot
      * живой бот
      */
     public int LV_ALIVE = 3;  //
-    
+
     /**
      * Поля нужны для сериализации ботов
      * координаты соседних клеток многоклеточного
@@ -124,7 +126,7 @@ public class Bot implements IBot
         direction = 2;
         health = 5;
         alive = LV_ALIVE;
-        //Class[] parameterTypes = new Class[] { Bot.class}; 
+        //Class[] parameterTypes = new Class[] { Bot.class};
         //BotCommandController.class.getMethod(name, parameterTypes);
     }
 
@@ -148,11 +150,11 @@ public class Bot implements IBot
 		  }
 
         IBotGeneController cont	= null;
-        
+
         for (int cyc = 0; cyc < MIND_SIZE/4; cyc++)
         {//15
             int command = mind[adr];  // текущая команда
-            
+
             // Получаем обработчика команды
             cont	= geneController[command];
             if(cont!=null)// если обработчик такой команды назначен
@@ -277,7 +279,7 @@ public class Bot implements IBot
      * получение Х-координаты рядом с био по относительному направлению
      * @param bot
      * @param n направление
-     * @return X -  координата 
+     * @return X -  координата
      */
     int xFromVektorR(Bot bot, int n) {
         int xt = bot.x;
@@ -357,7 +359,7 @@ public class Bot implements IBot
     // ---  in - номер бота, направление              ------------
     // ---  out - Y -  координата                    -------------
     /**
-     * получение Y-координаты рядом 
+     * получение Y-координаты рядом
      * @param bot
      * @param n направление
      * @return Y координата по абсолютному направлению
@@ -377,7 +379,7 @@ public class Bot implements IBot
     // ---  in - бот                 ------------
     //===== out  1-окружен  2-нет           ===
     /**
-     * окружен ли бот 
+     * окружен ли бот
      * @param bot
      * @return 1-окружен  2-нет
      */
@@ -427,7 +429,7 @@ public class Bot implements IBot
     // out - возвращает число из днк, следующее за выполняемой командой
     /**
      * получение параметра для команды
-     * 
+     *
      * @param bot
      * @return возвращает число из днк, следующее за выполняемой командой
      */
@@ -461,7 +463,7 @@ public class Bot implements IBot
     //---- которая станет смещением              --------------
     /**
      * косвенное увеличение адреса команды
-     * 
+     *
      * @param bot
      * @param a смещение до команды, которая станет смещением
      */
@@ -498,7 +500,7 @@ public class Bot implements IBot
     //========   out- 0 - нет, 1 - есть MPREV, 2 - есть MNEXT, 3 есть MPREV и MNEXT
     /**
      * нахожусь ли я в многоклеточной цепочке
-     * 
+     *
      * @param bot
      * @return 0 - нет, 1 - есть MPREV, 2 - есть MNEXT, 3 есть MPREV и MNEXT
      */
@@ -518,8 +520,8 @@ public class Bot implements IBot
     //===== без проверок                    ==============
     //===== in - номер бота и новые координаты ===========
     /**
-     * перемещает бота в нужную точку без проверок 
-     * 
+     * перемещает бота в нужную точку без проверок
+     *
      * @param bot
      * @param xt новые координаты x
      * @param yt новые координаты y
@@ -556,10 +558,10 @@ public class Bot implements IBot
     // ...  бот получает энергию солнца в зависимости от глубины   ...............
     // ...  и количества минералов, накопленных ботом              ...............
     /**
-     * фотосинтез, этой командой забит геном первого бота 
+     * фотосинтез, этой командой забит геном первого бота
      * бот получает энергию солнца в зависимости от глубины
      * и количества минералов, накопленных ботом
-     * 
+     *
      * @param bot
      */
     public void botEatSun(Bot bot) {
@@ -607,7 +609,7 @@ public class Bot implements IBot
     //===========================  перемещение бота   ========================================
     /**
      * перемещение бота
-     * @param bot ссылка на бота, 
+     * @param bot ссылка на бота,
      * @param direction направлелие
      * @param ra флажок(относительное или абсолютное направление)
      * @return
@@ -710,7 +712,7 @@ public class Bot implements IBot
 
     //.======================  посмотреть ==================================================
     /**
-     * посмотреть 
+     * посмотреть
      * @param bot ссылка на бота
      * @param direction направлелие
      * @param ra флажок(относительное или абсолютное направление)
@@ -769,7 +771,7 @@ public class Bot implements IBot
      * поделится
      * если у бота больше энергии или минералов, чем у соседа в заданном направлении
      * то бот делится излишками
-     * 
+     *
      * @param bot ссылка на бота
      * @param direction направлелие
      * @param ra флажок(относительное или абсолютное направление)
@@ -972,7 +974,7 @@ public class Bot implements IBot
     //========   in - номер бота                =====
     //========   out- 1 - да, 2 - нет           =====
     /**
-     * копится ли энергия 
+     * копится ли энергия
      * @param bot
      * @return 1 - да, 2 - нет
      */
@@ -1224,6 +1226,24 @@ public class Bot implements IBot
 	public void genAttack()
 	{
 		this.botGenAttack(this);
-		
+
 	}
+
+    @Override
+    public void pestAttack()
+    {
+        int xt = xFromVektorR(this, 0);
+        int yt = yFromVektorR(this, 0);
+        if ((yt >= 0) && (yt < world.height) && (world.matrix[xt][yt] != null)) {
+            Bot victim = world.matrix[xt][yt];
+            if (victim.alive == LV_ALIVE) { // если там живой бот
+                int health = victim.health > 100 ? 100 : victim.health;
+                this.health = this.health + health;
+                if (this.health > 1000)
+                    this.health = 1000;
+                victim.health = victim.health - health;
+            }
+        }
+    }
+
 }
