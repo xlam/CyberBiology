@@ -41,34 +41,32 @@ public class ViewPest implements IView
         world.pestGenes = 0;
         for (int y = 0; y < world.height; y++) {
             for (int x = 0; x < world.width; x++) {
-                if (world.matrix[x][y] == null) {
+                Bot bot = world.matrix[x][y];
+                if (bot == null) {
                     g.setColor(Color.WHITE);
                     g.fillRect(x * World.BOTW,y * World.BOTH, World.BOTW, World.BOTH);
-                } else if ((world.matrix[x][y].alive == 1) || (world.matrix[x][y].alive == 2)) {
+                } else if ((bot.alive == 1) || (bot.alive == 2)) {
                     g.setColor(new Color(200, 200, 200));
                     g.fillRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);
                     world.organic = world.organic + 1;
-                } else if (world.matrix[x][y].alive == 3) {
+                } else if (bot.alive == 3) {
                     g.setColor(Color.BLACK);
                     g.drawRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);
 
-                    int pestGenes = 0;
-                    for (int i=0; i<Bot.MIND_SIZE; i++)
-                        if (world.matrix[x][y].mind[i] == 49)
-                            pestGenes++;
-
+                    // цвет бота без генов паразитизма
                     int colorRed = 200;
                     int colorGreen = 200;
                     int colorBlue = 200;
 
-                    if (pestGenes > 0) {
+
+                    // бот-паразит, добавляем красноты
+                    if (bot.pest > 0) {
+                        world.pestGenes += bot.pest;
                         world.pests++;
-                        colorRed = 127 + pestGenes * 2;
+                        colorRed = 127 + bot.pest * 2;
                         colorGreen = 0;
                         colorBlue = 0;
                     }
-
-                    world.pestGenes += pestGenes;
 
                     g.setColor(new Color(colorRed, colorGreen, colorBlue));
                     g.fillRect(x * World.BOTW + 1, y * World.BOTH + 1,World.BOTW-1, World.BOTH-1);

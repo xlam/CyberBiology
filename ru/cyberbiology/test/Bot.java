@@ -44,6 +44,7 @@ public class Bot implements IBot
     public int c_green;
     public int c_blue;
     public int direction;
+    public int pest;
     public Bot mprev;
     public Bot mnext;
 
@@ -881,9 +882,15 @@ public class Bot implements IBot
 
         System.arraycopy(bot.mind, 0, newbot.mind, 0, MIND_SIZE);
 
+        // информация о паразитных генах сохраняется в новом боте
+        newbot.pest = bot.pest;
+
         if (Math.random() < 0.25) {     // в одном случае из четырех случайным образом меняем один случайный байт в геноме
             byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63
             byte mc = (byte) (Math.random() * MIND_SIZE);  // 0..63
+            // корректируем счетчик паразитных генов
+            if (newbot.mind[ma] == 49) newbot.pest--;
+            if (mc == 49) newbot.pest++;
             newbot.mind[ma] = mc;
         }
 
@@ -926,6 +933,7 @@ public class Bot implements IBot
             return;
         }
         Bot newbot = new Bot(this.world);
+        newbot.pest = bot.pest;
 
         int xt = xFromVektorR(bot, n);   // координаты X и Y
         int yt = yFromVektorR(bot, n);
@@ -935,6 +943,8 @@ public class Bot implements IBot
         if (Math.random() < 0.25) {     // в одном случае из четырех случайным образом меняем один случайный байт в геноме
             byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63
             byte mc = (byte) (Math.random() * MIND_SIZE);  // 0..63
+            if (newbot.mind[ma] == 49) newbot.pest--;
+            if (mc == 49) newbot.pest++;
             newbot.mind[ma] = mc;
         }
 
@@ -1229,6 +1239,8 @@ public class Bot implements IBot
         else if (mc != 49 && this.mind[ma] == 49)
             world.pestGenes--;
         */
+        if (this.mind[ma] == 49) this.pest--;
+        if (mc == 49) this.pest++;
 		this.mind[ma]=mc;
 	}
 	@Override
