@@ -500,6 +500,7 @@ public class Bot implements IBot
         if (nbot != null){ nbot.mprev = null; }
         bot.mprev = null;
         bot.mnext = null;
+        this.world.population--;
     }
 
     //жжжжжжжжжжжжжжжжжжжхжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжж
@@ -555,6 +556,8 @@ public class Bot implements IBot
         if (nbot != null){ nbot.mprev = null; }
         bot.mprev = null;
         bot.mnext = null;
+        if (bot.alive == bot.LV_ALIVE)
+            this.world.population--;
         world.matrix[bot.x][bot.y] = null; // удаление бота с карты
     }
 
@@ -919,6 +922,7 @@ public class Bot implements IBot
         newbot.direction = (int) (Math.random() * 8);   // направление, куда повернут новорожденный, генерируется случайно
 
         world.matrix[xt][yt] = newbot;    // отмечаем нового бота в массиве matrix
+        this.world.population++;
     }
 
     // ======       рождение новой клетки многоклеточного    ==========================================
@@ -973,6 +977,7 @@ public class Bot implements IBot
         newbot.direction = (int) (Math.random() * 8);   // направление, куда повернут новорожденный, генерируется случайно
 
         world.matrix[xt][yt] = newbot;    // отмечаем нового бота в массиве matrix
+        this.world.population++;
 
         if (nbot == null) {                      // если у бота-предка ссылка на следующего бота в многоклеточной цепочке пуста
             bot.mnext = newbot; // то вставляем туда новорожденного бота

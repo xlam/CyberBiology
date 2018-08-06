@@ -35,7 +35,6 @@ public class ViewPest implements IView
 
         g.drawRect(0, 0, world.width * World.BOTW + 1, world.height * World.BOTH + 1);
 
-        world.population = 0;
         world.organic = 0;
         world.pests = 0;
         world.pestGenes = 0;
@@ -70,7 +69,6 @@ public class ViewPest implements IView
 
                     g.setColor(new Color(colorRed, colorGreen, colorBlue));
                     g.fillRect(x * World.BOTW + 1, y * World.BOTH + 1,World.BOTW-1, World.BOTH-1);
-                    world.population = world.population + 1;
                 }
             }
         }

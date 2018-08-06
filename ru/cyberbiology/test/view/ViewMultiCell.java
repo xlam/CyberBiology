@@ -29,10 +29,9 @@ public class ViewMultiCell implements IView
     	Image buf = canvas.createImage(w, h);
     	//подеменяем графику на временный буфер
     	Graphics g = buf.getGraphics();
-    	
+
         g.drawRect(0, 0, world.width * World.BOTW + 1, world.height * 4 + 1);
 
-        world.population = 0;
         world.organic = 0;
         for (int y = 0; y < world.height; y++) {
             for (int x = 0; x < world.width; x++) {
@@ -48,7 +47,7 @@ public class ViewMultiCell implements IView
                     g.drawRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);
                 	switch(world.matrix[x][y].isMulti())
             		{
-           			
+
             			case 1:// - есть MPREV,
     	                    g.setColor(Color.MAGENTA);
     	                    g.fillRect(x * World.BOTW + 1, y * World.BOTH + 1, World.BOTW-1, World.BOTH-1);
@@ -70,8 +69,7 @@ public class ViewMultiCell implements IView
     	                    g.fillRect(x * World.BOTW + 1, y * World.BOTH + 1, World.BOTW-1, World.BOTH-1);
             					break;
             		}
-                    
-                    world.population = world.population + 1;
+
                 }
             }
         }
