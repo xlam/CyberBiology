@@ -248,7 +248,14 @@ public class Bot implements IBot
                     				// то его потомок рождается свободным
                 }
             }
-            health =  health - 3;   // каждый ход отнимает 3 единички здоровья(энегрии)
+
+            // трата энергии за ход
+            if (pest > 0) {
+                health = health - 20; // паразит
+            } else {
+                health = health - 3; // здоровый бот
+            }
+
             if (health < 1) {       // если энергии стало меньше 1
                 bot2Organic(this);  // то время умирать, превращаясь в огранику
                 return;            // и передаем управление к следующему боту
@@ -1233,12 +1240,6 @@ public class Bot implements IBot
 	@Override
 	public void setMind(byte ma, byte mc)
 	{
-        /*
-        if (mc == 49 && this.mind[ma] != 49)
-            world.pestGenes++;
-        else if (mc != 49 && this.mind[ma] == 49)
-            world.pestGenes--;
-        */
         if (this.mind[ma] == 49) this.pest--;
         if (mc == 49) this.pest++;
 		this.mind[ma]=mc;
@@ -1257,12 +1258,15 @@ public class Bot implements IBot
         int yt = yFromVektorR(this, 0);
         if ((yt >= 0) && (yt < world.height) && (world.matrix[xt][yt] != null)) {
             Bot victim = world.matrix[xt][yt];
-            if (victim.alive == LV_ALIVE) { // если там живой бот
+            // паразит атакует только живых и незараженных ботов
+            if (victim.alive == LV_ALIVE && victim.pest == 0) {
                 int healthDrain = victim.health > 100 ? 100 : victim.health;
                 this.health = this.health + healthDrain;
                 if (this.health > 1000)
                     this.health = 1000;
                 victim.health = victim.health - healthDrain;
+                if (victim.health < 1)
+                    bot2Organic(victim);
             }
         }
     }
