@@ -500,6 +500,7 @@ public class Bot implements IBot
         if (nbot != null){ nbot.mprev = null; }
         bot.mprev = null;
         bot.mnext = null;
+        this.world.organic++;
         this.world.population--;
     }
 
@@ -556,6 +557,8 @@ public class Bot implements IBot
         if (nbot != null){ nbot.mprev = null; }
         bot.mprev = null;
         bot.mnext = null;
+        if (bot.alive == bot.LV_ORGANIC_HOLD || bot.alive == bot.LV_ORGANIC_SINK)
+            this.world.organic--;
         if (bot.alive == bot.LV_ALIVE)
             this.world.population--;
         world.matrix[bot.x][bot.y] = null; // удаление бота с карты

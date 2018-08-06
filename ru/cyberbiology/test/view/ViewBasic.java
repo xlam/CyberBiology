@@ -34,7 +34,6 @@ public class ViewBasic implements IView
 
         g.drawRect(0, 0, world.width * World.BOTW + 1, world.height * World.BOTH + 1);
 
-        world.organic = 0;
         world.pests = 0;
         world.pestGenes = 0;
         for (int y = 0; y < world.height; y++) {
@@ -45,7 +44,6 @@ public class ViewBasic implements IView
                 } else if ((world.matrix[x][y].alive == 1) || (world.matrix[x][y].alive == 2)) {
                     g.setColor(new Color(200, 200, 200));
                     g.fillRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);
-                    world.organic = world.organic + 1;
                 } else if (world.matrix[x][y].alive == 3) {
                     g.setColor(Color.BLACK);
                     g.drawRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);
