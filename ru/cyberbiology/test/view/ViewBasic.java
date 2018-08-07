@@ -57,16 +57,10 @@ public class ViewBasic implements IView
 //                    g.setColor(new Color(matrix[x][y].c_red, matrix[x][y].c_green, matrix[x][y].c_blue));
                     g.fillRect(x * World.BOTW + 1, y * World.BOTH + 1,World.BOTW-1, World.BOTH-1);
 
-                    int pestGenes = 0;
-                    for (int i=0; i<Bot.MIND_SIZE; i++)
-                        if (world.matrix[x][y].mind[i] == 49)
-                            pestGenes++;
-
-                    if (pestGenes > 0)
+                    if (world.matrix[x][y].pest > 0) {
+                        world.pestGenes += world.matrix[x][y].pest;
                         world.pests++;
-
-                    world.pestGenes += pestGenes;
-
+                    }
                 }
             }
         }
