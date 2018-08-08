@@ -44,6 +44,10 @@ public abstract class View implements IView {
                 if (bot != null && bot.alive == bot.LV_ALIVE) {
                     g.setColor(Color.BLACK);
                     g.drawRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);
+                    if (bot.pest > 0) {
+                        world.pestGenes += bot.pest;
+                        world.pests++;
+                    }
                 }
             }
         }
