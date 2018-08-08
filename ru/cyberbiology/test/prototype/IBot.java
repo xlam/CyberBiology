@@ -66,6 +66,7 @@ public interface IBot
 	public int isHealthGrow();
 	public void mineral2Energy();
 	public void setMind(byte ma, byte mc);
+    public byte[] modifyMind();
 	public void genAttack();
 	public void pestAttack();
 	public IWorld getWorld();

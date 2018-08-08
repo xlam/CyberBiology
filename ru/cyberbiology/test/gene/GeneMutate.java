@@ -29,13 +29,8 @@ public class GeneMutate extends ABotGeneController
 	@Override
 	public boolean onGene(IBot bot)
 	{
-    	byte ma = (byte) (Math.random() * bot.MIND_SIZE);  // 0..63
-        byte mc = (byte) (Math.random() * bot.MIND_SIZE);  // 0..63
-        bot.setMind(ma,mc);
-
-        ma = (byte) (Math.random() * bot.MIND_SIZE);  // 0..63
-        mc = (byte) (Math.random() * bot.MIND_SIZE);  // 0..63
-        bot.setMind(ma,mc);
+        bot.modifyMind();
+        bot.modifyMind();
         bot.incCommandAddress(1);
         return true; // выходим, так как команда мутировать - завершающая
 	}

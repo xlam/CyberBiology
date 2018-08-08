@@ -502,6 +502,10 @@ public class Bot implements IBot
         bot.mnext = null;
         this.world.organic++;
         this.world.population--;
+        if (bot.pest > 0) {
+            this.world.pests--;
+            this.world.pestGenes -= bot.pest;
+        }
     }
 
     //жжжжжжжжжжжжжжжжжжжхжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжж
@@ -559,8 +563,13 @@ public class Bot implements IBot
         bot.mnext = null;
         if (bot.alive == bot.LV_ORGANIC_HOLD || bot.alive == bot.LV_ORGANIC_SINK)
             this.world.organic--;
-        if (bot.alive == bot.LV_ALIVE)
+        if (bot.alive == bot.LV_ALIVE) {
             this.world.population--;
+            if (bot.pest > 0) {
+                this.world.pests--;
+                this.world.pestGenes -= bot.pest;
+            }
+        }
         world.matrix[bot.x][bot.y] = null; // удаление бота с карты
     }
 
@@ -768,10 +777,8 @@ public class Bot implements IBot
         if ((yt >= 0) && (yt < world.height) && (world.matrix[xt][yt] != null)) {
             if (world.matrix[xt][yt].alive == LV_ALIVE) { // если там живой бот
                 bot.health = bot.health - 10; // то атакуюий бот теряет на атаку 10 энергии
-                if (bot.health > 0) {                    // если он при этом не умер
-                	byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63 // то у жертвы случайным образом меняется один ген
-                	byte mc = (byte) (Math.random() * MIND_SIZE);  // 0..63
-                    world.matrix[xt][yt].mind[ma] = mc;
+                if (bot.health > 0) {
+                    bot.modifyMind();
                 }
             }
         }
@@ -899,12 +906,7 @@ public class Bot implements IBot
         newbot.pest = bot.pest;
 
         if (Math.random() < 0.25) {     // в одном случае из четырех случайным образом меняем один случайный байт в геноме
-            byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63
-            byte mc = (byte) (Math.random() * MIND_SIZE);  // 0..63
-            // корректируем счетчик паразитных генов
-            if (newbot.mind[ma] == 49) newbot.pest--;
-            if (mc == 49) newbot.pest++;
-            newbot.mind[ma] = mc;
+            newbot.modifyMind();
         }
 
         newbot.adr = 0;                         // указатель текущей команды в новорожденном устанавливается в 0
@@ -955,11 +957,7 @@ public class Bot implements IBot
         System.arraycopy(bot.mind, 0, newbot.mind, 0, MIND_SIZE);    // копируем геном в нового бота
 
         if (Math.random() < 0.25) {     // в одном случае из четырех случайным образом меняем один случайный байт в геноме
-            byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63
-            byte mc = (byte) (Math.random() * MIND_SIZE);  // 0..63
-            if (newbot.mind[ma] == 49) newbot.pest--;
-            if (mc == 49) newbot.pest++;
-            newbot.mind[ma] = mc;
+            newbot.modifyMind();
         }
 
         newbot.adr = 0;                         // указатель текущей команды в новорожденном устанавливается в 0
@@ -993,6 +991,37 @@ public class Bot implements IBot
         }
     }
 
+    /**
+     * Меняет один ген случайным образом
+     * @return byte[3] массив с информацией об измененном гене
+     *      [0] - адрес измененной команды
+     *      [1] - старая команда
+     *      [2] - новая команда
+     */
+    @Override
+    public byte[] modifyMind() {
+
+        byte[] modified = new byte[3];
+
+        // случайным образом меняется один ген
+        byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63
+        byte mc = (byte) (Math.random() * MIND_SIZE);  // 0..63
+
+        modified[0] = ma;
+        modified[1] = mind[ma];
+
+        // корректируем счетчик паразитных генов
+        // todo: проработать механизм события смены гена,
+        // т.к. подсчет генов это не забота данного метода
+        if (mind[ma] == 49) pest--;
+        if (mc == 49) pest++;
+
+        setMind(ma, mc);
+
+        modified[2] = mc;
+
+        return modified;
+    }
 
     //жжжжжжжжжжжжжжжжжжжхжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжж
     //========   копится ли энергия            =====
