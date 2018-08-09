@@ -489,7 +489,7 @@ public class MainWindow extends JFrame implements IWindow
         populationLabel.setText(" Population: " + String.valueOf(world.population));
         organicLabel.setText(" Organic: " + String.valueOf(world.organic));
         // переводим время, затраченное на 10 пересчетов в пересчеты в секунду
-        perfLabel.setText(" WIPS: " + String.valueOf(10 / (PerfMeter.getDiff() / 1000000000.0)));
+        perfLabel.setText(" WIPS: " + String.format("%3.1f", 10 / (PerfMeter.getDiff() / 1000000000.0)));
         recorderBufferLabel.setText(" Buffer: " + String.valueOf(world.recorder.getBufferSize()));
         
         Runtime runtime = Runtime.getRuntime();

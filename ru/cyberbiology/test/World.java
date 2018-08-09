@@ -181,6 +181,7 @@ public class World implements IWorld
 		if (!this.started())
 		{
 			this.thread = new Worker();
+            // запуск таймера при запуске потока
             PerfMeter.start();
 			this.thread.start();
 		}
