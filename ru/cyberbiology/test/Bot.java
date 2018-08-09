@@ -48,6 +48,9 @@ public class Bot implements IBot
     public Bot mprev;
     public Bot mnext;
 
+    // максимальное количество генов паразитирования в геноме
+    private final int MAX_PEST_GENES = 32;
+
     static IBotGeneController[] geneController= new IBotGeneController[64];
     static
     {
@@ -1304,8 +1307,25 @@ public class Bot implements IBot
                 victim.health = victim.health - healthDrain;
                 if (victim.health < 1)
                     bot2Organic(victim);
+                // с каждой атакой количество генов паразитирования увеличивается,
+                // но не более определенного уровня.
+                addPestGenes();
             }
         }
     }
 
+    private void addPestGenes() {
+        if (pest >= MAX_PEST_GENES)
+            return;
+
+        // предположим, что с каждой атакой добавляются 3 гена
+        int addPest = 3;
+
+        for (int i=0; i<addPest; i++) {
+            byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63
+            setMind(ma, (byte)49);
+            if (pest >= MAX_PEST_GENES)
+                break;
+        }
+    }
 }
