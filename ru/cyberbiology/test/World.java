@@ -11,6 +11,7 @@ import ru.cyberbiology.test.prototype.record.IRecordManager;
 import ru.cyberbiology.test.record.v0.PlaybackManager;
 import ru.cyberbiology.test.record.v0.RecordManager;
 import ru.cyberbiology.test.util.ProjectProperties;
+import ru.cyberbiology.test.util.PerfMeter;
 
 public class World implements IWorld
 {
@@ -113,6 +114,8 @@ public class World implements IWorld
 				generation = generation + 1;
 				if (generation % 10 == 0)
 				{ // отрисовка на экран через каждые ... шагов
+                    // замеряем время пересчета 10 итераций без учета отрисовки
+                    PerfMeter.tick();
 					paint(); // отображаем текущее состояние симуляции на экран
 				}
 				// sleep(); // пауза между ходами, если надо уменьшить скорость
@@ -223,6 +226,8 @@ public class World implements IWorld
 		if (!this.started())
 		{
 			this.thread = new Worker();
+            // запуск таймера при запуске потока
+            PerfMeter.start();
 			this.thread.start();
 		}
 	}
