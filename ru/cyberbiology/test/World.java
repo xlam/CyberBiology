@@ -1,7 +1,10 @@
 package ru.cyberbiology.test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Random;
 
+import ru.cyberbiology.test.gene.GeneMutate;
 import ru.cyberbiology.test.prototype.IWindow;
 import ru.cyberbiology.test.prototype.IWorld;
 import ru.cyberbiology.test.prototype.record.IRecordManager;
@@ -13,7 +16,7 @@ public class World implements IWorld
 {
 	public World world;
 	public IWindow window;
-	
+
 	PlaybackManager playback;
 	IRecordManager recorder;
 
@@ -168,7 +171,45 @@ public class World implements IWorld
 			}
 		}
 	}
-	public boolean started()
+
+    /**
+     * Мутирует указанное количество живых ботов случайным образом.
+     *
+     * @param percent Количество ботов в процентах (1..100)
+     * @param mutatesCount Количество мутаций на одного бота (1..64)
+     */
+    public void randomMutation(int percent, int mutatesCount) {
+        // получить список живых ботов
+        ArrayList<Bot> aliveBots = new ArrayList();
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                Bot bot = getBot(x, y);
+                if (bot != null && bot.alive == bot.LV_ALIVE)
+                    aliveBots.add(bot);
+            }
+        }
+
+        // размер группы мутирующих ботов 10% от живых
+        int aliveBotsCount = aliveBots.size();
+        int mutantsCount = (int) Math.round(aliveBotsCount * percent/100);
+        System.out.println("Mutating " + percent + "% of alive bots (" + mutantsCount + " of " + aliveBotsCount + ")");
+
+        // мутация
+        Random rnd = new Random();
+        GeneMutate mutagen = new GeneMutate();
+        for (int i=0; i<mutantsCount; i++) {
+            Bot bot = aliveBots.get(rnd.nextInt(aliveBotsCount-1));
+            //System.out.println("Mutating " + bot);
+
+            // Мутации одного гена оказалось недостаточно чтобы
+            // встряхнуть заснувший мир
+            for (int j=0; j<mutatesCount; j++) {
+                mutagen.onGene(bot);
+            }
+        }
+    }
+
+    public boolean started()
 	{
 		return this.thread != null;
 	}
