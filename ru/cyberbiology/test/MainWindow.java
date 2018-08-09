@@ -193,7 +193,7 @@ public class MainWindow extends JFrame implements IWindow
             }
         });
 
-        mutateItem = new JMenuItem("случайная мутация");
+        mutateItem = new JMenuItem("Cлучайная мутация");
         fileMenu.add(mutateItem);
         mutateItem.addActionListener(new ActionListener()
         {
@@ -201,33 +201,7 @@ public class MainWindow extends JFrame implements IWindow
             public void actionPerformed(ActionEvent e) {
                 // мутацию проводим при отключенном мире
                 world.stop();
-
-                // получить список живых ботов
-                ArrayList<Bot> aliveBots = new ArrayList();
-                int width = world.getWidth();
-                int height = world.getHeight();
-                for (int x=0; x<width; x++) {
-                    for (int y=0; y<height; y++) {
-                        Bot bot = world.getBot(x, y);
-                        if (bot != null && bot.alive == bot.LV_ALIVE)
-                            aliveBots.add(bot);
-                    }
-                }
-
-                // размер группы мутирующих ботов 10% от живых
-                int aliveBotsCount = aliveBots.size();
-                int mutantsCount = (int) Math.round(aliveBotsCount * 0.1);
-                System.out.println("Mutating 10% of alive bots (" + mutantsCount + " of " + aliveBotsCount + ")");
-
-                // мутация
-                Random rnd = new Random();
-                GeneMutate mutagen = new GeneMutate();
-                for (int i=0; i<mutantsCount; i++) {
-                    Bot bot = aliveBots.get(rnd.nextInt(aliveBotsCount-1));
-                    mutagen.onGene(bot);
-                    //System.out.println("Mutating " + bot);
-                }
-
+                world.randomMutation(10, 32);
                 world.start();
             }
         });
