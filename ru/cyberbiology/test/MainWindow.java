@@ -36,6 +36,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import ru.cyberbiology.test.prototype.IWindow;
 import ru.cyberbiology.test.prototype.gene.IBotGeneController;
 import ru.cyberbiology.test.prototype.view.IView;
+import ru.cyberbiology.test.util.PerfMeter;
 import ru.cyberbiology.test.util.ProjectProperties;
 import ru.cyberbiology.test.view.ViewBasic;
 import ru.cyberbiology.test.view.ViewMultiCell;
@@ -55,6 +56,7 @@ public class MainWindow extends JFrame implements IWindow
     public JLabel generationLabel = new JLabel(" Generation: 0 ");
     public JLabel populationLabel = new JLabel(" Population: 0 ");
     public JLabel organicLabel = new JLabel(" Organic: 0 ");
+    public JLabel perfLabel = new JLabel(" WIPS: 0 ");
     
     public JLabel recorderBufferLabel = new JLabel("");
     public JLabel memoryLabel = new JLabel("");
@@ -123,6 +125,10 @@ public class MainWindow extends JFrame implements IWindow
         organicLabel.setPreferredSize(new Dimension(140, 18));
         organicLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         statusPanel.add(organicLabel);
+
+        perfLabel.setPreferredSize(new Dimension(140, 18));
+        perfLabel.setBorder(BorderFactory.createLoweredBevelBorder());
+        statusPanel.add(perfLabel);
 
         memoryLabel.setPreferredSize(new Dimension(140, 18));
         memoryLabel.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -482,6 +488,8 @@ public class MainWindow extends JFrame implements IWindow
         generationLabel.setText(" Generation: " + String.valueOf(world.generation));
         populationLabel.setText(" Population: " + String.valueOf(world.population));
         organicLabel.setText(" Organic: " + String.valueOf(world.organic));
+        // переводим время, затраченное на 10 пересчетов в пересчеты в секунду
+        perfLabel.setText(" WIPS: " + String.valueOf(10 / (PerfMeter.getDiff() / 1000000000.0)));
         recorderBufferLabel.setText(" Buffer: " + String.valueOf(world.recorder.getBufferSize()));
         
         Runtime runtime = Runtime.getRuntime();
@@ -491,7 +499,6 @@ public class MainWindow extends JFrame implements IWindow
         frameSavedCounterLabel.setText(" Saved frames: " + String.valueOf(world.world.recorder.getFrameSavedCounter()));
         frameSkipSizeLabel.setText(" Skip frames: " + String.valueOf(world.world.recorder.getFrameSkipSize()));
         
-
         paintPanel.repaint();
     	/*
     	int w = canvas.getWidth();
