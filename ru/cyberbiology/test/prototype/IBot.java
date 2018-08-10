@@ -69,4 +69,6 @@ public interface IBot
 	public void genAttack();
 	public IWorld getWorld();
 
+    public int imitate(int dir);
+
 }
