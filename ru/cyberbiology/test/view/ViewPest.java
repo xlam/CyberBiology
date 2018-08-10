@@ -33,8 +33,10 @@ public class ViewPest extends View
 
             // бот-паразит, добавляем красноты
             if (bot.pest > 0) {
-                colorRed = 127 + bot.pest * 2;
-                colorGreen = 0;
+                colorRed = 255;
+                colorGreen = 255 - bot.pest * 4;
+                if (colorGreen < 0)
+                    colorGreen = 0;
                 colorBlue = 0;
             }
 
