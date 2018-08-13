@@ -73,6 +73,7 @@ public class MainWindow extends JFrame implements IWindow
 		};
     JMenuItem recordItem;
     JMenuItem snapShotItem;
+    JMenuItem adressJumpItem;
     //JMenuItem saveItem;
     //JMenuItem deleteItem;
     public JPanel paintPanel = new JPanel()
@@ -174,6 +175,17 @@ public class MainWindow extends JFrame implements IWindow
             	
             }           
         });
+
+        adressJumpItem = new JMenuItem("Сбой программы генома");
+        fileMenu.add(adressJumpItem);
+        adressJumpItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO переименовать
+                world.jumpBotsCmdAdress();
+            }
+        });
+
         snapShotItem = new JMenuItem("Сделать снимок");
         fileMenu.add(snapShotItem);
         snapShotItem.setEnabled(false);
