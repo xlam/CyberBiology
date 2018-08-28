@@ -10,7 +10,7 @@ public class GenePest extends ABotGeneController
 	{
 		bot.pestAttack(); // забирает жизненную энергию другого бота
         bot.incCommandAddress(1);
-        return true; // выходим, так как команда паразитирование - завершающая
+        return false; // паразит может "ходить" несколько раз
 	}
 
     @Override

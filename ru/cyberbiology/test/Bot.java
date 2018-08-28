@@ -50,6 +50,9 @@ public class Bot implements IBot
     public Bot mprev;
     public Bot mnext;
 
+    // максимальное количество генов паразитирования в геноме
+    private final int MAX_PEST_GENES = 32;
+
     static IBotGeneController[] geneController= new IBotGeneController[64];
     static
     {
@@ -241,7 +244,9 @@ public class Bot implements IBot
             //??????????????????????????????????????????????
             //... проверим уровень энергии у бота, возможно пришла пора помереть или родить
             // Вопрос стоит ли так делать, родждение прописано в генных командах
-            if (health > 999) {    // если энергии больше 999, то плодим нового бота
+            // Sergey Sokolov: ответ - стоит, ибо то, что прописано в генах это спонтанные роды,
+            // а тут естественные.
+            if (health > 999 || (health > 399 && pest > 0)) {   // паразиту достаточно 400 энергии для размножения
                 if ((a == 1) || (a == 2)) {
                     botMulti(this); // если бот был крайним в цепочке, то его потомок входит в состав цепочки
                 } else {
@@ -910,6 +915,20 @@ public class Bot implements IBot
             newbot.modifyMind();
         }
 
+        // Полноценный потомок-паразит не может получать энергию от
+        // фотосинтеза или переработки минералов. Эти команды заменяются
+        // командой паразитирования. Тем не менее, в процессе эволюции, в
+        // геноме снова могут появиться фотосинтез и переработка.
+        // TODO это решение требует перепроектирования!
+        if (newbot.pest > 0) {
+            for (int i=0; i<MIND_SIZE; i++) {
+                if (newbot.mind[i] == 25 || newbot.mind[i] == 47) {
+                    newbot.mind[i] = 49;
+                    newbot.pest++;
+                }
+            }
+        }
+
         newbot.adr = 0;                         // указатель текущей команды в новорожденном устанавливается в 0
         newbot.x = xt;
         newbot.y = yt;
@@ -1305,7 +1324,25 @@ public class Bot implements IBot
                 victim.health = victim.health - healthDrain;
                 if (victim.health < 1)
                     bot2Organic(victim);
+                // с каждой атакой количество генов паразитирования увеличивается,
+                // но не более определенного уровня.
+                addPestGenes();
             }
+        }
+    }
+
+    private void addPestGenes() {
+        if (pest >= MAX_PEST_GENES)
+            return;
+
+        // предположим, что с каждой атакой добавляются 3 гена
+        int addPest = 3;
+
+        for (int i=0; i<addPest; i++) {
+            byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63
+            setMind(ma, (byte)49);
+            if (pest >= MAX_PEST_GENES)
+                break;
         }
     }
 
