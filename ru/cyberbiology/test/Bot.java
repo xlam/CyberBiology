@@ -1,6 +1,7 @@
 package ru.cyberbiology.test;
 
 
+import java.util.Random;
 import ru.cyberbiology.test.gene.GeneCareAbsolutelyDirection;
 import ru.cyberbiology.test.gene.GeneCareRelativeDirection;
 import ru.cyberbiology.test.gene.GeneChangeDirectionAbsolutely;
@@ -11,6 +12,7 @@ import ru.cyberbiology.test.gene.GeneFlattenedHorizontally;
 import ru.cyberbiology.test.gene.GeneFullAroud;
 import ru.cyberbiology.test.gene.GeneGiveAbsolutelyDirection;
 import ru.cyberbiology.test.gene.GeneGiveRelativeDirection;
+import ru.cyberbiology.test.gene.GeneImitate;
 import ru.cyberbiology.test.gene.GeneIsHealthGrow;
 import ru.cyberbiology.test.gene.GeneIsMineralGrow;
 import ru.cyberbiology.test.gene.GeneIsMultiCell;
@@ -86,8 +88,7 @@ public class Bot implements IBot
 	    geneController[47]	= new GeneMineralToEnergy();//47  преобразовать минералы в энерию
 	    geneController[48]	= new GeneMutate();//48  мутировать
 	    geneController[49]	= new GenePest();//49  паразитировать
-
-
+	    geneController[50] = new GeneImitate(); // 50 имитация, подражание
     }
 
     public static final int MIND_SIZE = 64; //Объем генома
@@ -1308,4 +1309,50 @@ public class Bot implements IBot
         }
     }
 
+    public int imitate(int dir) {
+        // на выходе пусто - 2  стена - 3  органик - 4  бот - 5
+        health = health - 4; // бот теряет на этом 4 энергии в независимости от результата
+        // вычисляем относительное направление действия
+        int xt = xFromVektorR(this, direction);
+        int yt = yFromVektorR(this, direction);
+        if ((yt < 0) || (yt >= world.height)) {  // если там стена возвращаем 3
+            return 3;
+        }
+        Bot bot = world.matrix[xt][yt];
+        if (bot == null) {  // если клетка пустая возвращаем 2
+            return 2;
+        }
+        if (bot.alive <= LV_ORGANIC_SINK) {   // если там оказалась органика
+            return 4; // возвращаем 4
+        }
+
+        Random rnd = new Random();
+
+        // размер копируемого участка от четверти до половины генома
+        int len = (int)(MIND_SIZE / 4) + rnd.nextInt((int)(MIND_SIZE / 4));
+
+        // адрес начала участка копирования из генома другого бота
+        int adrFrom = (int)(Math.random() * MIND_SIZE);
+
+        // адрес начала участка записи в геном бота
+        // следующая ячейка после параметра команды imitate
+        int adrTo = adr + 2;
+
+        // копируем данные самым примитивным способом
+        for (int i=0; i<len; i++) {
+            adrFrom += i;
+            if (adrFrom > MIND_SIZE - 1) {
+                // TODO проверить граничные условия
+                adrFrom -= MIND_SIZE;
+            }
+            adrTo += i;
+            if (adrTo > MIND_SIZE - 1) {
+                // TODO проверить граничные условия
+                adrTo -= MIND_SIZE;
+            }
+            setMind((byte)adrTo, bot.mind[adrFrom]);
+        }
+
+        return 2;
+    }
 }

@@ -71,4 +71,6 @@ public interface IBot
 	public void pestAttack();
 	public IWorld getWorld();
 
+    public int imitate(int dir);
+
 }
