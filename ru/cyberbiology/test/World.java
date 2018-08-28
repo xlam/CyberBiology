@@ -76,6 +76,26 @@ public class World implements IWorld
 	{
 		return window.getProperties();
 	}
+
+    /**
+     * Сбой в программе генома.
+     * Перемещает указатель текущей команды каждого бота случайным образом.
+     */
+    void jumpBotsCmdAdress() {
+        if (started()) stop();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Bot bot = matrix[x][y];
+                if (bot != null) {
+                    if (bot.alive == bot.LV_ALIVE) {
+                        bot.adr = (byte)(Math.random() * Bot.MIND_SIZE);
+                    }
+                }
+            }
+        }
+        start();
+    }
+
 	class Worker extends Thread
 	{
 		public void run()

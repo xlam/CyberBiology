@@ -88,7 +88,7 @@ public class Bot implements IBot
 	    geneController[47]	= new GeneMineralToEnergy();//47  преобразовать минералы в энерию
 	    geneController[48]	= new GeneMutate();//48  мутировать
 	    geneController[49]	= new GenePest();//49  паразитировать
-	    geneController[50] = new GeneImitate(); // 50 имитация, подражание
+        geneController[50] = new GeneImitate(); // 50 имитация, подражание
     }
 
     public static final int MIND_SIZE = 64; //Объем генома
@@ -1309,6 +1309,7 @@ public class Bot implements IBot
         }
     }
 
+    @Override
     public int imitate(int dir) {
         // на выходе пусто - 2  стена - 3  органик - 4  бот - 5
         health = health - 4; // бот теряет на этом 4 энергии в независимости от результата
