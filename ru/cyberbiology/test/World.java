@@ -114,43 +114,6 @@ public class World implements IWorld
         start();
     }
 
-    void save() {
-        stop();
-        System.out.println("Saving...");
-        try {
-            FileOutputStream fos = new FileOutputStream("world.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(matrix);
-            System.out.println("Saved matrix:" + matrix.toString());
-            oos.writeInt(width);
-            oos.writeInt(height);
-            oos.writeInt(population);
-            System.out.println("Saved population:" + population);
-        } catch (IOException e) {
-            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, e);
-        }
-        start();
-    }
-
-    void load() {
-        stop();
-        System.out.println("Loading...");
-        try {
-            FileInputStream fis = new FileInputStream("world.dat");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            matrix = (Bot[][]) ois.readObject();
-            System.out.println(matrix.toString());
-            width = ois.readInt();
-            height = ois.readInt();
-            population = ois.readInt();
-            System.out.println("Loaded population: " + population);
-        } catch (IOException e) {
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        start();
-    }
-
 	class Worker extends Thread
 	{
 		public void run()
@@ -253,6 +216,33 @@ public class World implements IWorld
 			}
 		}
 	}
+
+    /**
+     * Восстанавливает статистику мира при загрузке.
+     * Не восстанавливает generation (на текущий момент generation
+     * не сохраняется в RecordManager)
+     */
+    @Override
+    public void restoreStats() {
+        Bot bot;
+        for (int y=0; y<height; y++) {
+            for (int x=0; x<width; x++) {
+                bot = matrix[x][y];
+                if (bot == null || bot.alive == bot.LV_FREE) {
+                    continue;
+                }
+                if (bot.alive == bot.LV_ORGANIC_HOLD || bot.alive == bot.LV_ORGANIC_SINK) {
+                    organic++;
+                }
+                population++;
+                // TODO pestGenes всегда равно pest*2 ?!
+                if (bot.pest > 0) {
+                    pestGenes += bot.pest;
+                    pests++;
+                }
+            }
+        }
+    }
 
     /**
      * Мутирует указанное количество живых ботов случайным образом.

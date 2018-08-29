@@ -22,4 +22,6 @@ public interface IWorld
 
 	public void restoreLinks();
 
+    public void restoreStats();
+
 }

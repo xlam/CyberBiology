@@ -225,7 +225,7 @@ public class MainWindow extends JFrame implements IWindow
 
         snapShotItem = new JMenuItem("Сделать снимок");
         fileMenu.add(snapShotItem);
-        snapShotItem.setEnabled(false);
+//        snapShotItem.setEnabled(false);
         snapShotItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -397,16 +397,26 @@ public class MainWindow extends JFrame implements IWindow
         JMenu toolsMenu = new JMenu("Инструменты");
         menuBar.add(toolsMenu);
 
-        JMenuItem saveWorldItem = new JMenuItem("Сохранить мир");
-        toolsMenu.add(saveWorldItem);
-        saveWorldItem.addActionListener((ActionEvent e) -> {
-            world.save();
-        });
+//        JMenuItem saveWorldItem = new JMenuItem("Сохранить мир");
+//        toolsMenu.add(saveWorldItem);
+//        saveWorldItem.addActionListener((ActionEvent e) -> {
+//        });
 
         JMenuItem loadWorldItem = new JMenuItem("Загрузить мир");
         toolsMenu.add(loadWorldItem);
         loadWorldItem.addActionListener((ActionEvent e) -> {
-            world.load();
+            // TODO фильтр "*.frame.cb.zip" не работает
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("*.frame.cb.zip","*.*");
+            JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(filter);
+            if (fc.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
+                if (world == null) {
+                    int width = paintPanel.getWidth()/BOTW;// Ширина доступной части экрана для рисования карты
+                    int height = paintPanel.getHeight()/BOTH;// Боты 4 пикселя?
+                    world = new World(window,width,height);
+                }
+                world.openFile(fc.getSelectedFile());
+            }
         });
 
         this.setJMenuBar(menuBar);

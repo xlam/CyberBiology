@@ -133,6 +133,7 @@ public class PlaybackManager
 						world.setBot(bot);
 					}
 					world.restoreLinks();
+                    world.restoreStats();
 					frameNo++;
 					world.paint();
 					sleep(20);
