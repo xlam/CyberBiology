@@ -533,8 +533,8 @@ public class MainWindow extends JFrame implements IWindow
         organicLabel.setText(" Organic: " + String.valueOf(world.organic));
         pestsLabel.setText(" Pests: " + String.valueOf(world.pests));
         pestGenesLabel.setText(" Pest genes: " + String.valueOf(world.pestGenes));
-        // переводим время, затраченное на 10 пересчетов в пересчеты в секунду
-        perfLabel.setText(" WIPS: " + String.format("%3.1f", 10 / (PerfMeter.getDiff() / 1000000000.0)));
+        // переводим время, затраченное на PAINT_STEP пересчетов в пересчеты в секунду
+        perfLabel.setText(" WIPS: " + String.format("%3.1f", World.PAINT_STEP / (PerfMeter.getDiff() / 1000000000.0)));
         recorderBufferLabel.setText(" Buffer: " + String.valueOf(world.recorder.getBufferSize()));
 
         Runtime runtime = Runtime.getRuntime();

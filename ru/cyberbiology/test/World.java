@@ -24,6 +24,17 @@ public class World implements IWorld
 	public static final int BOTW = 4;
 	public static final int BOTH = 4;
 
+    /**
+     * Шаг отрисовки.
+     * Состояние мира отрисовывается на каждом PAINT_STEP пересчете.
+     * Для комфортной визуализации рекомендуется зачение от 5 до 15.
+     * Большие значения удобно использовать для проведения оптимизаций
+     * кода и длительной работы мира.
+     *
+     * TODO сделать изменяемым через интерфейс программы
+     */
+    public static final int PAINT_STEP = 1000;
+
 	public int width;
 	public int height;
 
@@ -132,7 +143,7 @@ public class World implements IWorld
 				if (rec)// вызываем обработчика "конец кадра"
 					recorder.stopFrame();
 				generation = generation + 1;
-				if (generation % 10 == 0)
+				if (generation % PAINT_STEP == 0)
 				{ // отрисовка на экран через каждые ... шагов
                     // замеряем время пересчета 10 итераций без учета отрисовки
                     PerfMeter.tick();
