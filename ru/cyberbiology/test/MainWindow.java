@@ -101,14 +101,14 @@ public class MainWindow extends JFrame implements IWindow
     	window	= this;
 		properties	= new ProjectProperties("properties.xml");
 
-
         setTitle("CyberBiologyTest 1.0.0");
-        setSize(new Dimension(640, 480));
-        Dimension sSize = Toolkit.getDefaultToolkit().getScreenSize(), fSize = getSize();
-        if (fSize.height > sSize.height) { fSize.height = sSize.height; }
-        if (fSize.width  > sSize.width)  { fSize.width = sSize.width; }
-        //setLocation((sSize.width - fSize.width)/2, (sSize.height - fSize.height)/2);
-        setSize(new Dimension(sSize.width, sSize.height));
+        setPreferredSize(new Dimension(1024, 768));
+//        setSize(new Dimension(1024, 768));
+//        Dimension sSize = Toolkit.getDefaultToolkit().getScreenSize(), fSize = getSize();
+//        if (fSize.height > sSize.height) { fSize.height = sSize.height; }
+//        if (fSize.width  > sSize.width)  { fSize.width = sSize.width; }
+//        //setLocation((sSize.width - fSize.width)/2, (sSize.height - fSize.height)/2);
+//        setSize(new Dimension(sSize.width, sSize.height));
 
 
         setDefaultCloseOperation (WindowConstants.EXIT_ON_CLOSE);
@@ -399,7 +399,7 @@ public class MainWindow extends JFrame implements IWindow
         view = new ViewBasic();
         this.pack();
         this.setVisible(true);
-        setExtendedState(MAXIMIZED_BOTH);
+        setExtendedState(NORMAL);
 
         String tmp = this.getFileDirectory();
         if(tmp==null||tmp.length()==0)
