@@ -394,6 +394,21 @@ public class MainWindow extends JFrame implements IWindow
             item.addActionListener(new ViewMenuActionListener(this, views[i]));
         }
 
+        JMenu toolsMenu = new JMenu("Инструменты");
+        menuBar.add(toolsMenu);
+
+        JMenuItem saveWorldItem = new JMenuItem("Сохранить мир");
+        toolsMenu.add(saveWorldItem);
+        saveWorldItem.addActionListener((ActionEvent e) -> {
+            world.save();
+        });
+
+        JMenuItem loadWorldItem = new JMenuItem("Загрузить мир");
+        toolsMenu.add(loadWorldItem);
+        loadWorldItem.addActionListener((ActionEvent e) -> {
+            world.load();
+        });
+
         this.setJMenuBar(menuBar);
 
         view = new ViewBasic();

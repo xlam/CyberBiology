@@ -1,8 +1,15 @@
 package ru.cyberbiology.test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import ru.cyberbiology.test.gene.GeneMutate;
 import ru.cyberbiology.test.prototype.IWindow;
@@ -103,6 +110,43 @@ public class World implements IWorld
                     }
                 }
             }
+        }
+        start();
+    }
+
+    void save() {
+        stop();
+        System.out.println("Saving...");
+        try {
+            FileOutputStream fos = new FileOutputStream("world.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(matrix);
+            System.out.println("Saved matrix:" + matrix.toString());
+            oos.writeInt(width);
+            oos.writeInt(height);
+            oos.writeInt(population);
+            System.out.println("Saved population:" + population);
+        } catch (IOException e) {
+            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, e);
+        }
+        start();
+    }
+
+    void load() {
+        stop();
+        System.out.println("Loading...");
+        try {
+            FileInputStream fis = new FileInputStream("world.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            matrix = (Bot[][]) ois.readObject();
+            System.out.println(matrix.toString());
+            width = ois.readInt();
+            height = ois.readInt();
+            population = ois.readInt();
+            System.out.println("Loaded population: " + population);
+        } catch (IOException e) {
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
         }
         start();
     }
