@@ -40,7 +40,7 @@ public class World implements IWorld
      *
      * TODO сделать изменяемым через интерфейс программы
      */
-    public static final int PAINT_STEP = 1000;
+    public static final int PAINT_STEP = 10;
 
 	public int width;
 	public int height;
@@ -114,6 +114,38 @@ public class World implements IWorld
         start();
     }
 
+    /**
+     * Многопоточный класс цикла пересчета матрицы.
+     * Каждый поток отвечает за свой участок матрицы. Участок ограничивается координатами Y.
+     * @param from Номер ряда матрицы (по Y) с которого поток начинает пересчет
+     * @param to Номер ряда матрицы (по Y) до которого поток производит пересчет
+     */
+    class WorldWorker extends Thread {
+        int from;
+        int to;
+
+        public WorldWorker(int from, int to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        @Override
+        public void run() {
+            for (int y=from; y<to; y++) {
+                for (int x=0; x<width; x++) {
+                    if (matrix[x][y] != null) {
+                        matrix[x][y].step(); // выполняем шаг бота
+                        if (recorder.isRecording()) {
+                            // вызываем обработчика записи бота
+                            recorder.writeBot(matrix[x][y], x, y);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 	class Worker extends Thread
 	{
 		public void run()
@@ -129,24 +161,24 @@ public class World implements IWorld
 				if (rec)// вызываем обработчика "старт кадра"
 					recorder.startFrame();
 				// обновляем матрицу
-				for (int y = 0; y < height; y++)
-				{
-					for (int x = 0; x < width; x++)
-					{
-						if (matrix[x][y] != null)
-						{
-							// if (matrix[x][y].alive == 3)
-							{
-								matrix[x][y].step(); // выполняем шаг бота
-								if (rec)
-								{
-									// вызываем обработчика записи бота
-									recorder.writeBot(matrix[x][y], x, y);
-								}
-							}
-						}
-					}
-				}
+
+                // первая простая попытка реализовать многопоточную обработку матрицы.
+                // Пока что лучший результат дают два потока. На моей машине
+                // прибавка составляет 20-30 пересчетов мира в секунду (WIPS)
+                // при размере окна 1024x768, полностью заселенной матрице и PAINT_STEP = 1000
+                int part = height / 2;
+                    WorldWorker w1 = new WorldWorker(0, part);
+                    WorldWorker w2 = new WorldWorker(part, height);
+                    w1.start();
+                    w2.start();
+                try {
+                //w1.join();
+                // вроде бы достаточно подождать только второй поток, но это не точно
+                w2.join();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
 				if (rec)// вызываем обработчика "конец кадра"
 					recorder.stopFrame();
 				generation = generation + 1;
