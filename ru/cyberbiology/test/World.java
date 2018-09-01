@@ -40,7 +40,7 @@ public class World implements IWorld
      *
      * TODO сделать изменяемым через интерфейс программы
      */
-    public static final int PAINT_STEP = 10;
+    public static final int PAINT_STEP = 1000;
 
 	public int width;
 	public int height;
@@ -131,13 +131,15 @@ public class World implements IWorld
 
         @Override
         public void run() {
+            Bot bot;
             for (int y=from; y<to; y++) {
                 for (int x=0; x<width; x++) {
-                    if (matrix[x][y] != null) {
-                        matrix[x][y].step(); // выполняем шаг бота
+                    bot = matrix[x][y];
+                    if (bot != null) {
+                        bot.step(); // выполняем шаг бота
                         if (recorder.isRecording()) {
                             // вызываем обработчика записи бота
-                            recorder.writeBot(matrix[x][y], x, y);
+                            recorder.writeBot(bot, x, y);
                         }
                     }
                 }
@@ -148,7 +150,12 @@ public class World implements IWorld
 
 	class Worker extends Thread
 	{
-		public void run()
+        int part = height / 2;
+        WorldWorker w1;
+        WorldWorker w2;
+
+        @Override
+        public void run()
 		{
 			started = true;// Флаг работы потока, если установить в false поток
 							// заканчивает работу
@@ -166,11 +173,10 @@ public class World implements IWorld
                 // Пока что лучший результат дают два потока. На моей машине
                 // прибавка составляет 20-30 пересчетов мира в секунду (WIPS)
                 // при размере окна 1024x768, полностью заселенной матрице и PAINT_STEP = 1000
-                int part = height / 2;
-                    WorldWorker w1 = new WorldWorker(0, part);
-                    WorldWorker w2 = new WorldWorker(part, height);
-                    w1.start();
-                    w2.start();
+                w1 = new WorldWorker(0, part);
+                w2 = new WorldWorker(part, height);
+                w1.start();
+                w2.start();
                 try {
                 //w1.join();
                 // вроде бы достаточно подождать только второй поток, но это не точно
