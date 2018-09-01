@@ -1,5 +1,6 @@
 package ru.cyberbiology.test.gene;
 
+import ru.cyberbiology.test.Const;
 import ru.cyberbiology.test.prototype.IBot;
 import ru.cyberbiology.test.prototype.gene.ABotGeneController;
 
@@ -25,7 +26,7 @@ public class GeneChangeDirectionRelative extends ABotGeneController
 	public boolean onGene(IBot bot)
 	{
 		// вычисляем новое направление
-        int param = bot.getParam() % 8;          // берём следующи байт за командой и вычисляем остаток от деления на 8
+        int param = Const.DIRECTION[bot.getParam()];          // берём следующи байт за командой и вычисляем остаток от деления на 8
         int newdrct = bot.getDirection() + param;            // полученное число прибавляем к значению направления бота
         if (newdrct >= 8) {
             newdrct = newdrct - 8;
