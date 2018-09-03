@@ -296,21 +296,12 @@ public class Bot implements IBot
      * @return X -  координата
      */
     int xFromVektorR(Bot bot, int n) {
-        int xt = bot.x;
-        n = n + bot.direction;
-        if (n >= 8) {
-            n = n - 8;
+        int xt = x + Const.INCREMENT_X[direction + n];
+        if (xt >= world.width) {
+            xt = 0;
         }
-        if (n == 0 || n == 6 || n == 7) {
-            xt = xt - 1;
-            if (xt == -1) {
-                xt = world.width - 1;
-            }
-        } else if (n == 2 || n == 3 || n == 4) {
-            xt = xt + 1;
-            if (xt == world.width) {
-                xt = 0;
-            }
+        if (xt < 0) {
+            xt = world.width - 1;
         }
         return xt;
     }
@@ -327,19 +318,7 @@ public class Bot implements IBot
      * @return X -  координата
      */
     int xFromVektorA(Bot bot, int n) {
-        int xt = bot.x;
-        if (n == 0 || n == 6 || n == 7) {
-            xt = xt - 1;
-            if (xt == -1) {
-                xt = world.width - 1;
-            }
-        } else if (n == 2 || n == 3 || n == 4) {
-            xt = xt + 1;
-            if (xt == world.width) {
-                xt = 0;
-            }
-        }
-        return xt;
+        return xFromVektorR(bot, 0);
     }
 
     //жжжжжжжжжжжжхжжжжжхжжжжжжхжхжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжж
@@ -354,16 +333,7 @@ public class Bot implements IBot
      * @return Y координата по относительному направлению
      */
     int yFromVektorR(Bot bot, int n) {
-        int yt = bot.y;
-        n = n + bot.direction;
-        if (n >= 8) {
-            n = n - 8;
-        }
-        if (n == 0 || n == 1 || n == 2) {
-            yt = yt - 1;
-        } else if (n == 4 || n == 5 || n == 6) {
-            yt = yt + 1;
-        }
+        int yt = y + Const.INCREMENT_Y[direction + n];
         return yt;
     }
 
@@ -379,13 +349,7 @@ public class Bot implements IBot
      * @return Y координата по абсолютному направлению
      */
     int yFromVektorA(Bot bot, int n) {
-        int yt = bot.y;
-        if (n == 0 || n == 1 || n == 2) {
-            yt = yt - 1;
-        } else if (n == 4 || n == 5 || n == 6) {
-            yt = yt + 1;
-        }
-        return yt;
+        return yFromVektorR(bot, 0);
     }
 
     //жжжжжжжжжжжжжжжжжжжхжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжжж
