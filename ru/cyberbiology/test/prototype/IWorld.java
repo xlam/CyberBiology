@@ -14,11 +14,13 @@ public interface IWorld
 
 	public void setBot(Bot bot);
 
+    public void clearBot(int x, int y);
+
 	public void paint();
 
 	public ProjectProperties getProperties();
 
-	public Bot[][] getWorldArray();
+	public Bot[] getWorldArray();
 
 	public void restoreLinks();
 

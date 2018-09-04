@@ -45,7 +45,7 @@ public class World implements IWorld
 	public int width;
 	public int height;
 
-	public Bot[][] matrix; // Матрица мира
+	public Bot[] matrix; // Матрица мира
 	public int generation;
 	public int population;
 	public int organic;
@@ -76,14 +76,19 @@ public class World implements IWorld
 	{
 		this.width = width;
 		this.height = height;
-		this.matrix = new Bot[width][height];
+		this.matrix = new Bot[height * width];
 	}
 
 	@Override
 	public void setBot(Bot bot)
 	{
-		this.matrix[bot.x][bot.y] = bot;
+		matrix[width * bot.y + bot.x] = bot;
 	}
+
+    @Override
+    public void clearBot(int x, int y) {
+        matrix[width * y + x] = null;
+    }
 
 	public void paint()
 	{
@@ -103,7 +108,7 @@ public class World implements IWorld
         if (started()) stop();
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                Bot bot = matrix[x][y];
+                Bot bot = getBot(x, y);
                 if (bot != null) {
                     if (bot.alive == bot.LV_ALIVE) {
                         bot.adr = (byte)(Math.random() * Bot.MIND_SIZE);
@@ -134,7 +139,7 @@ public class World implements IWorld
             Bot bot;
             for (int y=from; y<to; y++) {
                 for (int x=0; x<width; x++) {
-                    bot = matrix[x][y];
+                    bot = getBot(x, y);
                     if (bot != null) {
                         bot.step(); // выполняем шаг бота
                         if (recorder.isRecording()) {
@@ -226,28 +231,29 @@ public class World implements IWorld
 			bot.mind[i] = 25;
 		}
 
-		matrix[bot.x][bot.y] = bot; // даём ссылку на бота в массиве world[]
+		setBot(bot); // даём ссылку на бота в массиве world[]
 
 		return;
 	}
 	public void restoreLinks()
 	{
+        Bot bot;
 		for (int y = 0; y < height; y++)
 		{
 			for (int x = 0; x < width; x++)
 			{
-				if (matrix[x][y] != null)
+                bot = getBot(x, y);
+				if (bot != null)
 				{
-					if (matrix[x][y].alive == 3)
+					if (bot.alive == bot.LV_ALIVE)
 					{
-						Bot bot = matrix[x][y];
 						if(bot.mprevX>-1 && bot.mprevY>-1)
 						{
-							bot.mprev	= matrix[bot.mprevX][bot.mprevY];
+							bot.mprev = getBot(bot.mprevX, bot.mprevY);
 						}
 						if(bot.mnextX>-1 && bot.mnextY>-1)
 						{
-							bot.mnext	= matrix[bot.mnextX][bot.mnextY];
+							bot.mnext = getBot(bot.mnextX, bot.mnextY);
 						}
 					}
 				}
@@ -265,7 +271,7 @@ public class World implements IWorld
         Bot bot;
         for (int y=0; y<height; y++) {
             for (int x=0; x<width; x++) {
-                bot = matrix[x][y];
+                bot = getBot(x, y);
                 if (bot == null || bot.alive == bot.LV_FREE) {
                     continue;
                 }
@@ -358,7 +364,7 @@ public class World implements IWorld
 
 	public Bot getBot(int botX, int botY)
 	{
-		return this.matrix[botX][botY];
+		return this.matrix[width * botY + botX];
 	}
 
 	@Override
@@ -388,9 +394,9 @@ public class World implements IWorld
 		this.recorder.makeSnapShot();
 	}
 	@Override
-	public Bot[][] getWorldArray()
+	public Bot[] getWorldArray()
 	{
-		return  this.matrix;
+		return this.matrix;
 	}
 	public void openFile(File file)
 	{
