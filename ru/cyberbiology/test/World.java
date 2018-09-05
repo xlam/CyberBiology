@@ -137,15 +137,13 @@ public class World implements IWorld
         @Override
         public void run() {
             Bot bot;
-            for (int y=from; y<to; y++) {
-                for (int x=0; x<width; x++) {
-                    bot = getBot(x, y);
-                    if (bot != null) {
-                        bot.step(); // выполняем шаг бота
-                        if (recorder.isRecording()) {
-                            // вызываем обработчика записи бота
-                            recorder.writeBot(bot, x, y);
-                        }
+            for (int i=from; i<to; i++) {
+                bot = matrix[i];
+                if (bot != null) {
+                    bot.step(); // выполняем шаг бота
+                    if (recorder.isRecording()) {
+                        // вызываем обработчика записи бота
+                        recorder.writeBot(bot, bot.x, bot.y);
                     }
                 }
             }
@@ -155,7 +153,7 @@ public class World implements IWorld
 
 	class Worker extends Thread
 	{
-        int part = height / 2;
+        int part = matrix.length / 2;
         WorldWorker w1;
         WorldWorker w2;
 
@@ -179,7 +177,7 @@ public class World implements IWorld
                 // прибавка составляет 20-30 пересчетов мира в секунду (WIPS)
                 // при размере окна 1024x768, полностью заселенной матрице и PAINT_STEP = 1000
                 w1 = new WorldWorker(0, part);
-                w2 = new WorldWorker(part, height);
+                w2 = new WorldWorker(part, matrix.length);
                 w1.start();
                 w2.start();
                 try {
