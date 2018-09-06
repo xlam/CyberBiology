@@ -101,14 +101,14 @@ public class MainWindow extends JFrame implements IWindow
     	window	= this;
 		properties	= new ProjectProperties("properties.xml");
 
-
         setTitle("CyberBiologyTest 1.0.0");
-        setSize(new Dimension(640, 480));
-        Dimension sSize = Toolkit.getDefaultToolkit().getScreenSize(), fSize = getSize();
-        if (fSize.height > sSize.height) { fSize.height = sSize.height; }
-        if (fSize.width  > sSize.width)  { fSize.width = sSize.width; }
-        //setLocation((sSize.width - fSize.width)/2, (sSize.height - fSize.height)/2);
-        setSize(new Dimension(sSize.width, sSize.height));
+        setPreferredSize(new Dimension(1024, 768));
+//        setSize(new Dimension(1024, 768));
+//        Dimension sSize = Toolkit.getDefaultToolkit().getScreenSize(), fSize = getSize();
+//        if (fSize.height > sSize.height) { fSize.height = sSize.height; }
+//        if (fSize.width  > sSize.width)  { fSize.width = sSize.width; }
+//        //setLocation((sSize.width - fSize.width)/2, (sSize.height - fSize.height)/2);
+//        setSize(new Dimension(sSize.width, sSize.height));
 
 
         setDefaultCloseOperation (WindowConstants.EXIT_ON_CLOSE);
@@ -225,7 +225,7 @@ public class MainWindow extends JFrame implements IWindow
 
         snapShotItem = new JMenuItem("Сделать снимок");
         fileMenu.add(snapShotItem);
-        snapShotItem.setEnabled(false);
+//        snapShotItem.setEnabled(false);
         snapShotItem.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -394,12 +394,37 @@ public class MainWindow extends JFrame implements IWindow
             item.addActionListener(new ViewMenuActionListener(this, views[i]));
         }
 
+        JMenu toolsMenu = new JMenu("Инструменты");
+        menuBar.add(toolsMenu);
+
+//        JMenuItem saveWorldItem = new JMenuItem("Сохранить мир");
+//        toolsMenu.add(saveWorldItem);
+//        saveWorldItem.addActionListener((ActionEvent e) -> {
+//        });
+
+        JMenuItem loadWorldItem = new JMenuItem("Загрузить мир");
+        toolsMenu.add(loadWorldItem);
+        loadWorldItem.addActionListener((ActionEvent e) -> {
+            // TODO фильтр "*.frame.cb.zip" не работает
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("*.frame.cb.zip","*.*");
+            JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(filter);
+            if (fc.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
+                if (world == null) {
+                    int width = paintPanel.getWidth()/BOTW;// Ширина доступной части экрана для рисования карты
+                    int height = paintPanel.getHeight()/BOTH;// Боты 4 пикселя?
+                    world = new World(window,width,height);
+                }
+                world.openFile(fc.getSelectedFile());
+            }
+        });
+
         this.setJMenuBar(menuBar);
 
         view = new ViewBasic();
         this.pack();
         this.setVisible(true);
-        setExtendedState(MAXIMIZED_BOTH);
+        setExtendedState(NORMAL);
 
         String tmp = this.getFileDirectory();
         if(tmp==null||tmp.length()==0)
@@ -533,8 +558,8 @@ public class MainWindow extends JFrame implements IWindow
         organicLabel.setText(" Organic: " + String.valueOf(world.organic));
         pestsLabel.setText(" Pests: " + String.valueOf(world.pests));
         pestGenesLabel.setText(" Pest genes: " + String.valueOf(world.pestGenes));
-        // переводим время, затраченное на 10 пересчетов в пересчеты в секунду
-        perfLabel.setText(" WIPS: " + String.format("%3.1f", 10 / (PerfMeter.getDiff() / 1000000000.0)));
+        // переводим время, затраченное на PAINT_STEP пересчетов в пересчеты в секунду
+        perfLabel.setText(" WIPS: " + String.format("%3.1f", World.PAINT_STEP / (PerfMeter.getDiff() / 1000000000.0)));
         recorderBufferLabel.setText(" Buffer: " + String.valueOf(world.recorder.getBufferSize()));
 
         Runtime runtime = Runtime.getRuntime();

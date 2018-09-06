@@ -37,7 +37,7 @@ public abstract class View implements IView {
 
         for (int y = 0; y < world.height; y++) {
             for (int x = 0; x < world.width; x++) {
-                Bot bot = world.matrix[x][y];
+                Bot bot = world.getBot(x, y);
                 Color color = getBotColor(bot);
                 g.setColor(color);
                 g.fillRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);

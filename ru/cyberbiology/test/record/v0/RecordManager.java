@@ -14,6 +14,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import ru.cyberbiology.test.Bot;
+import ru.cyberbiology.test.World;
 import ru.cyberbiology.test.prototype.IBot;
 import ru.cyberbiology.test.prototype.IWorld;
 import ru.cyberbiology.test.prototype.record.AbstractRecordManager;
@@ -145,7 +146,8 @@ public class RecordManager extends AbstractRecordManager
 	{
 		try
 		{
-			String dirName	= getWorld().getProperties().getFileDirectory();
+            World w = (World) getWorld();
+			String dirName	= w.getProperties().getFileDirectory();
 			new File(dirName).mkdirs();
 			
 			//Создаем временный файл с данными
@@ -158,22 +160,24 @@ public class RecordManager extends AbstractRecordManager
 			
 			// Версия 
 			out.writeInt(getVersion());
-			int width	= getWorld().getWidth();
+			int width	= w.getWidth();
 			// Ширина мира
 			out.writeInt(width);
-			int height	= getWorld().getHeight();
+			int height	= w.getHeight();
 			// Высота мира
 			out.writeInt(height);
 			
 			Frame frame = (Frame) this.newFrame();
-			Bot[][] w	= this.getWorld().getWorldArray();
-	        for (int y = 0; y < height; y++)
+			Bot[] m	= w.getWorldArray();
+	        Bot bot;
+            for (int y = 0; y < height; y++)
 	        {
 	            for (int x = 0; x < width; x++)
 	            {
-	            	if (w[x][y] != null)
+                    bot = w.getBot(x, y);
+                    if (bot != null)
 	            	{
-	            		frame.addBot(w[x][y], x, y);
+                        frame.addBot(bot, x, y);
 	            	}
 	            }
 	        }

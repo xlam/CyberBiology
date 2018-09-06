@@ -1,8 +1,15 @@
 package ru.cyberbiology.test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import ru.cyberbiology.test.gene.GeneMutate;
 import ru.cyberbiology.test.prototype.IWindow;
@@ -24,10 +31,21 @@ public class World implements IWorld
 	public static final int BOTW = 4;
 	public static final int BOTH = 4;
 
+    /**
+     * Шаг отрисовки.
+     * Состояние мира отрисовывается на каждом PAINT_STEP пересчете.
+     * Для комфортной визуализации рекомендуется зачение от 5 до 15.
+     * Большие значения удобно использовать для проведения оптимизаций
+     * кода и длительной работы мира.
+     *
+     * TODO сделать изменяемым через интерфейс программы
+     */
+    public static final int PAINT_STEP = 1000;
+
 	public int width;
 	public int height;
 
-	public Bot[][] matrix; // Матрица мира
+	public Bot[] matrix; // Матрица мира
 	public int generation;
 	public int population;
 	public int organic;
@@ -58,14 +76,19 @@ public class World implements IWorld
 	{
 		this.width = width;
 		this.height = height;
-		this.matrix = new Bot[width][height];
+		this.matrix = new Bot[height * width];
 	}
 
 	@Override
 	public void setBot(Bot bot)
 	{
-		this.matrix[bot.x][bot.y] = bot;
+		matrix[width * bot.y + bot.x] = bot;
 	}
+
+    @Override
+    public void clearBot(int x, int y) {
+        matrix[width * y + x] = null;
+    }
 
 	public void paint()
 	{
@@ -85,7 +108,7 @@ public class World implements IWorld
         if (started()) stop();
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                Bot bot = matrix[x][y];
+                Bot bot = getBot(x, y);
                 if (bot != null) {
                     if (bot.alive == bot.LV_ALIVE) {
                         bot.adr = (byte)(Math.random() * Bot.MIND_SIZE);
@@ -96,9 +119,46 @@ public class World implements IWorld
         start();
     }
 
+    /**
+     * Многопоточный класс цикла пересчета матрицы.
+     * Каждый поток отвечает за свой участок матрицы.
+     * @param from Индекс бота в матрице с которого поток начинает пересчет
+     * @param to Индекс бота в матрице до которого поток производит пересчет
+     */
+    class WorldWorker extends Thread {
+        int from;
+        int to;
+
+        public WorldWorker(int from, int to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        @Override
+        public void run() {
+            Bot bot;
+            for (int i=from; i<to; i++) {
+                bot = matrix[i];
+                if (bot != null) {
+                    bot.step(); // выполняем шаг бота
+                    if (recorder.isRecording()) {
+                        // вызываем обработчика записи бота
+                        recorder.writeBot(bot, bot.x, bot.y);
+                    }
+                }
+            }
+        }
+    }
+
+
 	class Worker extends Thread
 	{
-		public void run()
+        int part = matrix.length / 2;
+        WorldWorker w1;
+        WorldWorker w2;
+
+        @Override
+        public void run()
 		{
 			started = true;// Флаг работы потока, если установить в false поток
 							// заканчивает работу
@@ -111,28 +171,27 @@ public class World implements IWorld
 				if (rec)// вызываем обработчика "старт кадра"
 					recorder.startFrame();
 				// обновляем матрицу
-				for (int y = 0; y < height; y++)
-				{
-					for (int x = 0; x < width; x++)
-					{
-						if (matrix[x][y] != null)
-						{
-							// if (matrix[x][y].alive == 3)
-							{
-								matrix[x][y].step(); // выполняем шаг бота
-								if (rec)
-								{
-									// вызываем обработчика записи бота
-									recorder.writeBot(matrix[x][y], x, y);
-								}
-							}
-						}
-					}
-				}
+
+                // первая простая попытка реализовать многопоточную обработку матрицы.
+                // Пока что лучший результат дают два потока. На моей машине
+                // прибавка составляет 20-30 пересчетов мира в секунду (WIPS)
+                // при размере окна 1024x768, полностью заселенной матрице и PAINT_STEP = 1000
+                w1 = new WorldWorker(0, part);
+                w2 = new WorldWorker(part, matrix.length);
+                w1.start();
+                w2.start();
+                try {
+                //w1.join();
+                // вроде бы достаточно подождать только второй поток, но это не точно
+                w2.join();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
 				if (rec)// вызываем обработчика "конец кадра"
 					recorder.stopFrame();
 				generation = generation + 1;
-				if (generation % 10 == 0)
+				if (generation % PAINT_STEP == 0)
 				{ // отрисовка на экран через каждые ... шагов
                     // замеряем время пересчета 10 итераций без учета отрисовки
                     PerfMeter.tick();
@@ -170,34 +229,62 @@ public class World implements IWorld
 			bot.mind[i] = 25;
 		}
 
-		matrix[bot.x][bot.y] = bot; // даём ссылку на бота в массиве world[]
+		setBot(bot); // даём ссылку на бота в массиве world[]
 
 		return;
 	}
 	public void restoreLinks()
 	{
+        Bot bot;
 		for (int y = 0; y < height; y++)
 		{
 			for (int x = 0; x < width; x++)
 			{
-				if (matrix[x][y] != null)
+                bot = getBot(x, y);
+				if (bot != null)
 				{
-					if (matrix[x][y].alive == 3)
+					if (bot.alive == bot.LV_ALIVE)
 					{
-						Bot bot = matrix[x][y];
 						if(bot.mprevX>-1 && bot.mprevY>-1)
 						{
-							bot.mprev	= matrix[bot.mprevX][bot.mprevY];
+							bot.mprev = getBot(bot.mprevX, bot.mprevY);
 						}
 						if(bot.mnextX>-1 && bot.mnextY>-1)
 						{
-							bot.mnext	= matrix[bot.mnextX][bot.mnextY];
+							bot.mnext = getBot(bot.mnextX, bot.mnextY);
 						}
 					}
 				}
 			}
 		}
 	}
+
+    /**
+     * Восстанавливает статистику мира при загрузке.
+     * Не восстанавливает generation (на текущий момент generation
+     * не сохраняется в RecordManager)
+     */
+    @Override
+    public void restoreStats() {
+        Bot bot;
+        for (int y=0; y<height; y++) {
+            for (int x=0; x<width; x++) {
+                bot = getBot(x, y);
+                if (bot == null || bot.alive == bot.LV_FREE) {
+                    continue;
+                }
+                if (bot.alive == bot.LV_ORGANIC_HOLD || bot.alive == bot.LV_ORGANIC_SINK) {
+                    organic++;
+                }
+                population++;
+                // TODO pestGenes всегда равно pest*2 ?!
+                if (bot.pest > 0) {
+                    pestGenes += bot.pest;
+                    pests++;
+                }
+            }
+        }
+    }
 
     /**
      * Мутирует указанное количество живых ботов случайным образом.
@@ -275,7 +362,7 @@ public class World implements IWorld
 
 	public Bot getBot(int botX, int botY)
 	{
-		return this.matrix[botX][botY];
+		return this.matrix[width * botY + botX];
 	}
 
 	@Override
@@ -305,9 +392,9 @@ public class World implements IWorld
 		this.recorder.makeSnapShot();
 	}
 	@Override
-	public Bot[][] getWorldArray()
+	public Bot[] getWorldArray()
 	{
-		return  this.matrix;
+		return this.matrix;
 	}
 	public void openFile(File file)
 	{
