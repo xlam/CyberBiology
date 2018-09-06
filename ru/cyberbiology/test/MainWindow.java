@@ -33,6 +33,7 @@ import javax.swing.ToolTipManager;
 // Тест
 // Основной класс программы.
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import ru.cyberbiology.test.gene.GeneMutate;
 
@@ -405,8 +406,23 @@ public class MainWindow extends JFrame implements IWindow
         JMenuItem loadWorldItem = new JMenuItem("Загрузить мир");
         toolsMenu.add(loadWorldItem);
         loadWorldItem.addActionListener((ActionEvent e) -> {
-            // TODO фильтр "*.frame.cb.zip" не работает
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("*.frame.cb.zip","*.*");
+            class FrameExtensionFilter extends FileFilter {
+                private static final String SUFFIX = ".frame.cb.zip";
+                private final String description;
+                public FrameExtensionFilter(String description) {
+                    this.description = description;
+                };
+                @Override
+                public boolean accept(File f) {
+                    return f.getName().endsWith(SUFFIX);
+                }
+                @Override
+                public String getDescription() {
+                    return description;
+                }
+            }
+            FrameExtensionFilter filter = new FrameExtensionFilter(
+                    "Сохраненный мир (*.frame.cb.zip)");
             JFileChooser fc = new JFileChooser();
             fc.setFileFilter(filter);
             if (fc.showOpenDialog(window) == JFileChooser.APPROVE_OPTION) {
