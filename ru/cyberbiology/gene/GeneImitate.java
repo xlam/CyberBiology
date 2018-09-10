@@ -5,8 +5,8 @@ import ru.cyberbiology.prototype.IBot;
 import ru.cyberbiology.prototype.gene.ABotGeneController;
 
 /**
- * Имитирование, подражание в поведении.
- * Команда копирует случайный участок генома друго бота в свой геном.
+ * Имитирование, подражание в поведении. Команда копирует случайный участок
+ * генома друго бота в свой геном.
  *
  * @author Sergey Sokolov <xlamserg@gmail.com>
  */

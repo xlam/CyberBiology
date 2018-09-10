@@ -19,10 +19,10 @@ public abstract class View implements IView {
 
     public void init(World world, JPanel canvas) {
         this.world = world;
-    	//Создаем временный буфер для рисования
+        //Создаем временный буфер для рисования
         buf = canvas.createImage(canvas.getWidth(), canvas.getHeight());
-    	//подеменяем графику на временный буфер
-    	g = buf.getGraphics();
+        //подеменяем графику на временный буфер
+        g = buf.getGraphics();
     }
 
     @Override

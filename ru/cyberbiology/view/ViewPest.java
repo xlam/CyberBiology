@@ -1,20 +1,18 @@
 package ru.cyberbiology.view;
 
 import java.awt.Color;
-
 import ru.cyberbiology.Bot;
 import ru.cyberbiology.prototype.view.View;
 
-public class ViewPest extends View
-{
+public class ViewPest extends View {
 
-	public ViewPest() {}
+    public ViewPest() {
+    }
 
-	@Override
-	public String getName()
-	{
-		return "Паразиты";
-	}
+    @Override
+    public String getName() {
+        return "Паразиты";
+    }
 
     @Override
     public Color getBotColor(Bot bot) {
@@ -35,8 +33,9 @@ public class ViewPest extends View
             if (bot.pest > 0) {
                 colorRed = 255;
                 colorGreen = 255 - bot.pest * 4;
-                if (colorGreen < 0)
+                if (colorGreen < 0) {
                     colorGreen = 0;
+                }
                 colorBlue = 0;
             }
 

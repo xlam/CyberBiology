@@ -1,20 +1,18 @@
 package ru.cyberbiology.view;
 
 import java.awt.Color;
-
 import ru.cyberbiology.Bot;
 import ru.cyberbiology.prototype.view.View;
 
-public class ViewEnergy extends View
-{
+public class ViewEnergy extends View {
 
-	public ViewEnergy()	{}
+    public ViewEnergy() {
+    }
 
-	@Override
-	public String getName()
-	{
-		return "Энергия";
-	}
+    @Override
+    public String getName() {
+        return "Энергия";
+    }
 
     @Override
     public Color getBotColor(Bot bot) {
