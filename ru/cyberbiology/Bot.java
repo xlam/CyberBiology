@@ -699,7 +699,7 @@ public class Bot implements IBot {
             if (bot2.alive == LV_ALIVE) { // если там живой бот
                 bot.health = bot.health - 10; // то атакуюий бот теряет на атаку 10 энергии
                 if (bot.health > 0) {
-                    bot.modifyMind();
+                    bot2.modifyMind();
                 }
             }
         }
