@@ -166,6 +166,9 @@ public class Bot implements IBot {
                 botIncCommandAddress(this, command);
                 break;
             }
+            if (alive != LV_ALIVE || health <= 0) {
+                break;
+            }
         }
 
         /**
