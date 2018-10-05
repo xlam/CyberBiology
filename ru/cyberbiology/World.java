@@ -146,9 +146,12 @@ public class World implements IWorld {
 
     class Worker extends Thread {
 
-        int part = matrix.length / 2;
-        WorldWorker w1;
-        WorldWorker w2;
+        // количество потоков равно количеству ядер процессора
+        int threads = Runtime.getRuntime().availableProcessors();
+        // размер участка матрицы для пересчета одним потоком
+        int partSize = matrix.length / threads;
+        // массив потоков заданного размера
+        WorldWorker[] worldWorkers = new WorldWorker[threads];
 
         @Override
         public void run() {
@@ -162,22 +165,27 @@ public class World implements IWorld {
                 if (rec) {  // вызываем обработчика "старт кадра"
                     recorder.startFrame();
                 }
-                // обновляем матрицу
 
-                // первая простая попытка реализовать многопоточную обработку матрицы.
-                // Пока что лучший результат дают два потока. На моей машине
-                // прибавка составляет 20-30 пересчетов мира в секунду (WIPS)
-                // при размере окна 1024x768, полностью заселенной матрице и PAINT_STEP = 1000
-                w1 = new WorldWorker(0, part);
-                w2 = new WorldWorker(part, matrix.length);
-                w1.start();
-                w2.start();
-                try {
-                    //w1.join();
-                    // вроде бы достаточно подождать только второй поток, но это не точно
-                    w2.join();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
+                /**
+                 * Пересчет мира.
+                 * Матрица делится на участки по количеству потоков и каждый поток
+                 * пересчитывает только свой участок.
+                 */
+                int from = 0;
+                int to = partSize;
+                for (int i = 0; i < threads; i++) {
+                    worldWorkers[i] = new WorldWorker(from, to);
+                    worldWorkers[i].start();
+                    from = to;
+                    to += partSize;
+                }
+                // ожидание завершения работы всех потоков
+                for (int i = 0; i < threads; i++) {
+                    try {
+                        worldWorkers[i].join();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
 
                 if (rec) {  // вызываем обработчика "конец кадра"
