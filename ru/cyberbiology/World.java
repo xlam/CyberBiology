@@ -206,6 +206,15 @@ public class World implements IWorld {
                             .filter(b -> b != null && b.isOrganic())
                             .parallel()
                             .count();
+                    pests = (int) Arrays.stream(matrix)
+                            .filter(b -> b != null && b.pest > 0)
+                            .parallel()
+                            .count();
+                    pestGenes = (int) Arrays.stream(matrix)
+                            .filter(b -> b != null && b.pest > 0)
+                            .mapToInt(b -> b.pest)
+                            .parallel()
+                            .sum();
                     // замеряем время пересчета 10 итераций без учета отрисовки
                     PerfMeter.tick();
                     paint(); // отображаем текущее состояние симуляции на экран

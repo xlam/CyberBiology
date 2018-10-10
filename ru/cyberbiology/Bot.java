@@ -432,12 +432,13 @@ public class Bot implements IBot {
         }
         bot.mprev = null;
         bot.mnext = null;
-        this.world.organic++;
-        this.world.population--;
-        if (bot.pest > 0) {
-            this.world.pests--;
-            this.world.pestGenes -= bot.pest;
-        }
+// todo: https://github.com/xlam/CyberBiology/issues/2
+//        this.world.organic++;
+//        this.world.population--;
+//        if (bot.pest > 0) {
+//            this.world.pests--;
+//            this.world.pestGenes -= bot.pest;
+//        }
     }
 
     /**
@@ -487,16 +488,17 @@ public class Bot implements IBot {
         }
         bot.mprev = null;
         bot.mnext = null;
-        if (bot.alive == bot.LV_ORGANIC_HOLD || bot.alive == bot.LV_ORGANIC_SINK) {
-            this.world.organic--;
-        }
-        if (bot.alive == bot.LV_ALIVE) {
-            this.world.population--;
-            if (bot.pest > 0) {
-                this.world.pests--;
-                this.world.pestGenes -= bot.pest;
-            }
-        }
+// todo: https://github.com/xlam/CyberBiology/issues/2
+//        if (bot.alive == bot.LV_ORGANIC_HOLD || bot.alive == bot.LV_ORGANIC_SINK) {
+//            this.world.organic--;
+//        }
+//        if (bot.alive == bot.LV_ALIVE) {
+//            this.world.population--;
+//            if (bot.pest > 0) {
+//                this.world.pests--;
+//                this.world.pestGenes -= bot.pest;
+//            }
+//        }
         world.clearBot(bot.x, bot.y); // удаление бота с карты
     }
 
@@ -861,7 +863,8 @@ public class Bot implements IBot {
         newbot.direction = (int) (Math.random() * 8);   // направление, куда повернут новорожденный, генерируется случайно
 
         world.setBot(newbot);    // отмечаем нового бота в массиве matrix
-        this.world.population++;
+// todo: https://github.com/xlam/CyberBiology/issues/2
+//        this.world.population++;
     }
 
     /**
@@ -914,7 +917,8 @@ public class Bot implements IBot {
         newbot.direction = (int) (Math.random() * 8);   // направление, куда повернут новорожденный, генерируется случайно
 
         world.setBot(newbot);    // отмечаем нового бота в массиве matrix
-        this.world.population++;
+// todo: https://github.com/xlam/CyberBiology/issues/2
+//        this.world.population++;
 
         if (nbot == null) { // если у бота-предка ссылка на следующего бота в многоклеточной цепочке пуста
             bot.mnext = newbot;     // то вставляем туда новорожденного бота
