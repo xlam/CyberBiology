@@ -2,6 +2,7 @@ package ru.cyberbiology;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -193,6 +194,18 @@ public class World implements IWorld {
                 }
                 generation = generation + 1;
                 if (generation % PAINT_STEP == 0) { // отрисовка на экран через каждые ... шагов
+                    /**
+                     * Подсчет фактических значений населения и органики.
+                     * (Может будет быстрее просто пройтись по массиву matrix?)
+                     */
+                    population = (int) Arrays.stream(matrix)
+                            .filter(b -> b != null && b.isAlive())
+                            .parallel()
+                            .count();
+                    organic = (int) Arrays.stream(matrix)
+                            .filter(b -> b != null && b.isOrganic())
+                            .parallel()
+                            .count();
                     // замеряем время пересчета 10 итераций без учета отрисовки
                     PerfMeter.tick();
                     paint(); // отображаем текущее состояние симуляции на экран

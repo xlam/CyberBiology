@@ -1309,4 +1309,14 @@ public class Bot implements IBot {
 
         return 2;
     }
+
+    @Override
+    public boolean isAlive() {
+        return alive == LV_ALIVE;
+    }
+
+    @Override
+    public boolean isOrganic() {
+        return (alive == LV_ORGANIC_SINK) || (alive == LV_ORGANIC_HOLD);
+    }
 }
