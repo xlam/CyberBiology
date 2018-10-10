@@ -32,9 +32,6 @@ public abstract class View implements IView {
 
         g.drawRect(0, 0, world.width * World.BOTW + 1, world.height * World.BOTH + 1);
 
-        world.pests = 0;
-        world.pestGenes = 0;
-
         for (int y = 0; y < world.height; y++) {
             for (int x = 0; x < world.width; x++) {
                 Bot bot = world.getBot(x, y);
@@ -44,10 +41,6 @@ public abstract class View implements IView {
                 if (bot != null && bot.alive == bot.LV_ALIVE) {
                     g.setColor(Color.BLACK);
                     g.drawRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);
-                    if (bot.pest > 0) {
-                        world.pestGenes += bot.pest;
-                        world.pests++;
-                    }
                 }
             }
         }

@@ -44,6 +44,10 @@ public interface IBot {
      */
     public int isMulti();
 
+    public boolean isAlive();
+
+    public boolean isOrganic();
+
     public int move(int drct, int i);
 
     public void indirectIncCmdAddress(int move);
