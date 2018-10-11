@@ -7,9 +7,18 @@ import java.util.Properties;
 
 public class ProjectProperties extends Properties {
 
-    String fileName;
+    private static ProjectProperties instance;
 
-    public ProjectProperties(String fileName) {
+    public static ProjectProperties getInstance() {
+        if (!(instance instanceof ProjectProperties)) {
+            instance = new ProjectProperties("properties.xml");
+        }
+        return instance;
+    }
+
+    String fileName = "properties.xml";
+
+    private ProjectProperties(String fileName) {
         this.fileName = fileName;
         this.load();
     }
@@ -39,7 +48,6 @@ public class ProjectProperties extends Properties {
         }
     }
 
-    ;
 	public void save() {
         try {
             this.storeToXML(new FileOutputStream(this.fileName), null);
@@ -47,5 +55,12 @@ public class ProjectProperties extends Properties {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Object setProperty(String key, String value) {
+        Object oldValue = super.setProperty(key, value);
+        save();
+        return oldValue;
     }
 }

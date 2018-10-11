@@ -96,7 +96,7 @@ public class MainWindow extends JFrame implements IWindow {
 
     public MainWindow() {
         window = this;
-        properties = new ProjectProperties("properties.xml");
+        properties = ProjectProperties.getInstance();
 
         setTitle("CyberBiologyTest 1.0.0");
         setPreferredSize(new Dimension(1024, 768));
