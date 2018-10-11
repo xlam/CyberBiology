@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -23,6 +24,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.ToolTipManager;
 import javax.swing.WindowConstants;
@@ -349,6 +351,25 @@ public class MainWindow extends JFrame implements IWindow {
             }
         });
 
+        /**
+         * Меню выбора шага отрисовки.
+         */
+        ActionListener paintStepActionListener = e -> {
+            properties.setProperty("paintstep", e.getActionCommand());
+        };
+        JMenu paintStepMenu = new JMenu("Шаг отрисовки");
+        ButtonGroup paintStepGroup = new ButtonGroup();
+        // todo: заменить массив на property
+        int[] paintStepValues = {10, 500, 1000};
+        int currentStep = Integer.parseInt(properties.getProperty("paintstep", "1000"));
+        for (int step : paintStepValues) {
+            JRadioButtonMenuItem i = new JRadioButtonMenuItem(String.valueOf(step), currentStep == step);
+            i.addActionListener(paintStepActionListener);
+            paintStepGroup.add(i);
+            paintStepMenu.add(i);
+        }
+        menuBar.add(paintStepMenu);
+
         this.setJMenuBar(menuBar);
 
         view = new ViewBasic();
@@ -489,7 +510,8 @@ public class MainWindow extends JFrame implements IWindow {
         pestsLabel.setText(" Pests: " + String.valueOf(world.pests));
         pestGenesLabel.setText(" Pest genes: " + String.valueOf(world.pestGenes));
         // переводим время, затраченное на PAINT_STEP пересчетов в пересчеты в секунду
-        perfLabel.setText(" WIPS: " + String.format("%3.1f", World.PAINT_STEP / (PerfMeter.getDiff() / 1000000000.0)));
+        perfLabel.setText(" WIPS: "
+                + String.format("%3.1f", Integer.parseInt(properties.getProperty("paintstep")) / (PerfMeter.getDiff() / 1000000000.0)));
         recorderBufferLabel.setText(" Buffer: " + String.valueOf(world.recorder.getBufferSize()));
 
         Runtime runtime = Runtime.getRuntime();

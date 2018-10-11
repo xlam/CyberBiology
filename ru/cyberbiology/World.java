@@ -49,6 +49,8 @@ public class World implements IWorld {
     boolean started;
     Worker thread;
 
+    private ProjectProperties properties;
+
     protected World(IWindow win) {
         world = this;
         window = win;
@@ -58,6 +60,7 @@ public class World implements IWorld {
         pests = 0;
         pestGenes = 0;
         recorder = new RecordManager(this);
+        properties = ProjectProperties.getInstance();
     }
 
     public World(IWindow win, int width, int height) {
@@ -193,7 +196,8 @@ public class World implements IWorld {
                     recorder.stopFrame();
                 }
                 generation = generation + 1;
-                if (generation % PAINT_STEP == 0) { // отрисовка на экран через каждые ... шагов
+                 // отрисовка на экран через каждые "paintstep" шагов
+                if (generation % Integer.parseInt(properties.getProperty("paintstep", "" + PAINT_STEP)) == 0) {
                     /**
                      * Подсчет фактических значений населения и органики.
                      * (Может будет быстрее просто пройтись по массиву matrix?)
