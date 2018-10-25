@@ -247,11 +247,17 @@ public class MainWindow extends JFrame implements IWindow {
 
     private void setupMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        JMenuItem snapShotItem = new JMenuItem("Сделать снимок");
+        JMenu fileMenu = new JMenu("Файл");
+        JMenu viewMenu = new JMenu("Вид");
+        JMenu toolsMenu = new JMenu("События");
+        JMenu paintStepMenu = new JMenu("Шаг отрисовки");
+        menuBar.add(fileMenu);
+        menuBar.add(viewMenu);
+        menuBar.add(toolsMenu);
+        menuBar.add(paintStepMenu);
 
+        JMenuItem snapShotItem = new JMenuItem("Сделать снимок");
         JMenuItem runItem = new JMenuItem("Запустить");
-        fileMenu.add(runItem);
         runItem.addActionListener((ActionEvent e) -> {
             if (world == null) {
                 // Доступная часть экрана для рисования карты
@@ -272,7 +278,6 @@ public class MainWindow extends JFrame implements IWindow {
         });
 
         JMenuItem mutateItem = new JMenuItem("Cлучайная мутация");
-        fileMenu.add(mutateItem);
         mutateItem.addActionListener((ActionEvent e) -> {
             // мутацию проводим при отключенном мире
             world.stop();
@@ -281,14 +286,11 @@ public class MainWindow extends JFrame implements IWindow {
         });
 
         JMenuItem adressJumpItem = new JMenuItem("Сбой программы генома");
-        fileMenu.add(adressJumpItem);
         adressJumpItem.addActionListener((ActionEvent e) -> {
             // TODO переименовать
             world.jumpBotsCmdAdress();
         });
 
-        fileMenu.add(snapShotItem);
-//        snapShotItem.setEnabled(false);
         snapShotItem.addActionListener((ActionEvent e) -> {
             if (world == null) {
                 int width1 = paintPanel.getWidth() / BOTW; // Ширина доступной части экрана для рисования карты
@@ -303,8 +305,6 @@ public class MainWindow extends JFrame implements IWindow {
         });
 
         JMenuItem recordItem = new JMenuItem("Начать запись");
-        fileMenu.add(recordItem);
-
         recordItem.addActionListener((ActionEvent e) -> {
             if (world == null) {
                 int width1 = paintPanel.getWidth() / BOTW; // Ширина доступной части экрана для рисования карты
@@ -329,24 +329,16 @@ public class MainWindow extends JFrame implements IWindow {
         });
 
         JMenuItem openItem = new JMenuItem("Открыть плеер");
-        fileMenu.add(openItem);
         openItem.addActionListener((ActionEvent e) -> {
             PlayerWindow fw = new PlayerWindow();
         });
 
-        fileMenu.addSeparator();
-
         JMenuItem optionItem = new JMenuItem("Настройки");
-        fileMenu.add(optionItem);
         optionItem.addActionListener((ActionEvent e) -> {
             showPropertyDialog();
         });
 
-        fileMenu.addSeparator();
-
-        JMenuItem exitItem = new JMenuItem("Выйти");
-        fileMenu.add(exitItem);
-
+        JMenuItem exitItem = new JMenuItem("Выход");
         exitItem.addActionListener((ActionEvent e) -> {
             // Попытка корректно заверишть запись, если она велась
             // TODO: Не тестировалось!
@@ -362,23 +354,7 @@ public class MainWindow extends JFrame implements IWindow {
             System.exit(0);
         });
 
-        menuBar.add(fileMenu);
-
-        JMenu ViewMenu = new JMenu("Вид");
-        menuBar.add(ViewMenu);
-
-        JMenuItem item;
-        for (IView v : views) {
-            item = new JMenuItem(v.getName());
-            ViewMenu.add(item);
-            item.addActionListener((ActionEvent e) -> setView(v));
-        }
-
-        JMenu toolsMenu = new JMenu("Инструменты");
-        menuBar.add(toolsMenu);
-
-        JMenuItem loadWorldItem = new JMenuItem("Загрузить мир");
-        toolsMenu.add(loadWorldItem);
+        JMenuItem loadWorldItem = new JMenuItem("Загрузить снимок мира");
         loadWorldItem.addActionListener((ActionEvent e) -> {
             JFileChooser fc = new JFileChooser();
             fc.setFileFilter(new FileFilter() {
@@ -402,10 +378,28 @@ public class MainWindow extends JFrame implements IWindow {
             }
         });
 
+        fileMenu.add(runItem);
+        fileMenu.add(snapShotItem);
+        fileMenu.add(loadWorldItem);
+        fileMenu.add(recordItem);
+        fileMenu.add(openItem);
+        fileMenu.addSeparator();
+        fileMenu.add(optionItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
+        toolsMenu.add(mutateItem);
+        toolsMenu.add(adressJumpItem);
+
+        JMenuItem item;
+        for (IView v : views) {
+            item = new JMenuItem(v.getName());
+            viewMenu.add(item);
+            item.addActionListener((ActionEvent e) -> setView(v));
+        }
+
         /**
          * Меню выбора шага отрисовки.
          */
-        JMenu paintStepMenu = new JMenu("Шаг отрисовки");
         ButtonGroup paintStepGroup = new ButtonGroup();
         // todo: заменить массив на property
         int[] paintStepValues = {10, 500, 1000};
@@ -418,7 +412,6 @@ public class MainWindow extends JFrame implements IWindow {
             paintStepGroup.add(i);
             paintStepMenu.add(i);
         }
-        menuBar.add(paintStepMenu);
 
         setJMenuBar(menuBar);
     }
