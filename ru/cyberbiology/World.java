@@ -355,8 +355,16 @@ public class World implements IWorld {
     }
 
     public void stop() {
+        if (thread == null) {
+            return;
+        }
         started = false;
-        this.thread = null;
+        try {
+            thread.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        thread = null;
     }
 
     public boolean isRecording() {
