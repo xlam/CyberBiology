@@ -121,7 +121,7 @@ public class PlayerWindow extends JFrame implements IWindow {
         JMenu fileMenu = new JMenu("File");
         JMenu openMenu = new JMenu("Открыть");
         fileMenu.add(openMenu);
-        File dir = new File(MainWindow.window.getFileDirectory());
+        File dir = new File(getProperties().getFileDirectory());
         File[] files = dir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -288,6 +288,6 @@ public class PlayerWindow extends JFrame implements IWindow {
 
     @Override
     public ProjectProperties getProperties() {
-        return MainWindow.window.getProperties();
+        return ProjectProperties.getInstance();
     }
 }
