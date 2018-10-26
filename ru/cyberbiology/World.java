@@ -115,48 +115,7 @@ public class World implements IWorld {
         start();
     }
 
-    /**
-     * Многопоточный класс цикла пересчета матрицы.
-     * Каждый поток отвечает за свой участок матрицы.
-     * 
-     * @param from Индекс бота в матрице с которого поток начинает пересчет
-     * @param to Индекс бота в матрице до которого поток производит пересчет
-     */
-    class WorldWorker extends Thread {
-
-        int from;
-        int to;
-
-        public WorldWorker(int from, int to) {
-            this.from = from;
-            this.to = to;
-        }
-
-        @Override
-        public void run() {
-            Bot bot;
-            for (int i=from; i<to; i++) {
-                bot = matrix[i];
-                if (bot != null) {
-                    bot.step(); // выполняем шаг бота
-                    if (recorder.isRecording()) {
-                        // вызываем обработчика записи бота
-                        recorder.writeBot(bot, bot.x, bot.y);
-                    }
-                }
-            }
-        }
-    }
-
     class Worker extends Thread {
-
-        // количество потоков равно количеству ядер процессора
-        int threads = Runtime.getRuntime().availableProcessors();
-        // размер участка матрицы для пересчета одним потоком
-        int partSize = matrix.length / threads;
-        // массив потоков заданного размера
-        WorldWorker[] worldWorkers = new WorldWorker[threads];
-
         @Override
         public void run() {
             started = true;// Флаг работы потока, если установить в false поток
@@ -172,25 +131,21 @@ public class World implements IWorld {
 
                 /**
                  * Пересчет мира.
-                 * Матрица делится на участки по количеству потоков и каждый поток
-                 * пересчитывает только свой участок.
+                 * Параллельный стрим работает быстрее предыдущего многопоточного
+                 * варианта? (см. коммит 0bc13cc)
+                 * Быстрее, но не намного, процентов на 5. Зато реализация намного проще.
+                 * Будем надеяться на отсутствие побочных эффектов.
                  */
-                int from = 0;
-                int to = partSize;
-                for (int i = 0; i < threads; i++) {
-                    worldWorkers[i] = new WorldWorker(from, to);
-                    worldWorkers[i].start();
-                    from = to;
-                    to += partSize;
-                }
-                // ожидание завершения работы всех потоков
-                for (int i = 0; i < threads; i++) {
-                    try {
-                        worldWorkers[i].join();
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+                Arrays.stream(matrix)
+                        .filter(b -> b != null)
+                        .parallel()
+                        .forEach(b -> {
+                            b.step();
+                            if (recorder.isRecording()) {
+                                // вызываем обработчика записи бота
+                                recorder.writeBot(b, b.x, b.y);
+                            }
+                        });
 
                 if (rec) {  // вызываем обработчика "конец кадра"
                     recorder.stopFrame();
