@@ -11,6 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
@@ -87,7 +92,7 @@ public class MainWindow extends JFrame implements IWindow {
 
     public MainWindow() {
         properties = ProjectProperties.getInstance();
-        setTitle("CyberBiologyTest 1.0.0");
+        setTitle("CyberBiology " + getVersionFromProperties());
         setPreferredSize(new Dimension(1024, 768));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         // у этого лейаута приятная особенность - центральная часть растягивается автоматически
@@ -462,6 +467,22 @@ public class MainWindow extends JFrame implements IWindow {
         statusPanel.add(frameSkipSizeLabel);
 
         add(statusPanel, BorderLayout.SOUTH);
+    }
+
+    private String getVersionFromProperties() {
+        String version = "";
+        String propertiesName = "/app.properties";
+        InputStream propertiesStream = getClass().getResourceAsStream(propertiesName);
+        if (null != propertiesStream) {
+            Properties p = new Properties();
+            try {
+                p.load(propertiesStream);
+            } catch (IOException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            version = p.getProperty("versionName");
+        }
+        return version;
     }
 
     public static void main(String[] args) {
