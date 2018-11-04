@@ -3,6 +3,7 @@ package ru.cyberbiology.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 public class ProjectProperties extends Properties {
@@ -42,17 +43,15 @@ public class ProjectProperties extends Properties {
     public void load() {
         try {
             this.loadFromXML(new FileInputStream(this.fileName));
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
 	public void save() {
         try {
             this.storeToXML(new FileOutputStream(this.fileName), null);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
