@@ -366,7 +366,7 @@ public class MainWindow extends JFrame implements IWindow {
                 private static final String SUFFIX = ".frame.cb.zip";
                 @Override
                 public boolean accept(File f) {
-                    return f.getName().endsWith(SUFFIX);
+                    return f.isDirectory() || f.getName().endsWith(SUFFIX);
                 }
                 @Override
                 public String getDescription() {
