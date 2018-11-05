@@ -40,6 +40,7 @@ import ru.cyberbiology.util.PerfMeter;
 import ru.cyberbiology.util.ProjectProperties;
 import ru.cyberbiology.view.ViewBasic;
 import ru.cyberbiology.view.ViewEnergy;
+import ru.cyberbiology.view.ViewMineral;
 import ru.cyberbiology.view.ViewMultiCell;
 import ru.cyberbiology.view.ViewPest;
 
@@ -66,6 +67,7 @@ public class MainWindow extends JFrame implements IWindow {
     private final IView[] views = new IView[]{
         new ViewBasic(),
         new ViewEnergy(),
+        new ViewMineral(),
         new ViewMultiCell(),
         new ViewPest(),
     };
