@@ -6,6 +6,8 @@ package ru.cyberbiology;
  */
 public class Const {
 
+    public static final int DEFAULT_BOT_SIZE = 4;
+
     public static final int[] DIRECTION = {
         0, 1, 2, 3, 4, 5, 6, 7,
         0, 1, 2, 3, 4, 5, 6, 7,

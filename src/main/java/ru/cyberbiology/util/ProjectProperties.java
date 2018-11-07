@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import ru.cyberbiology.Const;
 
 public class ProjectProperties extends Properties {
 
@@ -39,6 +40,10 @@ public class ProjectProperties extends Properties {
 
     public String getFileDirectory() {
         return this.getProperty("FileDirectory");
+    }
+
+    public int botSize() {
+        return Integer.parseInt(getProperty("botSize", "" + Const.DEFAULT_BOT_SIZE));
     }
 
     public void load() {
