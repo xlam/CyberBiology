@@ -23,9 +23,6 @@ public class World implements IWorld {
     PlaybackManager playback;
     IRecordManager recorder;
 
-    public static final int BOTW = 4;
-    public static final int BOTH = 4;
-
     /**
      * Шаг отрисовки. Состояние мира отрисовывается на каждом PAINT_STEP
      * пересчете. Для комфортной визуализации рекомендуется зачение от 5 до 15.

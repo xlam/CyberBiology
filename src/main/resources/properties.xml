@@ -3,4 +3,5 @@
 <properties>
 <entry key="FileDirectory"/>
 <entry key="paintstep">10</entry>
+<entry key="botSize">4</entry>
 </properties>

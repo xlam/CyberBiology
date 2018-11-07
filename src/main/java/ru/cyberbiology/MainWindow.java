@@ -46,9 +46,6 @@ import ru.cyberbiology.view.ViewPest;
 
 public class MainWindow extends JFrame implements IWindow {
 
-    public static final int BOTW = 4;
-    public static final int BOTH = 4;
-
     public static World world;
 
     /**
@@ -180,15 +177,15 @@ public class MainWindow extends JFrame implements IWindow {
                     Point p = e.getPoint();
                     int x = (int) p.getX();
                     int y = (int) p.getY();
-                    int botX = (x - 2) / BOTW;
-                    int botY = (y - 2) / BOTH;
+                    int botX = (x - 2) / properties.botSize();
+                    int botY = (y - 2) / properties.botSize();
                     Bot bot = world.getBot(botX, botY);
                     if (bot == null) {
                         return;
                     }
                     Graphics g = buffer.getGraphics();
                     g.setColor(Color.MAGENTA);
-                    g.fillRect(botX * BOTW, botY * BOTH, BOTW, BOTH);
+                    g.fillRect(botX * properties.botSize(), botY * properties.botSize(), properties.botSize(), properties.botSize());
                     paintPanel.repaint();
 
                     StringBuilder buf = new StringBuilder();
@@ -258,8 +255,10 @@ public class MainWindow extends JFrame implements IWindow {
         JMenu viewMenu = new JMenu("Вид");
         JMenu worldEventsMenu = new JMenu("События");
         JMenu paintStepMenu = new JMenu("Шаг отрисовки");
+        JMenu botSizeMenu = new JMenu("Размер бота");
         JMenu settingsMenu = new JMenu("Настройки");
         settingsMenu.add(paintStepMenu);
+        settingsMenu.add(botSizeMenu);
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
         menuBar.add(worldEventsMenu);
@@ -270,8 +269,8 @@ public class MainWindow extends JFrame implements IWindow {
         runItem.addActionListener((ActionEvent e) -> {
             if (world == null) {
                 // Доступная часть экрана для рисования карты
-                int width1 = paintPanel.getWidth() / BOTW;
-                int height1 = paintPanel.getHeight() / BOTH;
+                int width1 = paintPanel.getWidth() / properties.botSize();
+                int height1 = paintPanel.getHeight() / properties.botSize();
                 world = new World(MainWindow.this, width1, height1);
                 world.generateAdam();
                 paint();
@@ -279,6 +278,7 @@ public class MainWindow extends JFrame implements IWindow {
             if (!world.started()) {
                 world.start();//Запускаем его
                 runItem.setText("Пауза");
+                botSizeMenu.setVisible(false);
             } else {
                 world.stop();
                 runItem.setText("Продолжить");
@@ -302,8 +302,8 @@ public class MainWindow extends JFrame implements IWindow {
 
         snapShotItem.addActionListener((ActionEvent e) -> {
             if (world == null) {
-                int width1 = paintPanel.getWidth() / BOTW; // Ширина доступной части экрана для рисования карты
-                int height1 = paintPanel.getHeight() / BOTH; // Боты 4 пикселя?
+                int width1 = paintPanel.getWidth() / properties.botSize();
+                int height1 = paintPanel.getHeight() / properties.botSize();
                 world = new World(MainWindow.this, width1, height1);
                 world.generateAdam();
                 paint();
@@ -316,8 +316,8 @@ public class MainWindow extends JFrame implements IWindow {
         JMenuItem recordItem = new JMenuItem("Начать запись");
         recordItem.addActionListener((ActionEvent e) -> {
             if (world == null) {
-                int width1 = paintPanel.getWidth() / BOTW; // Ширина доступной части экрана для рисования карты
-                int height1 = paintPanel.getHeight() / BOTH; // Боты 4 пикселя?
+                int width1 = paintPanel.getWidth() / properties.botSize();
+                int height1 = paintPanel.getHeight() / properties.botSize();
                 world = new World(MainWindow.this, width1, height1);
                 world.generateAdam();
                 paint();
@@ -379,8 +379,8 @@ public class MainWindow extends JFrame implements IWindow {
             });
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 if (world == null) {
-                    int width = paintPanel.getWidth() / BOTW;// Ширина доступной части экрана для рисования карты
-                    int height = paintPanel.getHeight() / BOTH;// Боты 4 пикселя?
+                    int width = paintPanel.getWidth() / properties.botSize();
+                    int height = paintPanel.getHeight() / properties.botSize();
                     world = new World(this, width, height);
                 }
                 world.openFile(fc.getSelectedFile());
@@ -420,6 +420,22 @@ public class MainWindow extends JFrame implements IWindow {
             });
             paintStepGroup.add(i);
             paintStepMenu.add(i);
+        }
+
+        /**
+         * Меню выбора размера бота.
+         */
+        ButtonGroup botSizeGroup = new ButtonGroup();
+        // todo: заменить массив на property
+        int[] botSizeValues = {2, 4, 6};
+        int currentItem = properties.botSize();
+        for (int size : botSizeValues) {
+            JRadioButtonMenuItem i = new JRadioButtonMenuItem(String.valueOf(size), currentItem == size);
+            i.addActionListener(e -> {
+                properties.setProperty("botSize", e.getActionCommand());
+            });
+            botSizeGroup.add(i);
+            botSizeMenu.add(i);
         }
 
         setJMenuBar(menuBar);
