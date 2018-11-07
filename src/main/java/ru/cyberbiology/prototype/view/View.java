@@ -30,17 +30,17 @@ public abstract class View implements IView {
 
         init(world, canvas);
 
-        g.drawRect(0, 0, world.width * World.BOTW + 1, world.height * World.BOTH + 1);
+        g.drawRect(0, 0, world.width * World.SIZE + 1, world.height * World.SIZE + 1);
 
         for (int y = 0; y < world.height; y++) {
             for (int x = 0; x < world.width; x++) {
                 Bot bot = world.getBot(x, y);
                 Color color = getBotColor(bot);
                 g.setColor(color);
-                g.fillRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);
+                g.fillRect(x * World.SIZE, y * World.SIZE, World.SIZE, World.SIZE);
                 if (bot != null && bot.alive == bot.LV_ALIVE) {
                     g.setColor(Color.BLACK);
-                    g.drawRect(x * World.BOTW, y * World.BOTH, World.BOTW, World.BOTH);
+                    g.drawRect(x * World.SIZE, y * World.SIZE, World.SIZE, World.SIZE);
                 }
             }
         }
