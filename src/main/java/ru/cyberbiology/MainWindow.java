@@ -253,12 +253,14 @@ public class MainWindow extends JFrame implements IWindow {
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("Файл");
         JMenu viewMenu = new JMenu("Вид");
-        JMenu toolsMenu = new JMenu("События");
+        JMenu worldEventsMenu = new JMenu("События");
         JMenu paintStepMenu = new JMenu("Шаг отрисовки");
+        JMenu settingsMenu = new JMenu("Настройки");
+        settingsMenu.add(paintStepMenu);
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
-        menuBar.add(toolsMenu);
-        menuBar.add(paintStepMenu);
+        menuBar.add(worldEventsMenu);
+        menuBar.add(settingsMenu);
 
         JMenuItem snapShotItem = new JMenuItem("Сделать снимок");
         JMenuItem runItem = new JMenuItem("Запустить");
@@ -391,8 +393,8 @@ public class MainWindow extends JFrame implements IWindow {
         fileMenu.add(optionItem);
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
-        toolsMenu.add(mutateItem);
-        toolsMenu.add(adressJumpItem);
+        worldEventsMenu.add(mutateItem);
+        worldEventsMenu.add(adressJumpItem);
 
         JMenuItem item;
         for (IView v : views) {
