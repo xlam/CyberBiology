@@ -258,10 +258,12 @@ public class MainWindow extends JFrame implements IWindow {
         JMenu viewMenu = new JMenu("Вид");
         JMenu worldEventsMenu = new JMenu("События");
         JMenu paintStepMenu = new JMenu("Шаг отрисовки");
+        JMenu settingsMenu = new JMenu("Настройки");
+        settingsMenu.add(paintStepMenu);
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
         menuBar.add(worldEventsMenu);
-        menuBar.add(paintStepMenu);
+        menuBar.add(settingsMenu);
 
         JMenuItem snapShotItem = new JMenuItem("Сделать снимок");
         JMenuItem runItem = new JMenuItem("Запустить");
