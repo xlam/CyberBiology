@@ -113,7 +113,7 @@ public class MainWindow extends JFrame implements IWindow {
         final JComponent[] inputs = new JComponent[]{
             new JLabel("Директория для хранения файлов записи"),
             fileDirectoryName,};
-        int result = JOptionPane.showConfirmDialog(this, inputs, "Настройки", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
+        int result = JOptionPane.showConfirmDialog(this, inputs, "Установки", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null);
         if (result == JOptionPane.OK_OPTION) {
             setFileDirectory(fileDirectoryName.getText());
         }
@@ -337,7 +337,7 @@ public class MainWindow extends JFrame implements IWindow {
             PlayerWindow fw = new PlayerWindow();
         });
 
-        JMenuItem optionItem = new JMenuItem("Настройки");
+        JMenuItem optionItem = new JMenuItem("Установки");
         optionItem.addActionListener((ActionEvent e) -> {
             showPropertyDialog();
         });
