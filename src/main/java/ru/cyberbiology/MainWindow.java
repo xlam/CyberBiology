@@ -105,11 +105,6 @@ public class MainWindow extends JFrame implements IWindow {
         pack();
         setVisible(true);
         setExtendedState(NORMAL);
-
-        String tmp = getFileDirectory();
-        if (tmp == null || tmp.length() == 0) {
-            showPropertyDialog();
-        }
     }
 
     private void showPropertyDialog() {
