@@ -166,6 +166,9 @@ public class MainWindow extends JFrame implements IWindow {
             new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    if (world == null) {
+                        return;
+                    }
                     if (world.started()) {
                         return;//Если идет обсчет не суетимся, выводить ничего не надо.
                     }
