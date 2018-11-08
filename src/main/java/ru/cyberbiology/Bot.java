@@ -139,13 +139,15 @@ public class Bot implements IBot {
      * мозга-генома
      */
     public void step() {
-        /*
-    	if(alive == LV_ORGANIC_SINK || alive == LV_ORGANIC_HOLD)
-    	{
-    		botMove(this, 5, 1);
-    	}*/
-        if (alive == LV_FREE || alive == LV_ORGANIC_HOLD || alive == LV_ORGANIC_SINK) {
-            botMove(this, 5, 1);
+        if (alive == LV_FREE || alive == LV_ORGANIC_HOLD) {
+            return;
+        }
+        else if (alive == LV_ORGANIC_SINK) {
+            // движение вниз в абсолютном направлении и остановка, если
+            // уперлись в препятствие
+            if (botMove(this, 5, 1) != 2) {
+                alive = LV_ORGANIC_HOLD;
+            }
             return;     //Это труп - выходим!
         }
 
