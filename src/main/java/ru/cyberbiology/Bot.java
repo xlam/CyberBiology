@@ -50,6 +50,8 @@ public class Bot implements IBot {
     // максимальное количество генов паразитирования в геноме
     private final int MAX_PEST_GENES = 32;
 
+    private final Random random = new Random(System.currentTimeMillis());
+
     static IBotGeneController[] geneController = new IBotGeneController[64];
 
     static {
@@ -261,19 +263,10 @@ public class Bot implements IBot {
                 bot2Organic(this);  // то время умирать, превращаясь в огранику
                 return;             // и передаем управление к следующему боту
             }
-            // если бот находится на глубине ниже 48 уровня
-            // то он автоматом накапливает минералы, но не более 999
-            if (y > world.height / 2) {
-                mineral = mineral + 1;
-                if (y > world.height / 6 * 4) {
-                    mineral = mineral + 1;
-                }
-                if (y > world.height / 6 * 5) {
-                    mineral = mineral + 1;
-                }
-                if (mineral > 999) {
-                    mineral = 999;
-                }
+
+            // бот накапливает минералы с вероятностью, зависящей от глубины, но не более 999
+            if (mineral < 999 && random.nextInt(101) < (int) (y / (world.height * 0.01))) {
+                mineral++;
             }
         }
     }
