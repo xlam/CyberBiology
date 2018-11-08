@@ -307,7 +307,18 @@ public class Bot implements IBot {
      * @return X - координата по абсолютному направлению
      */
     int xFromVektorA(Bot bot, int n) {
-        return xFromVektorR(bot, 0);
+        return correctX(x + Const.INCREMENT_X[n]);
+    }
+
+    /**
+     * Проверка и корректировка координаты X при выходе за границы мира
+     * @param x - проверяемая координата X
+     * @return
+     *      0 - если координата вышла за правую границу
+     *      <ширина мира>-1 - ессли координата вышла за левую границу
+     */
+    int correctX(int x) {
+        return (x >= world.width) ? 0 : ((x < 0) ? world.width -1 : x);
     }
 
     /**
@@ -318,8 +329,7 @@ public class Bot implements IBot {
      * @return Y координата по относительному направлению
      */
     int yFromVektorR(Bot bot, int n) {
-        int yt = y + Const.INCREMENT_Y[direction + n];
-        return yt;
+        return y + Const.INCREMENT_Y[direction + n];
     }
 
     /**
@@ -330,7 +340,7 @@ public class Bot implements IBot {
      * @return Y координата по абсолютному направлению
      */
     int yFromVektorA(Bot bot, int n) {
-        return yFromVektorR(bot, 0);
+        return y + Const.INCREMENT_Y[n];
     }
 
     /**
