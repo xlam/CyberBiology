@@ -284,6 +284,17 @@ public class MainWindow extends JFrame implements IWindow {
             }
         });
 
+        JMenuItem restartItem = new JMenuItem("Перезапуск");
+        restartItem.addActionListener((ActionEvent e) -> {
+            world.stop();
+            int width1 = paintPanel.getWidth() / properties.botSize();
+            int height1 = paintPanel.getHeight() / properties.botSize();
+            world = new World(MainWindow.this, width1, height1);
+            world.generateAdam();
+            paint();
+            world.start();
+        });
+
         JMenuItem mutateItem = new JMenuItem("Cлучайная мутация");
         mutateItem.addActionListener((ActionEvent e) -> {
             // мутацию проводим при отключенном мире
@@ -386,6 +397,7 @@ public class MainWindow extends JFrame implements IWindow {
         });
 
         fileMenu.add(runItem);
+        fileMenu.add(restartItem);
         fileMenu.add(snapShotItem);
         fileMenu.add(loadWorldItem);
         fileMenu.add(recordItem);
