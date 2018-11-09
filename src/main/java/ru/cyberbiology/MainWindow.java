@@ -510,9 +510,10 @@ public class MainWindow extends JFrame implements IWindow {
             } catch (IOException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
-            version = p.getProperty("git.closest.tag.name")
-                    + "-r" + p.getProperty("git.closest.tag.commit.count")
-                    + "-g" + p.getProperty("git.commit.id.abbrev");
+            version = p.getProperty("git.commit.id.describe");
+            if (p.getProperty("git.closest.tag.name").isEmpty()) {
+                version = p.getProperty("git.build.version") + "-" + version;
+            }
         }
         return version;
     }

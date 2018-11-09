@@ -16,7 +16,7 @@
     </properties>
 
     <build>
-        <finalName>${project.artifactId}-${git.closest.tag.name}-r${git.closest.tag.commit.count}-g${git.commit.id.abbrev}</finalName>
+        <finalName>${project.artifactId}-${git.commit.id.describe}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
