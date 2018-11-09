@@ -501,7 +501,7 @@ public class MainWindow extends JFrame implements IWindow {
 
     private String getVersionFromProperties() {
         String version = "";
-        String propertiesName = "/app.properties";
+        String propertiesName = "/git.properties";
         InputStream propertiesStream = getClass().getResourceAsStream(propertiesName);
         if (null != propertiesStream) {
             Properties p = new Properties();
@@ -510,7 +510,9 @@ public class MainWindow extends JFrame implements IWindow {
             } catch (IOException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
-            version = p.getProperty("versionName");
+            version = p.getProperty("git.closest.tag.name")
+                    + "-r" + p.getProperty("git.closest.tag.commit.count")
+                    + "-g" + p.getProperty("git.commit.id.abbrev");
         }
         return version;
     }
