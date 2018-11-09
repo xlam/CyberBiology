@@ -4,7 +4,7 @@
 
     <groupId>ru</groupId>
     <artifactId>cyberbiology</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
 
     <name>cyberbiology</name>
     <description>Add project description here</description>
@@ -16,6 +16,7 @@
     </properties>
 
     <build>
+        <finalName>${project.artifactId}-${git.closest.tag.name}-r${git.closest.tag.commit.count}-g${git.commit.id.abbrev}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -54,6 +55,24 @@
                 <version>1.6.0</version>
                 <configuration>
                     <mainClass>${mainClass}</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.2.5</version>
+                <executions>
+                    <execution>
+                        <id>git-info</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${basedir}/.git</dotGitDirectory>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
                 </configuration>
             </plugin>
         </plugins>
