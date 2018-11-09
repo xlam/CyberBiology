@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/xlam/CyberBiology.svg?branch=master)](https://travis-ci.org/xlam/CyberBiology)
+
 # CyberBiology
 Проект "Искусственная жизнь", изначально представленный на канале [foo52ru](https://www.youtube.com/watch?v=PCx228KcOow), и впервые переписанный на Java пользователем CyberBi: [CyberBiology/CyberBiology](https://github.com/CyberBiology/CyberBiology).
 
