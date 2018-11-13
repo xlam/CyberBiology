@@ -16,7 +16,7 @@
     </properties>
 
     <build>
-        <finalName>${project.artifactId}-${git.commit.id.describe}</finalName>
+        <finalName>${project.artifactId}-${git.commit.id.describe.regex}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -71,8 +71,36 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <verbose>true</verbose>
                     <dotGitDirectory>${basedir}/.git</dotGitDirectory>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <gitDescribe>
+                        <forceLongFormat>true</forceLongFormat>
+                    </gitDescribe>
+                    <excludeProperties>
+                        <excludeProperty>git.remote.origin.url</excludeProperty>
+                        <excludeProperty>git.commit.user.email</excludeProperty>
+                        <excludeProperty>git.commit.user.name</excludeProperty>
+                        <excludeProperty>git.commit.message.full</excludeProperty>
+                        <excludeProperty>git.commit.message.short</excludeProperty>
+                        <excludeProperty>git.build.user.email</excludeProperty>
+                        <excludeProperty>git.build.user.name</excludeProperty>
+                        <excludeProperty>git.build.host</excludeProperty>
+                    </excludeProperties>
+                    <replacementProperties>
+                        <replacementProperty>
+                            <property>git.commit.id.describe</property>
+                            <propertyOutputSuffix>regex</propertyOutputSuffix>
+                            <token>^(v?)([[\.-]a-zA-Z0-9]+)-([^0])-(g.+(dirty)?)$</token>
+                            <value>${project.version}-$3.$4</value>
+                        </replacementProperty>
+                        <replacementProperty>
+                            <property>git.commit.id.describe.regex</property>
+                            <!--<propertyOutputSuffix>regex</propertyOutputSuffix>-->
+                            <token>^(v?)([[\.-]a-zA-Z0-9]+)-(0)-(g.+)(-dirty?)$</token>
+                            <value>${project.version}$5</value>
+                        </replacementProperty>
+                    </replacementProperties>
                 </configuration>
             </plugin>
         </plugins>
