@@ -81,7 +81,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <verbose>true</verbose>
                     <dotGitDirectory>${basedir}/.git</dotGitDirectory>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <gitDescribe>
@@ -106,7 +105,6 @@
                         </replacementProperty>
                         <replacementProperty>
                             <property>git.commit.id.describe.regex</property>
-                            <!--<propertyOutputSuffix>regex</propertyOutputSuffix>-->
                             <token>^(v?)([[\.-]a-zA-Z0-9]+)-(0)-(g.+)(-dirty?)$</token>
                             <value>${project.version}$5</value>
                         </replacementProperty>
