@@ -130,6 +130,9 @@ public class MainWindow extends JFrame implements IWindow {
     @Override
     public void setView(IView view) {
         this.view = view;
+        if (null != world && !world.started()) {
+            paint();
+        }
     }
 
     @Override
