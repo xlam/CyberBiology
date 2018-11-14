@@ -409,11 +409,15 @@ public class MainWindow extends JFrame implements IWindow {
         worldEventsMenu.add(mutateItem);
         worldEventsMenu.add(adressJumpItem);
 
-        JMenuItem item;
-        for (IView v : views) {
-            item = new JMenuItem(v.getName());
+        /**
+         * Меню выбора вида.
+         */
+        ButtonGroup viewGroup = new ButtonGroup();
+        for (IView view: views) {
+            JRadioButtonMenuItem item = new JRadioButtonMenuItem(view.getName(), view instanceof ViewBasic);
+            item.addActionListener(e -> setView(view));
+            viewGroup.add(item);
             viewMenu.add(item);
-            item.addActionListener((ActionEvent e) -> setView(v));
         }
 
         /**
