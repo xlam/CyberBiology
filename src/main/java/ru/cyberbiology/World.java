@@ -150,36 +150,41 @@ public class World implements IWorld {
                 generation = generation + 1;
                  // отрисовка на экран через каждые "paintstep" шагов
                 if (generation % Integer.parseInt(properties.getProperty("paintstep", "" + PAINT_STEP)) == 0) {
-                    /**
-                     * Подсчет фактических значений населения и органики.
-                     * (Может будет быстрее просто пройтись по массиву matrix?)
-                     */
-                    population = (int) Arrays.stream(matrix)
-                            .filter(b -> b != null && b.isAlive())
-                            .parallel()
-                            .count();
-                    organic = (int) Arrays.stream(matrix)
-                            .filter(b -> b != null && b.isOrganic())
-                            .parallel()
-                            .count();
-                    pests = (int) Arrays.stream(matrix)
-                            .filter(b -> b != null && b.pest > 0)
-                            .parallel()
-                            .count();
-                    pestGenes = (int) Arrays.stream(matrix)
-                            .filter(b -> b != null && b.pest > 0)
-                            .mapToInt(b -> b.pest)
-                            .parallel()
-                            .sum();
+                    updateStats();
                     // замеряем время пересчета 10 итераций без учета отрисовки
                     PerfMeter.tick();
                     paint(); // отображаем текущее состояние симуляции на экран
                 }
                 // sleep(); // пауза между ходами, если надо уменьшить скорость
             }
+            updateStats();
             paint();// если запаузили рисуем актуальную картинку
             started = false;// Закончили работу
         }
+    }
+
+    /**
+    * Подсчет фактических значений населения и органики.
+    */
+    private void updateStats() {
+        // возможно будет быстрее просто пройтись по массиву matrix?
+        population = (int) Arrays.stream(matrix)
+               .filter(b -> b != null && b.isAlive())
+               .parallel()
+               .count();
+        organic = (int) Arrays.stream(matrix)
+               .filter(b -> b != null && b.isOrganic())
+               .parallel()
+               .count();
+        pests = (int) Arrays.stream(matrix)
+               .filter(b -> b != null && b.pest > 0)
+               .parallel()
+               .count();
+        pestGenes = (int) Arrays.stream(matrix)
+               .filter(b -> b != null && b.pest > 0)
+               .mapToInt(b -> b.pest)
+               .parallel()
+               .sum();
     }
 
     public void generateAdam() {

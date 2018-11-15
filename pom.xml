@@ -4,7 +4,7 @@
 
     <groupId>ru</groupId>
     <artifactId>cyberbiology</artifactId>
-    <version>1.1</version>
+    <version>1.2-dev</version>
 
     <name>cyberbiology</name>
     <description>Add project description here</description>
@@ -16,7 +16,7 @@
     </properties>
 
     <build>
-        <finalName>${project.artifactId}-${git.commit.id.describe}</finalName>
+        <finalName>${project.artifactId}-${git.commit.id.describe.regex}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -28,6 +28,16 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -71,9 +81,68 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <!--<verbose>true</verbose>-->
                     <dotGitDirectory>${basedir}/.git</dotGitDirectory>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <gitDescribe>
+                        <forceLongFormat>true</forceLongFormat>
+                    </gitDescribe>
+                    <excludeProperties>
+                        <excludeProperty>git.remote.origin.url</excludeProperty>
+                        <excludeProperty>git.commit.user.email</excludeProperty>
+                        <excludeProperty>git.commit.user.name</excludeProperty>
+                        <excludeProperty>git.commit.message.full</excludeProperty>
+                        <excludeProperty>git.commit.message.short</excludeProperty>
+                        <excludeProperty>git.build.user.email</excludeProperty>
+                        <excludeProperty>git.build.user.name</excludeProperty>
+                        <excludeProperty>git.build.host</excludeProperty>
+                    </excludeProperties>
+                    <replacementProperties>
+                        <replacementProperty>
+                            <property>git.commit.id.describe</property>
+                            <propertyOutputSuffix>regex</propertyOutputSuffix>
+                            <token>^(v?)([[\.-]a-zA-Z0-9]+)-([^0])-(g.+(dirty)?)$</token>
+                            <value>${project.version}+$3.$4</value>
+                        </replacementProperty>
+                        <replacementProperty>
+                            <property>git.commit.id.describe.regex</property>
+                            <token>^v?([[\.-]a-zA-Z0-9]+)-(0)-(g\w+)(-dirty)?$</token>
+                            <value>${project.version}$4</value>
+                        </replacementProperty>
+                    </replacementProperties>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.0.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>8.14</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>${basedir}/.checkstyle.xml</configLocation>
+                    <encoding>UTF-8</encoding>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <consoleOutput>false</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <linkXRef>false</linkXRef>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
