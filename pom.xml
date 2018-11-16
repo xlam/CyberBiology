@@ -125,6 +125,7 @@
                 </dependencies>
                 <configuration>
                     <configLocation>${basedir}/.checkstyle.xml</configLocation>
+                    <suppressionsLocation>${basedir}/.checkstyle-suppressions.xml</suppressionsLocation>
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
