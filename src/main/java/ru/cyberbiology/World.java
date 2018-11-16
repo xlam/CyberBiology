@@ -27,9 +27,7 @@ public class World implements IWorld {
      * Шаг отрисовки. Состояние мира отрисовывается на каждом PAINT_STEP
      * пересчете. Для комфортной визуализации рекомендуется зачение от 5 до 15.
      * Большие значения удобно использовать для проведения оптимизаций кода и
-     * длительной работы мира.
-     *
-     * TODO сделать изменяемым через интерфейс программы
+     * длительной работы мира. Можно изменять через меню `Шаг отрисовки`.
      */
     public static final int PAINT_STEP = 1000;
 
@@ -82,6 +80,7 @@ public class World implements IWorld {
         matrix[width * y + x] = null;
     }
 
+    @Override
     public void paint() {
         window.paint();
     }
@@ -148,7 +147,7 @@ public class World implements IWorld {
                     recorder.stopFrame();
                 }
                 generation = generation + 1;
-                 // отрисовка на экран через каждые "paintstep" шагов
+                // отрисовка на экран через каждые "paintstep" шагов
                 if (generation % Integer.parseInt(properties.getProperty("paintstep", "" + PAINT_STEP)) == 0) {
                     updateStats();
                     // замеряем время пересчета 10 итераций без учета отрисовки
@@ -187,7 +186,7 @@ public class World implements IWorld {
                .sum();
     }
 
-    public void generateAdam() {
+    public final void generateAdam() {
         // ========== 1 ==============
         // бот номер 1 - это уже реальный бот
         Bot bot = new Bot(this);
@@ -215,6 +214,7 @@ public class World implements IWorld {
         return;
     }
 
+    @Override
     public void restoreLinks() {
         Bot bot;
         for (int y = 0; y < height; y++) {
@@ -239,7 +239,7 @@ public class World implements IWorld {
      * generation (на текущий момент generation не сохраняется в RecordManager)
      */
     @Override
-    public void restoreStats() {
+    public final void restoreStats() {
         Bot bot;
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -298,11 +298,11 @@ public class World implements IWorld {
         }
     }
 
-    public boolean started() {
+    public final boolean started() {
         return this.thread != null;
     }
 
-    public void start() {
+    public final void start() {
         if (!this.started()) {
             this.thread = new Worker();
             // запуск таймера при запуске потока
@@ -311,7 +311,7 @@ public class World implements IWorld {
         }
     }
 
-    public void stop() {
+    public final void stop() {
         if (thread == null) {
             return;
         }
@@ -324,19 +324,19 @@ public class World implements IWorld {
         thread = null;
     }
 
-    public boolean isRecording() {
+    public final boolean isRecording() {
         return this.recorder.isRecording();
     }
 
-    public void startRecording() {
+    public final void startRecording() {
         this.recorder.startRecording();
     }
 
-    public boolean stopRecording() {
+    public final boolean stopRecording() {
         return this.recorder.stopRecording();
     }
 
-    public Bot getBot(int botX, int botY) {
+    public final Bot getBot(int botX, int botY) {
         return this.matrix[width * botY + botX];
     }
 
@@ -350,11 +350,11 @@ public class World implements IWorld {
         return height;
     }
 
-    public boolean haveRecord() {
+    public final boolean haveRecord() {
         return this.recorder.haveRecord();
     }
 
-    public void makeSnapShot() {
+    public final void makeSnapShot() {
         this.recorder.makeSnapShot();
     }
 
@@ -363,7 +363,7 @@ public class World implements IWorld {
         return this.matrix;
     }
 
-    public void openFile(File file) {
+    public final void openFile(File file) {
         playback = new PlaybackManager(this, file);
     }
 }
