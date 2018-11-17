@@ -20,6 +20,7 @@ public class GeneGiveAbsolutelyDirection extends ABotGeneController {
         return false;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "отдать  в абсолютном направлении";
     }

@@ -5,7 +5,8 @@ import ru.cyberbiology.prototype.IBot;
 import ru.cyberbiology.prototype.gene.ABotGeneController;
 
 /**
- * //.............. съесть в абсолютном направлении ...............
+ * Съесть в абсолютном направлении.
+ *
  * @author Nickolay
  */
 public class GeneEatAbsoluteDirection extends ABotGeneController {
@@ -17,6 +18,7 @@ public class GeneEatAbsoluteDirection extends ABotGeneController {
         return true;// выходим, так как команда шагнуть - завершающая
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "съесть  в абсолютном направлении";
     }

@@ -8,15 +8,15 @@ package ru.cyberbiology.util;
  */
 public class PerfMeter {
 
-    static private double lastTime = System.nanoTime(); // предыдущее время
-    static private double nowTime;      // текущее время
-    static private double rate = 0;     // частота кадров
-    static private double diff = 0;     // интервал между замерами
+    private static double lastTime = System.nanoTime(); // предыдущее время
+    private static double nowTime;      // текущее время
+    private static double rate = 0;     // частота кадров
+    private static double diff = 0;     // интервал между замерами
 
     /**
      * Замеряет время и считает частоту кадров.
      */
-    static public void tick() {
+    public static void tick() {
         nowTime = System.nanoTime();
         diff = nowTime - lastTime;
         rate = 1000000000.0 / diff;
@@ -26,14 +26,14 @@ public class PerfMeter {
     /**
      * Запоминает начальное время.
      */
-    static public void start() {
+    public static void start() {
         lastTime = System.nanoTime();
     }
 
     /*
      * Замеряет конечное время и считает частоту пересчетов.
      */
-    static public void finish() {
+    public static void finish() {
         tick();
     }
 
@@ -42,7 +42,7 @@ public class PerfMeter {
      *
      * @return
      */
-    static public int getInt() {
+    public static int getInt() {
         return (int) Math.round(rate);
     }
 

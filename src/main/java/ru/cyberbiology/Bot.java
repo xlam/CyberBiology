@@ -25,8 +25,8 @@ import ru.cyberbiology.gene.GenePest;
 import ru.cyberbiology.gene.GenePhotosynthesis;
 import ru.cyberbiology.gene.GeneStepInAbsolutelyDirection;
 import ru.cyberbiology.gene.GeneStepInRelativeDirection;
-import ru.cyberbiology.gene.GeneСreateBot;
-import ru.cyberbiology.gene.GeneСreateCell;
+import ru.cyberbiology.gene.GeneCreateBot;
+import ru.cyberbiology.gene.GeneCreateCell;
 import ru.cyberbiology.prototype.IBot;
 import ru.cyberbiology.prototype.IWorld;
 import ru.cyberbiology.prototype.gene.IBotGeneController;
@@ -63,23 +63,23 @@ public class Bot implements IBot {
         geneController[30] = new GeneLookRelativeDirection();//30 шаг  посмотреть в относительном направлении
 
         geneController[32] = new GeneCareRelativeDirection();//32 шаг делится   в относительном напралении
-        geneController[42] = geneController[32];
+        geneController[42] = new GeneCareRelativeDirection();
 
         geneController[33] = new GeneCareAbsolutelyDirection();//33 шаг делится   в абсолютном напралении
-        geneController[50] = geneController[33];
+        geneController[50] = new GeneCareAbsolutelyDirection();
 
         geneController[34] = new GeneGiveRelativeDirection();//34 шаг отдать   в относительном напралении
-        geneController[51] = geneController[34];
+        geneController[51] = new GeneGiveRelativeDirection();
 
         geneController[35] = new GeneGiveAbsolutelyDirection();//35 шаг отдать   в абсолютном напралении
-        geneController[52] = geneController[35];
+        geneController[52] = new GeneGiveAbsolutelyDirection();
 
         geneController[36] = new GeneFlattenedHorizontally();//36 выравнится по горизонтали
         geneController[37] = new GeneMyLevel();//37 высота бота
         geneController[38] = new GeneMyHealth();//38 здоровье бота
         geneController[39] = new GeneMyMineral();//39 минералы бота
-        geneController[40] = new GeneСreateCell();//40 создать клетку многоклеточного
-        geneController[41] = new GeneСreateBot();//40 создать клетку одноклеточного
+        geneController[40] = new GeneCreateCell();//40 создать клетку многоклеточного
+        geneController[41] = new GeneCreateBot();//40 создать клетку одноклеточного
         //42 занято
         geneController[43] = new GeneFullAroud();//43  окружен ли бот
         geneController[44] = new GeneIsHealthGrow();//44  окружен ли бот
@@ -91,7 +91,6 @@ public class Bot implements IBot {
         geneController[53] = new GeneImitate(); // 50 имитация, подражание
     }
 
-    public static final int MIND_SIZE = 64;     // объем генома
     public byte[] mind = new byte[MIND_SIZE];   // геном бота содержит 64 команды
 
     // Далее следуют константы состояния бота, которое отмеченно для каждого бота в массиве bots[].

@@ -102,7 +102,7 @@ public class World implements IWorld {
             for (int x = 0; x < width; x++) {
                 Bot bot = getBot(x, y);
                 if (bot != null) {
-                    if (bot.alive == bot.LV_ALIVE) {
+                    if (bot.alive == Bot.LV_ALIVE) {
                         bot.adr = (byte) (Math.random() * Bot.MIND_SIZE);
                     }
                 }

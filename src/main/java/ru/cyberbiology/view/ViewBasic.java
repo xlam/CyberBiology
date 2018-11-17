@@ -22,9 +22,9 @@ public class ViewBasic extends View {
 
         if (bot == null) {
             // Color.WHITE
-        } else if ((bot.alive == bot.LV_ORGANIC_SINK) || (bot.alive == bot.LV_ORGANIC_HOLD)) {
+        } else if ((bot.alive == Bot.LV_ORGANIC_SINK) || (bot.alive == Bot.LV_ORGANIC_HOLD)) {
             color = new Color(200, 200, 200);
-        } else if (bot.alive == bot.LV_ALIVE) {
+        } else if (bot.alive == Bot.LV_ALIVE) {
             int green = (int) (bot.c_green - ((bot.c_green * bot.health) / 2000));
             if (green < 0) {
                 green = 0;

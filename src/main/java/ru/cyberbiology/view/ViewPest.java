@@ -21,9 +21,9 @@ public class ViewPest extends View {
 
         if (bot == null) {
             color = Color.WHITE;
-        } else if ((bot.alive == bot.LV_ORGANIC_HOLD) || (bot.alive == bot.LV_ORGANIC_SINK)) {
+        } else if ((bot.alive == Bot.LV_ORGANIC_HOLD) || (bot.alive == Bot.LV_ORGANIC_SINK)) {
             color = new Color(200, 200, 200);
-        } else if (bot.alive == bot.LV_ALIVE) {
+        } else if (bot.alive == Bot.LV_ALIVE) {
             // цвет бота без генов паразитизма
             int colorRed = 170;
             int colorGreen = 170;
