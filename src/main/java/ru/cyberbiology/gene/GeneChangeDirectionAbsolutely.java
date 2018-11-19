@@ -24,6 +24,7 @@ public class GeneChangeDirectionAbsolutely extends ABotGeneController {
         return false;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "сменить направление абсолютно";
     }

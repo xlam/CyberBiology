@@ -27,6 +27,7 @@ public class GeneCareAbsolutelyDirection extends ABotGeneController {
         return false;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "поделится  в абсолютном направлении";
     }

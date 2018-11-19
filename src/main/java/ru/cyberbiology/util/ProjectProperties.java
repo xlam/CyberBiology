@@ -10,7 +10,7 @@ import ru.cyberbiology.Const;
 
 public class ProjectProperties extends Properties {
 
-    private final static String PROPERTIES_FILE = "properties.xml";
+    private static final String PROPERTIES_FILE = "properties.xml";
     private static ProjectProperties instance;
     private String fileName = PROPERTIES_FILE;
 
@@ -67,7 +67,7 @@ public class ProjectProperties extends Properties {
         }
     }
 
-	public void save() {
+    public void save() {
         try {
             this.storeToXML(new FileOutputStream(this.fileName), null);
         } catch (IOException e) {

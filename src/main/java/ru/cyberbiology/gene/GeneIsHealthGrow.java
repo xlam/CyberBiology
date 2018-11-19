@@ -20,6 +20,7 @@ public class GeneIsHealthGrow extends ABotGeneController {
         return false;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "приход энергии есть?";
     }

@@ -12,7 +12,7 @@ public class GeneMyMineral extends ABotGeneController {
 
     @Override
     public boolean onGene(IBot bot) {
-        int param = bot.getParam() * 1000 / bot.MIND_SIZE;
+        int param = bot.getParam() * 1000 / IBot.MIND_SIZE;
         if (bot.getMineral() < param) {
             bot.indirectIncCmdAddress(2);
         } else {
@@ -21,6 +21,7 @@ public class GeneMyMineral extends ABotGeneController {
         return false;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "сколько  минералов";
     }

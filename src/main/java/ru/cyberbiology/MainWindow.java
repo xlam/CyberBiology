@@ -119,7 +119,7 @@ public class MainWindow extends JFrame implements IWindow {
         }
     }
 
-    protected void setFileDirectory(String name) {
+    private void setFileDirectory(String name) {
         properties.setFileDirectory(name);
     }
 
@@ -130,6 +130,9 @@ public class MainWindow extends JFrame implements IWindow {
     @Override
     public void setView(IView view) {
         this.view = view;
+        if (null != world && !world.started()) {
+            paint();
+        }
     }
 
     @Override
@@ -202,6 +205,8 @@ public class MainWindow extends JFrame implements IWindow {
                         case 3:// есть MPREV и MNEXT
                             buf.append("есть MPREV и MNEXT</p>");
                             break;
+                        default:
+                            break;
                     }
                     buf.append("<p>c_blue=").append(bot.c_blue);
                     buf.append("<p>c_green=").append(bot.c_green);
@@ -212,13 +217,13 @@ public class MainWindow extends JFrame implements IWindow {
 
                     //buf.append("");
                     IBotGeneController cont;
-                    for (int i = 0; i < Bot.MIND_SIZE; i++) {//15
+                    for (int i = 0; i < Bot.MIND_SIZE; i++) { //15
                         int command = bot.mind[i];  // текущая команда
 
                         // Получаем обработчика команды
                         cont = Bot.geneController[command];
-                        if (cont != null)// если обработчик такой команды назначен
-                        {
+                        // если обработчик такой команды назначен
+                        if (cont != null) {
                             buf.append("<p>");
                             buf.append(String.valueOf(i));
                             buf.append("&nbsp;");
@@ -377,10 +382,12 @@ public class MainWindow extends JFrame implements IWindow {
             JFileChooser fc = new JFileChooser();
             fc.setFileFilter(new FileFilter() {
                 private static final String SUFFIX = ".frame.cb.zip";
+
                 @Override
                 public boolean accept(File f) {
                     return f.isDirectory() || f.getName().endsWith(SUFFIX);
                 }
+
                 @Override
                 public String getDescription() {
                     return "Сохраненный мир (*" + SUFFIX + ")";
@@ -409,11 +416,15 @@ public class MainWindow extends JFrame implements IWindow {
         worldEventsMenu.add(mutateItem);
         worldEventsMenu.add(adressJumpItem);
 
-        JMenuItem item;
-        for (IView v : views) {
-            item = new JMenuItem(v.getName());
+        /**
+         * Меню выбора вида.
+         */
+        ButtonGroup viewGroup = new ButtonGroup();
+        for (IView view: views) {
+            JRadioButtonMenuItem item = new JRadioButtonMenuItem(view.getName(), view instanceof ViewBasic);
+            item.addActionListener(e -> setView(view));
+            viewGroup.add(item);
             viewMenu.add(item);
-            item.addActionListener((ActionEvent e) -> setView(v));
         }
 
         /**
@@ -510,7 +521,7 @@ public class MainWindow extends JFrame implements IWindow {
             } catch (IOException ex) {
                 Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
             }
-            version = p.getProperty("git.commit.id.describe");
+            version = p.getProperty("git.commit.id.describe.regex");
             if (p.getProperty("git.closest.tag.name").isEmpty()) {
                 version = p.getProperty("git.build.version") + "-" + version;
             }

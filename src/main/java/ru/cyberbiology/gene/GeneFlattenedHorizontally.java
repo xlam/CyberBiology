@@ -5,6 +5,7 @@ import ru.cyberbiology.prototype.gene.ABotGeneController;
 
 /**
  * Выравнится по горизонтали.
+ *
  * @author Nickolay
  */
 public class GeneFlattenedHorizontally extends ABotGeneController {
@@ -20,6 +21,7 @@ public class GeneFlattenedHorizontally extends ABotGeneController {
         return false;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "выравнится по горизонтали";
     }

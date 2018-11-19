@@ -19,7 +19,7 @@ public abstract class View implements IView {
     public World world;
     private int botSize;
 
-    public void init(World world, JPanel canvas) {
+    private void init(World world, JPanel canvas) {
         this.world = world;
         //Создаем временный буфер для рисования
         buf = canvas.createImage(canvas.getWidth(), canvas.getHeight());

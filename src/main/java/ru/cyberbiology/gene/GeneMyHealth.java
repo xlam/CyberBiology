@@ -14,7 +14,7 @@ public class GeneMyHealth extends ABotGeneController {
     public boolean onGene(IBot bot) {
         // байт в геноме может иметь значение от 0 до 63
         // умножая значение байта на 15 получаем значение от 0 до 945
-        int param = bot.getParam() * 1000 / bot.MIND_SIZE;   // берем следующий за командой байт и умножаем на 15
+        int param = bot.getParam() * 1000 / IBot.MIND_SIZE;   // берем следующий за командой байт и умножаем на 15
         // если здоровье бота ниже, чем полученное значение,
         // то прибавляем к указатели текущей команды значение 2-го байта, после выполняемой команды
         if (bot.getHealth() < param) {
