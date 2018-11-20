@@ -4,4 +4,7 @@
 <entry key="FileDirectory"/>
 <entry key="paintstep">10</entry>
 <entry key="botSize">4</entry>
+<entry key="EnableMultiCell">true</entry>
+<entry key="EnableRelativeByEnergy">false</entry>
+<entry key="EnableRelativeByMinerals">false</entry>
 </properties>

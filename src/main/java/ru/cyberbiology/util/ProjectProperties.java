@@ -81,4 +81,9 @@ public class ProjectProperties extends Properties {
         save();
         return oldValue;
     }
+
+    public boolean getBoolean(String property) {
+        System.out.println(getProperty(property));
+        return "true".equals(getProperty(property, "false"));
+    }
 }
