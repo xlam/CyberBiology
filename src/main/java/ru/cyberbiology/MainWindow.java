@@ -300,6 +300,7 @@ public class MainWindow extends JFrame implements IWindow {
             world.generateAdam();
             paint();
             world.start();
+            runItem.setText("Пауза");
         });
 
         JMenuItem mutateItem = new JMenuItem("Cлучайная мутация");
