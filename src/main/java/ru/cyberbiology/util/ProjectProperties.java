@@ -22,8 +22,10 @@ public class ProjectProperties extends Properties {
     }
 
     private ProjectProperties(String fileName) {
+        defaults = new Properties();
         this.fileName = fileName;
-        this.load();
+        this.loadDefaults();
+        this.loadUser();
     }
 
     public void setFileDirectory(String name) {
@@ -35,7 +37,6 @@ public class ProjectProperties extends Properties {
         }
 
         this.setProperty("FileDirectory", name);
-        this.save();
     }
 
     public String getFileDirectory() {
@@ -46,22 +47,22 @@ public class ProjectProperties extends Properties {
         return Integer.parseInt(getProperty("botSize", "" + Const.DEFAULT_BOT_SIZE));
     }
 
-    public void load() {
+    private void loadUser() {
         try {
             this.loadFromXML(new FileInputStream(this.fileName));
         } catch (IOException e) {
-            loadDefaultProperties();
+            System.err.println("WARNING: user settings can not be loaded, using defaults!");
         }
     }
 
-    private void loadDefaultProperties() {
+    private void loadDefaults() {
         InputStream propertiesStream = getClass().getResourceAsStream("/" + PROPERTIES_FILE);
         if (null == propertiesStream) {
-            System.err.println("ERROR: default.properties file not found!");
+            System.err.println("ERROR: default settings can not be loaded!");
             System.exit(1);
         }
         try {
-            loadFromXML(propertiesStream);
+            defaults.loadFromXML(propertiesStream);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -83,7 +84,6 @@ public class ProjectProperties extends Properties {
     }
 
     public boolean getBoolean(String property) {
-        System.out.println(getProperty(property));
         return "true".equals(getProperty(property, "false"));
     }
 }
