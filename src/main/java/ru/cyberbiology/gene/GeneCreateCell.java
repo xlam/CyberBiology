@@ -8,7 +8,7 @@ import ru.cyberbiology.prototype.gene.ABotGeneController;
  *
  * @author Nickolay
  */
-public class GeneСreateCell extends ABotGeneController {
+public class GeneCreateCell extends ABotGeneController {
 
     @Override
     public boolean onGene(IBot bot) {
@@ -25,6 +25,7 @@ public class GeneСreateCell extends ABotGeneController {
         return true;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "многоклеточность ( создание потомка, приклееного к боту )";
     }

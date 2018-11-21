@@ -8,7 +8,7 @@ import ru.cyberbiology.prototype.gene.ABotGeneController;
  *
  * @author Nickolay
  */
-public class GeneСreateBot extends ABotGeneController {
+public class GeneCreateBot extends ABotGeneController {
 
     @Override
     public boolean onGene(IBot bot) {

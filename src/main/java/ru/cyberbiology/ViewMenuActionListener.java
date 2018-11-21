@@ -15,6 +15,7 @@ public class ViewMenuActionListener implements ActionListener {
         this.view = rend;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         this.window.setView(this.view);
     }

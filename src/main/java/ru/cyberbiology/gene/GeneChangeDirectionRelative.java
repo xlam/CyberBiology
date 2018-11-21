@@ -5,7 +5,8 @@ import ru.cyberbiology.prototype.IBot;
 import ru.cyberbiology.prototype.gene.ABotGeneController;
 
 /**
- * //............... сменить направление относительно .... 
+ * Cменить направление относительно.
+ *
  * @author Nickolay
  *
  */
@@ -18,13 +19,14 @@ public class GeneChangeDirectionRelative extends ABotGeneController {
         int newdrct = bot.getDirection() + param;            // полученное число прибавляем к значению направления бота
         if (newdrct >= 8) {
             newdrct = newdrct - 8;
-        }// результат должен быть в пределах от 0 до 8
+        } // результат должен быть в пределах от 0 до 8
         bot.setDirection(newdrct);
         bot.incCommandAddress(2);                              // адрес текущей команды увеличивается на 2,
 
         return false;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "сменить направление относительно";
     }

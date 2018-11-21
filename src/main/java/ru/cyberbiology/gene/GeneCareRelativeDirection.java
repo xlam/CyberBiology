@@ -29,6 +29,7 @@ public class GeneCareRelativeDirection extends ABotGeneController {
         return false;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "поделится в относительном напралении";
     }

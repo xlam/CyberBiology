@@ -21,9 +21,9 @@ public class ViewEnergy extends View {
 
         if (bot == null) {
             // Color.WHITE
-        } else if ((bot.alive == bot.LV_ORGANIC_SINK) || (bot.alive == bot.LV_ORGANIC_HOLD)) {
+        } else if ((bot.alive == Bot.LV_ORGANIC_SINK) || (bot.alive == Bot.LV_ORGANIC_HOLD)) {
             color = new Color(200, 200, 200);
-        } else if (bot.alive == bot.LV_ALIVE) {
+        } else if (bot.alive == Bot.LV_ALIVE) {
             // черный цвет для умерших в данном пересчете ботов
             int colorRed = 0;
             int colorGreen = 0;

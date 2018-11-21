@@ -4,7 +4,7 @@
 
     <groupId>ru</groupId>
     <artifactId>cyberbiology</artifactId>
-    <version>1.2.0</version>
+    <version>1.3-dev</version>
 
     <name>cyberbiology</name>
     <description>Add project description here</description>
@@ -101,13 +101,13 @@
                         <replacementProperty>
                             <property>git.commit.id.describe</property>
                             <propertyOutputSuffix>regex</propertyOutputSuffix>
-                            <token>^(v?)([[\.-]a-zA-Z0-9]+)-([^0])-(g.+(dirty)?)$</token>
-                            <value>${project.version}+$3.$4</value>
+                            <token>^v?([0-9][[\\.-]0-9a-zA-Z]*)-(0)-(g[0-9a-h]+)((-dirty)?$)</token>
+                            <value>${project.version}$4</value>
                         </replacementProperty>
                         <replacementProperty>
                             <property>git.commit.id.describe.regex</property>
-                            <token>^v?([[\.-]a-zA-Z0-9]+)-(0)-(g\w+)(-dirty)?$</token>
-                            <value>${project.version}$4</value>
+                            <token>^v?([0-9][[\\.-]0-9a-zA-Z]*)-([1-9][0-9]*)-(g.+(dirty)?)$</token>
+                            <value>${project.version}+$2.$3</value>
                         </replacementProperty>
                     </replacementProperties>
                 </configuration>
@@ -125,11 +125,12 @@
                 </dependencies>
                 <configuration>
                     <configLocation>${basedir}/.checkstyle.xml</configLocation>
+                    <suppressionsLocation>${basedir}/.checkstyle-suppressions.xml</suppressionsLocation>
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                 </configuration>
-                <executions>
+<!--                <executions>
                     <execution>
                         <id>validate</id>
                         <phase>validate</phase>
@@ -142,7 +143,7 @@
                             <goal>check</goal>
                         </goals>
                     </execution>
-                </executions>
+                </executions>-->
             </plugin>
         </plugins>
     </build>

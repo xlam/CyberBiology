@@ -224,7 +224,7 @@ public class PlayerWindow extends JFrame implements IWindow {
                     int command = bot.mind[i];  // текущая команда
 
                     // Получаем обработчика команды
-                    cont = Bot.geneController[command];
+                    cont = bot.getCurrentCommand();
                     if (cont != null)// если обработчик такой команды назначен
                     {
                         buf.append("<p>");

@@ -23,6 +23,7 @@ public class GeneAttack extends ABotGeneController {
         return true;//// выходим, так как команда мутировать - завершающая
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "генная атака";
     }

@@ -88,9 +88,13 @@ public class MainWindow extends JFrame implements IWindow {
     };
 
     private final ProjectProperties properties;
+    private final SettingsDialog settingsDialog;
 
     public MainWindow() {
+
         properties = ProjectProperties.getInstance();
+        settingsDialog = new SettingsDialog(this, true);
+
         setTitle("CyberBiology " + getVersionFromProperties());
         setPreferredSize(new Dimension(1024, 768));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -107,7 +111,7 @@ public class MainWindow extends JFrame implements IWindow {
         setExtendedState(NORMAL);
     }
 
-    private void showPropertyDialog() {
+    private void showSaveDirectoryDialog() {
         JTextField fileDirectoryName = new JTextField();
         fileDirectoryName.setText(getFileDirectory());
         final JComponent[] inputs = new JComponent[]{
@@ -119,7 +123,7 @@ public class MainWindow extends JFrame implements IWindow {
         }
     }
 
-    protected void setFileDirectory(String name) {
+    private void setFileDirectory(String name) {
         properties.setFileDirectory(name);
     }
 
@@ -205,6 +209,8 @@ public class MainWindow extends JFrame implements IWindow {
                         case 3:// есть MPREV и MNEXT
                             buf.append("есть MPREV и MNEXT</p>");
                             break;
+                        default:
+                            break;
                     }
                     buf.append("<p>c_blue=").append(bot.c_blue);
                     buf.append("<p>c_green=").append(bot.c_green);
@@ -215,13 +221,13 @@ public class MainWindow extends JFrame implements IWindow {
 
                     //buf.append("");
                     IBotGeneController cont;
-                    for (int i = 0; i < Bot.MIND_SIZE; i++) {//15
+                    for (int i = 0; i < Bot.MIND_SIZE; i++) { //15
                         int command = bot.mind[i];  // текущая команда
 
                         // Получаем обработчика команды
-                        cont = Bot.geneController[command];
-                        if (cont != null)// если обработчик такой команды назначен
-                        {
+                        cont = bot.getCurrentCommand();
+                        // если обработчик такой команды назначен
+                        if (cont != null) {
                             buf.append("<p>");
                             buf.append(String.valueOf(i));
                             buf.append("&nbsp;");
@@ -258,8 +264,6 @@ public class MainWindow extends JFrame implements IWindow {
         JMenu paintStepMenu = new JMenu("Шаг отрисовки");
         JMenu botSizeMenu = new JMenu("Размер бота");
         JMenu settingsMenu = new JMenu("Настройки");
-        settingsMenu.add(paintStepMenu);
-        settingsMenu.add(botSizeMenu);
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
         menuBar.add(worldEventsMenu);
@@ -296,6 +300,7 @@ public class MainWindow extends JFrame implements IWindow {
             world.generateAdam();
             paint();
             world.start();
+            runItem.setText("Пауза");
         });
 
         JMenuItem mutateItem = new JMenuItem("Cлучайная мутация");
@@ -354,9 +359,9 @@ public class MainWindow extends JFrame implements IWindow {
             PlayerWindow fw = new PlayerWindow();
         });
 
-        JMenuItem optionItem = new JMenuItem("Установки");
-        optionItem.addActionListener((ActionEvent e) -> {
-            showPropertyDialog();
+        JMenuItem savePathItem = new JMenuItem("Каталог сохранения");
+        savePathItem.addActionListener((ActionEvent e) -> {
+            showSaveDirectoryDialog();
         });
 
         JMenuItem exitItem = new JMenuItem("Выход");
@@ -380,10 +385,12 @@ public class MainWindow extends JFrame implements IWindow {
             JFileChooser fc = new JFileChooser();
             fc.setFileFilter(new FileFilter() {
                 private static final String SUFFIX = ".frame.cb.zip";
+
                 @Override
                 public boolean accept(File f) {
                     return f.isDirectory() || f.getName().endsWith(SUFFIX);
                 }
+
                 @Override
                 public String getDescription() {
                     return "Сохраненный мир (*" + SUFFIX + ")";
@@ -399,6 +406,11 @@ public class MainWindow extends JFrame implements IWindow {
             }
         });
 
+        JMenuItem settingsDialogItem = new JMenuItem("Параметры");
+        settingsDialogItem.addActionListener((ActionEvent e) -> {
+            settingsDialog.showSettingsDialog();
+        });
+
         fileMenu.add(runItem);
         fileMenu.add(restartItem);
         fileMenu.add(snapShotItem);
@@ -406,11 +418,15 @@ public class MainWindow extends JFrame implements IWindow {
         fileMenu.add(recordItem);
         fileMenu.add(openItem);
         fileMenu.addSeparator();
-        fileMenu.add(optionItem);
+        fileMenu.add(savePathItem);
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
         worldEventsMenu.add(mutateItem);
         worldEventsMenu.add(adressJumpItem);
+        settingsMenu.add(paintStepMenu);
+        settingsMenu.add(botSizeMenu);
+        settingsMenu.addSeparator();
+        settingsMenu.add(settingsDialogItem);
 
         /**
          * Меню выбора вида.

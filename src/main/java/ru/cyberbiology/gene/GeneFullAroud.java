@@ -5,6 +5,7 @@ import ru.cyberbiology.prototype.gene.ABotGeneController;
 
 /**
  * Окружен ли бот.
+ *
  * @author Nickolay
  */
 public class GeneFullAroud extends ABotGeneController {
@@ -19,6 +20,7 @@ public class GeneFullAroud extends ABotGeneController {
         return false;
     }
 
+    @Override
     public String getDescription(IBot bot, int i) {
         return "окружен ли бот";
     }
