@@ -78,7 +78,6 @@ public class SettingsDialog extends javax.swing.JDialog {
         tabbedPane.addTab("Общие", panelSettingsGeneral);
 
         cbMultiCell.setText("многоклеточность");
-        cbMultiCell.setEnabled(false);
         cbMultiCell.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 cbMultiCellStateChanged(evt);

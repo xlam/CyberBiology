@@ -30,6 +30,7 @@ import ru.cyberbiology.gene.GeneCreateCell;
 import ru.cyberbiology.prototype.IBot;
 import ru.cyberbiology.prototype.IWorld;
 import ru.cyberbiology.prototype.gene.IBotGeneController;
+import ru.cyberbiology.util.ProjectProperties;
 
 public class Bot implements IBot {
 
@@ -49,47 +50,8 @@ public class Bot implements IBot {
 
     // максимальное количество генов паразитирования в геноме
     private static final int MAX_PEST_GENES = 32;
-
-    static IBotGeneController[] geneController = new IBotGeneController[64];
-
-    static {
-        geneController[23] = new GeneChangeDirectionRelative(); //23 сменить направление относительно
-        geneController[24] = new GeneChangeDirectionAbsolutely(); //24 сменить направление абсолютно
-        geneController[25] = new GenePhotosynthesis();//25 фотосинтез
-        geneController[26] = new GeneStepInRelativeDirection();//26 шаг   в относительном направлении
-        geneController[27] = new GeneStepInAbsolutelyDirection();//27 шаг   в абсолютном направлении
-        geneController[28] = new GeneEatRelativeDirection();//28 шаг  съесть в относительном направлении
-        geneController[29] = new GeneEatAbsoluteDirection();//29 шаг  съесть в абсолютном направлении
-        geneController[30] = new GeneLookRelativeDirection();//30 шаг  посмотреть в относительном направлении
-
-        geneController[32] = new GeneCareRelativeDirection();//32 шаг делится   в относительном напралении
-        geneController[42] = new GeneCareRelativeDirection();
-
-        geneController[33] = new GeneCareAbsolutelyDirection();//33 шаг делится   в абсолютном напралении
-        geneController[50] = new GeneCareAbsolutelyDirection();
-
-        geneController[34] = new GeneGiveRelativeDirection();//34 шаг отдать   в относительном напралении
-        geneController[51] = new GeneGiveRelativeDirection();
-
-        geneController[35] = new GeneGiveAbsolutelyDirection();//35 шаг отдать   в абсолютном напралении
-        geneController[52] = new GeneGiveAbsolutelyDirection();
-
-        geneController[36] = new GeneFlattenedHorizontally();//36 выравнится по горизонтали
-        geneController[37] = new GeneMyLevel();//37 высота бота
-        geneController[38] = new GeneMyHealth();//38 здоровье бота
-        geneController[39] = new GeneMyMineral();//39 минералы бота
-        geneController[40] = new GeneCreateCell();//40 создать клетку многоклеточного
-        geneController[41] = new GeneCreateBot();//40 создать клетку одноклеточного
-        //42 занято
-        geneController[43] = new GeneFullAroud();//43  окружен ли бот
-        geneController[44] = new GeneIsHealthGrow();//44  окружен ли бот
-        geneController[45] = new GeneIsMineralGrow();//45  прибавляются ли минералы
-        geneController[46] = new GeneIsMultiCell();//46  многоклеточный
-        geneController[47] = new GeneMineralToEnergy();//47  преобразовать минералы в энерию
-        geneController[48] = new GeneMutate();//48  мутировать
-        geneController[49] = new GenePest();//49  паразитировать
-        geneController[53] = new GeneImitate(); // 50 имитация, подражание
-    }
+    private final ProjectProperties properties = ProjectProperties.getInstance();
+    private final IBotGeneController[] geneController = new IBotGeneController[MIND_SIZE];
 
     public byte[] mind = new byte[MIND_SIZE];   // геном бота содержит 64 команды
 
@@ -128,9 +90,60 @@ public class Bot implements IBot {
 
     public Bot(World world) {
         this.world = world;
+        setupGeneControllers();
         direction = 2;
         health = 5;
         alive = LV_ALIVE;
+    }
+
+    private void setupGeneControllers() {
+        geneController[23] = new GeneChangeDirectionRelative();     // 23 сменить направление относительно
+        geneController[24] = new GeneChangeDirectionAbsolutely();   // 24 сменить направление абсолютно
+        geneController[25] = new GenePhotosynthesis();              // 25 фотосинтез
+        geneController[26] = new GeneStepInRelativeDirection();     // 26 шаг   в относительном направлении
+        geneController[27] = new GeneStepInAbsolutelyDirection();   // 27 шаг   в абсолютном направлении
+        geneController[28] = new GeneEatRelativeDirection();        // 28 шаг  съесть в относительном направлении
+        geneController[29] = new GeneEatAbsoluteDirection();        // 29 шаг  съесть в абсолютном направлении
+        geneController[30] = new GeneLookRelativeDirection();       // 30 шаг  посмотреть в относительном направлении
+        // 31 свободно
+        geneController[32] = new GeneCareRelativeDirection();       // 32 шаг делится   в относительном напралении
+        geneController[42] = new GeneCareRelativeDirection();
+        geneController[33] = new GeneCareAbsolutelyDirection();     // 33 шаг делится   в абсолютном напралении
+        geneController[50] = new GeneCareAbsolutelyDirection();
+        geneController[34] = new GeneGiveRelativeDirection();       // 34 шаг отдать   в относительном напралении
+        geneController[51] = new GeneGiveRelativeDirection();
+        geneController[35] = new GeneGiveAbsolutelyDirection();     // 35 шаг отдать   в абсолютном напралении
+        geneController[52] = new GeneGiveAbsolutelyDirection();
+        geneController[36] = new GeneFlattenedHorizontally();       // 36 выравнится по горизонтали
+        geneController[37] = new GeneMyLevel();                     // 37 высота бота
+        geneController[38] = new GeneMyHealth();                    // 38 здоровье бота
+        geneController[39] = new GeneMyMineral();                   // 39 минералы бота
+        if (properties.getBoolean("EnableMultiCell")) {
+            geneController[40] = new GeneCreateCell();              // 40 создать клетку многоклеточного
+            geneController[46] = new GeneIsMultiCell();             // 46  многоклеточный
+        }
+        geneController[41] = new GeneCreateBot();                   // 40 создать клетку одноклеточного
+        // 42 занято
+        geneController[43] = new GeneFullAroud();                   // 43  окружен ли бот
+        geneController[44] = new GeneIsHealthGrow();                // 44  окружен ли бот
+        geneController[45] = new GeneIsMineralGrow();               // 45  прибавляются ли минералы
+        // 46 занято
+        geneController[47] = new GeneMineralToEnergy();             // 47  преобразовать минералы в энерию
+        geneController[48] = new GeneMutate();                      // 48  мутировать
+        geneController[49] = new GenePest();                        // 49 паразитировать
+        // 50 занято
+        // 51 занято
+        // 52 занято
+        geneController[53] = new GeneImitate();                     // 53 имитация, подражание
+    }
+
+    /**
+     * Получить контроллер гена, на который указывает УТК генома.
+     *
+     * @return IBotGeneController контроллер гена
+     */
+    public IBotGeneController getCurrentCommand() {
+        return geneController[adr];
     }
 
     /**
