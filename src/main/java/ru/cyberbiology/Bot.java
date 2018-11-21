@@ -50,6 +50,7 @@ public class Bot implements IBot {
 
     // максимальное количество генов паразитирования в геноме
     private static final int MAX_PEST_GENES = 32;
+    private static final Random RANDOM = new Random();
     private final ProjectProperties properties = ProjectProperties.getInstance();
     private final IBotGeneController[] geneController = new IBotGeneController[MIND_SIZE];
 
@@ -1314,10 +1315,8 @@ public class Bot implements IBot {
             return 4; // возвращаем 4
         }
 
-        Random rnd = new Random();
-
         // размер копируемого участка от четверти до половины генома
-        int len = (int) (MIND_SIZE / 4) + rnd.nextInt((int) (MIND_SIZE / 4));
+        int len = (int) (MIND_SIZE / 4) + RANDOM.nextInt((int) (MIND_SIZE / 4));
 
         // адрес начала участка копирования из генома другого бота
         int adrFrom = (int) (Math.random() * MIND_SIZE);
