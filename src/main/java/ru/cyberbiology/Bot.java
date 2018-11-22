@@ -1,6 +1,6 @@
 package ru.cyberbiology;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import ru.cyberbiology.gene.GeneCareAbsolutelyDirection;
 import ru.cyberbiology.gene.GeneCareRelativeDirection;
 import ru.cyberbiology.gene.GeneChangeDirectionAbsolutely;
@@ -50,7 +50,7 @@ public class Bot implements IBot {
 
     // максимальное количество генов паразитирования в геноме
     private static final int MAX_PEST_GENES = 32;
-    private static final Random RANDOM = new Random();
+    private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
     private final ProjectProperties properties = ProjectProperties.getInstance();
     private final IBotGeneController[] geneController = new IBotGeneController[MIND_SIZE];
 
@@ -855,7 +855,7 @@ public class Bot implements IBot {
         // информация о паразитных генах сохраняется в новом боте
         newbot.pest = bot.pest;
 
-        if (Math.random() < 0.25) { // в одном случае из четырех случайным образом меняем один случайный байт в геноме
+        if (RANDOM.nextInt(100) <= 25) { // в одном случае из четырех случайным образом меняем один случайный байт в геноме
             newbot.modifyMind();
         }
 
@@ -888,7 +888,7 @@ public class Bot implements IBot {
         newbot.c_green = bot.c_green;   // цвет такой же, как у предка
         newbot.c_blue = bot.c_blue;     // цвет такой же, как у предка
 
-        newbot.direction = (int) (Math.random() * 8);   // направление, куда повернут новорожденный, генерируется случайно
+        newbot.direction = RANDOM.nextInt(8);   // направление, куда повернут новорожденный, генерируется случайно
 
         world.setBot(newbot);    // отмечаем нового бота в массиве matrix
 // todo: https://github.com/xlam/CyberBiology/issues/2
@@ -923,7 +923,7 @@ public class Bot implements IBot {
 
         System.arraycopy(bot.mind, 0, newbot.mind, 0, MIND_SIZE);   // копируем геном в нового бота
 
-        if (Math.random() < 0.25) { // в одном случае из четырех случайным образом меняем один случайный байт в геноме
+        if (RANDOM.nextInt(100) <= 25) { // в одном случае из четырех случайным образом меняем один случайный байт в геноме
             newbot.modifyMind();
         }
 
@@ -942,7 +942,7 @@ public class Bot implements IBot {
         newbot.c_green = bot.c_green;   // цвет такой же, как у предка
         newbot.c_blue = bot.c_blue;     // цвет такой же, как у предка
 
-        newbot.direction = (int) (Math.random() * 8);   // направление, куда повернут новорожденный, генерируется случайно
+        newbot.direction = RANDOM.nextInt(8);   // направление, куда повернут новорожденный, генерируется случайно
 
         world.setBot(newbot);    // отмечаем нового бота в массиве matrix
 // todo: https://github.com/xlam/CyberBiology/issues/2
@@ -971,8 +971,8 @@ public class Bot implements IBot {
         byte[] modified = new byte[3];
 
         // случайным образом меняется один ген
-        byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63
-        byte mc = (byte) (Math.random() * MIND_SIZE);  // 0..63
+        byte ma = (byte) RANDOM.nextInt(MIND_SIZE); // 0..63
+        byte mc = (byte) RANDOM.nextInt(MIND_SIZE); // 0..63
 
         modified[0] = ma;
         modified[1] = mind[ma];
@@ -1280,7 +1280,7 @@ public class Bot implements IBot {
         int addPest = 3;
 
         for (int i = 0; i < addPest; i++) {
-            byte ma = (byte) (Math.random() * MIND_SIZE);  // 0..63
+            byte ma = (byte) RANDOM.nextInt(MIND_SIZE); // 0..63
             setMind(ma, (byte) 49);
             if (pest >= MAX_PEST_GENES) {
                 break;
@@ -1310,7 +1310,7 @@ public class Bot implements IBot {
         int len = (int) (MIND_SIZE / 4) + RANDOM.nextInt((int) (MIND_SIZE / 4));
 
         // адрес начала участка копирования из генома другого бота
-        int adrFrom = (int) (Math.random() * MIND_SIZE);
+        int adrFrom = RANDOM.nextInt(MIND_SIZE);
 
         // адрес начала участка записи в геном бота
         // следующая ячейка после параметра команды imitate
