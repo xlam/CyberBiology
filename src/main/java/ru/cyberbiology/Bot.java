@@ -30,6 +30,7 @@ import ru.cyberbiology.gene.GeneCreateCell;
 import ru.cyberbiology.prototype.IBot;
 import ru.cyberbiology.prototype.IWorld;
 import ru.cyberbiology.prototype.gene.IBotGeneController;
+import ru.cyberbiology.util.ProjectProperties;
 
 public class Bot implements IBot {
 
@@ -49,49 +50,9 @@ public class Bot implements IBot {
 
     // максимальное количество генов паразитирования в геноме
     private static final int MAX_PEST_GENES = 32;
-
-    private final Random random = new Random(System.currentTimeMillis());
-
-    static IBotGeneController[] geneController = new IBotGeneController[64];
-
-    static {
-        geneController[23] = new GeneChangeDirectionRelative(); //23 сменить направление относительно
-        geneController[24] = new GeneChangeDirectionAbsolutely(); //24 сменить направление абсолютно
-        geneController[25] = new GenePhotosynthesis();//25 фотосинтез
-        geneController[26] = new GeneStepInRelativeDirection();//26 шаг   в относительном направлении
-        geneController[27] = new GeneStepInAbsolutelyDirection();//27 шаг   в абсолютном направлении
-        geneController[28] = new GeneEatRelativeDirection();//28 шаг  съесть в относительном направлении
-        geneController[29] = new GeneEatAbsoluteDirection();//29 шаг  съесть в абсолютном направлении
-        geneController[30] = new GeneLookRelativeDirection();//30 шаг  посмотреть в относительном направлении
-
-        geneController[32] = new GeneCareRelativeDirection();//32 шаг делится   в относительном напралении
-        geneController[42] = new GeneCareRelativeDirection();
-
-        geneController[33] = new GeneCareAbsolutelyDirection();//33 шаг делится   в абсолютном напралении
-        geneController[50] = new GeneCareAbsolutelyDirection();
-
-        geneController[34] = new GeneGiveRelativeDirection();//34 шаг отдать   в относительном напралении
-        geneController[51] = new GeneGiveRelativeDirection();
-
-        geneController[35] = new GeneGiveAbsolutelyDirection();//35 шаг отдать   в абсолютном напралении
-        geneController[52] = new GeneGiveAbsolutelyDirection();
-
-        geneController[36] = new GeneFlattenedHorizontally();//36 выравнится по горизонтали
-        geneController[37] = new GeneMyLevel();//37 высота бота
-        geneController[38] = new GeneMyHealth();//38 здоровье бота
-        geneController[39] = new GeneMyMineral();//39 минералы бота
-        geneController[40] = new GeneCreateCell();//40 создать клетку многоклеточного
-        geneController[41] = new GeneCreateBot();//40 создать клетку одноклеточного
-        //42 занято
-        geneController[43] = new GeneFullAroud();//43  окружен ли бот
-        geneController[44] = new GeneIsHealthGrow();//44  окружен ли бот
-        geneController[45] = new GeneIsMineralGrow();//45  прибавляются ли минералы
-        geneController[46] = new GeneIsMultiCell();//46  многоклеточный
-        geneController[47] = new GeneMineralToEnergy();//47  преобразовать минералы в энерию
-        geneController[48] = new GeneMutate();//48  мутировать
-        geneController[49] = new GenePest();//49  паразитировать
-        geneController[53] = new GeneImitate(); // 50 имитация, подражание
-    }
+    private static final Random RANDOM = new Random();
+    private final ProjectProperties properties = ProjectProperties.getInstance();
+    private final IBotGeneController[] geneController = new IBotGeneController[MIND_SIZE];
 
     public byte[] mind = new byte[MIND_SIZE];   // геном бота содержит 64 команды
 
@@ -130,9 +91,60 @@ public class Bot implements IBot {
 
     public Bot(World world) {
         this.world = world;
+        setupGeneControllers();
         direction = 2;
         health = 5;
         alive = LV_ALIVE;
+    }
+
+    private void setupGeneControllers() {
+        geneController[23] = new GeneChangeDirectionRelative();     // 23 сменить направление относительно
+        geneController[24] = new GeneChangeDirectionAbsolutely();   // 24 сменить направление абсолютно
+        geneController[25] = new GenePhotosynthesis();              // 25 фотосинтез
+        geneController[26] = new GeneStepInRelativeDirection();     // 26 шаг   в относительном направлении
+        geneController[27] = new GeneStepInAbsolutelyDirection();   // 27 шаг   в абсолютном направлении
+        geneController[28] = new GeneEatRelativeDirection();        // 28 шаг  съесть в относительном направлении
+        geneController[29] = new GeneEatAbsoluteDirection();        // 29 шаг  съесть в абсолютном направлении
+        geneController[30] = new GeneLookRelativeDirection();       // 30 шаг  посмотреть в относительном направлении
+        // 31 свободно
+        geneController[32] = new GeneCareRelativeDirection();       // 32 шаг делится   в относительном напралении
+        geneController[42] = new GeneCareRelativeDirection();
+        geneController[33] = new GeneCareAbsolutelyDirection();     // 33 шаг делится   в абсолютном напралении
+        geneController[50] = new GeneCareAbsolutelyDirection();
+        geneController[34] = new GeneGiveRelativeDirection();       // 34 шаг отдать   в относительном напралении
+        geneController[51] = new GeneGiveRelativeDirection();
+        geneController[35] = new GeneGiveAbsolutelyDirection();     // 35 шаг отдать   в абсолютном напралении
+        geneController[52] = new GeneGiveAbsolutelyDirection();
+        geneController[36] = new GeneFlattenedHorizontally();       // 36 выравнится по горизонтали
+        geneController[37] = new GeneMyLevel();                     // 37 высота бота
+        geneController[38] = new GeneMyHealth();                    // 38 здоровье бота
+        geneController[39] = new GeneMyMineral();                   // 39 минералы бота
+        if (properties.getBoolean("EnableMultiCell")) {
+            geneController[40] = new GeneCreateCell();              // 40 создать клетку многоклеточного
+            geneController[46] = new GeneIsMultiCell();             // 46  многоклеточный
+        }
+        geneController[41] = new GeneCreateBot();                   // 40 создать клетку одноклеточного
+        // 42 занято
+        geneController[43] = new GeneFullAroud();                   // 43  окружен ли бот
+        geneController[44] = new GeneIsHealthGrow();                // 44  окружен ли бот
+        geneController[45] = new GeneIsMineralGrow();               // 45  прибавляются ли минералы
+        // 46 занято
+        geneController[47] = new GeneMineralToEnergy();             // 47  преобразовать минералы в энерию
+        geneController[48] = new GeneMutate();                      // 48  мутировать
+        geneController[49] = new GenePest();                        // 49 паразитировать
+        // 50 занято
+        // 51 занято
+        // 52 занято
+        geneController[53] = new GeneImitate();                     // 53 имитация, подражание
+    }
+
+    /**
+     * Получить контроллер гена, на который указывает УТК генома.
+     *
+     * @return IBotGeneController контроллер гена
+     */
+    public IBotGeneController getCurrentCommand() {
+        return geneController[adr];
     }
 
     /**
@@ -140,16 +152,50 @@ public class Bot implements IBot {
      * мозга-генома
      */
     public void step() {
-        if (alive == LV_FREE || alive == LV_ORGANIC_HOLD) {
+
+        if (checkForOrganicAndMoveIt()) {
             return;
+        }
+
+        execGenes();
+
+        /**
+         * Выход из функции и передача управления следующему боту. Но перед
+         * выходом нужно проверить, входит ли бот в многоклеточную цепочку и
+         * если да, то нужно распределить энергию и минералы с соседями, а также
+         * проверить количество накопленой энергии - возможно пришло время
+         * подохнуть или породить потомка.
+         */
+        if (alive == LV_ALIVE) {
+            processMultiCellResources();
+            bornChild();
+            updateHealth();
+
+            if (health < 1) {       // если энергии стало меньше 1
+                bot2Organic(this);  // то время умирать, превращаясь в огранику
+                return;             // и передаем управление к следующему боту
+            }
+
+            updateMinerals();
+        }
+    }
+
+    private boolean checkForOrganicAndMoveIt() {
+
+        if (alive == LV_FREE || alive == LV_ORGANIC_HOLD) {
+            return true;
         } else if (alive == LV_ORGANIC_SINK) {
             // движение вниз в абсолютном направлении и остановка, если
             // уперлись в препятствие
             if (botMove(this, 5, 1) != 2) {
                 alive = LV_ORGANIC_HOLD;
             }
-            return; // это труп - выходим!
+            return true; // это труп - выходим!
         }
+        return false;
+    }
+
+    private void execGenes() {
 
         IBotGeneController cont;
 
@@ -172,100 +218,100 @@ public class Bot implements IBot {
                 break;
             }
         }
+    }
 
-        /**
-         * Выход из функции и передача управления следующему боту. Но перед
-         * выходом нужно проверить, входит ли бот в многоклеточную цепочку и
-         * если да, то нужно распределить энергию и минералы с соседями, а также
-         * проверить количество накопленой энергии - возможно пришло время
-         * подохнуть или породить потомка.
-         */
-        if (alive == LV_ALIVE) {
-            int a = isMulti(this);
-            // распределяем энергию  минералы по многоклеточному организму
-            // возможны три варианта, бот находится внутри цепочки
-            // бот имеет предыдущего бота в цепочке и не имеет следующего
-            // бот имеет следующего бота в цепочке и не имеет предыдущего
-            if (a == 3) {   // бот находится внутри цепочки
-                Bot pb = mprev; // ссылка на предыдущего бота в цепочке
-                Bot nb = mnext; // ссылка на следующего бота в цепочке
-                // делим минералы
-                int m = mineral + nb.mineral + pb.mineral; // общая сумма минералов
-                //распределяем минералы между всеми тремя ботами
-                m = m / 3;
-                mineral = m;
-                nb.mineral = m;
-                pb.mineral = m;
-                // делим энергию
-                // проверим, являются ли следующий и предыдущий боты в цепочке крайними
-                // если они не являются крайними, то распределяем энергию поровну
-                // связанно это с тем, что в крайних ботах в цепочке должно быть больше энергии
-                // что бы они плодили новых ботов и удлиняли цепочку
-                int apb = isMulti(pb);
-                int anb = isMulti(nb);
-                if ((anb == 3) && (apb == 3)) { // если следующий и предыдущий боты не являются крайними
-                    // то распределяем энергию поровну
-                    int h = health + nb.health + pb.health;
-                    h = h / 3;
-                    health = h;
-                    nb.health = h;
-                    pb.health = h;
-                }
-            }
-            // бот является крайним в цепочке и имеет предыдкщего бота
-            if (a == 1) {
-                Bot pb = mprev; // ссылка на предыдущего бота
-                int apb = isMulti(pb);  // проверим, является ли предыдущий бот крайним в цепочке
-                if (apb == 3) { // если нет, то распределяем энергию в пользу текущего бота
-                    // так как он крайний и ему нужна энергия для роста цепочки
-                    int h = health + pb.health;
-                    h = h / 4;
-                    health = h * 3;
-                    pb.health = h;
-                }
-            }
-            // бот является крайним в цепочке и имеет следующего бота
-            if (a == 2) {
-                Bot nb = mnext; // ссылка на следующего бота
-                int anb = isMulti(nb);  // проверим, является ли следующий бот крайним в цепочке
-                if (anb == 3) {         // если нет, то распределяем энергию в пользу текущего бота
-                    // так как он крайний и ему нужна энергия для роста цепочки
-                    int h = health + nb.health;
-                    h = h / 4;
-                    health = h * 3;
-                    nb.health = h;
-                }
-            }
+    private void processMultiCellResources() {
 
-            // Проверим уровень энергии у бота, возможно пришла пора помереть или родить.
-            // Вопрос стоит ли так делать, родждение прописано в генных командах
-            // Sergey Sokolov: ответ - стоит, ибо то, что прописано в генах это спонтанные роды,
-            // а тут естественные.
-            if (health > 999 || (health > 399 && pest > 0)) { // паразиту достаточно 400 энергии для размножения
-                if ((a == 1) || (a == 2)) {
-                    botMulti(this); // если бот был крайним в цепочке, то его потомок входит в состав цепочки
-                } else {
-                    botDouble(this); // если бот был свободным или находился внутри цепочки
-                    // то его потомок рождается свободным
-                }
-            }
+        int a = isMulti(this);
 
-            // трата энергии за ход
-            if (pest > 0) {
-                health = health - 20; // паразит
+        // распределяем энергию  минералы по многоклеточному организму
+        // возможны три варианта, бот находится внутри цепочки
+        // бот имеет предыдущего бота в цепочке и не имеет следующего
+        // бот имеет следующего бота в цепочке и не имеет предыдущего
+        if (a == 3) {   // бот находится внутри цепочки
+            Bot pb = mprev; // ссылка на предыдущего бота в цепочке
+            Bot nb = mnext; // ссылка на следующего бота в цепочке
+            // делим минералы
+            int m = mineral + nb.mineral + pb.mineral; // общая сумма минералов
+            //распределяем минералы между всеми тремя ботами
+            m = m / 3;
+            mineral = m;
+            nb.mineral = m;
+            pb.mineral = m;
+            // делим энергию
+            // проверим, являются ли следующий и предыдущий боты в цепочке крайними
+            // если они не являются крайними, то распределяем энергию поровну
+            // связанно это с тем, что в крайних ботах в цепочке должно быть больше энергии
+            // что бы они плодили новых ботов и удлиняли цепочку
+            int apb = isMulti(pb);
+            int anb = isMulti(nb);
+            if ((anb == 3) && (apb == 3)) { // если следующий и предыдущий боты не являются крайними
+                // то распределяем энергию поровну
+                int h = health + nb.health + pb.health;
+                h = h / 3;
+                health = h;
+                nb.health = h;
+                pb.health = h;
+            }
+        }
+        // бот является крайним в цепочке и имеет предыдкщего бота
+        if (a == 1) {
+            Bot pb = mprev; // ссылка на предыдущего бота
+            int apb = isMulti(pb);  // проверим, является ли предыдущий бот крайним в цепочке
+            if (apb == 3) { // если нет, то распределяем энергию в пользу текущего бота
+                // так как он крайний и ему нужна энергия для роста цепочки
+                int h = health + pb.health;
+                h = h / 4;
+                health = h * 3;
+                pb.health = h;
+            }
+        }
+        // бот является крайним в цепочке и имеет следующего бота
+        if (a == 2) {
+            Bot nb = mnext; // ссылка на следующего бота
+            int anb = isMulti(nb);  // проверим, является ли следующий бот крайним в цепочке
+            if (anb == 3) {         // если нет, то распределяем энергию в пользу текущего бота
+                // так как он крайний и ему нужна энергия для роста цепочки
+                int h = health + nb.health;
+                h = h / 4;
+                health = h * 3;
+                nb.health = h;
+            }
+        }
+    }
+
+    private void bornChild() {
+
+        int a = isMulti(this);
+
+        // Проверим уровень энергии у бота, возможно пришла пора помереть или родить.
+        // Вопрос стоит ли так делать, родждение прописано в генных командах
+        // Sergey Sokolov: ответ - стоит, ибо то, что прописано в генах это спонтанные роды,
+        // а тут естественные.
+        if (health > 999 || (health > 399 && pest > 0)) { // паразиту достаточно 400 энергии для размножения
+            if ((a == 1) || (a == 2)) {
+                botMulti(this); // если бот был крайним в цепочке, то его потомок входит в состав цепочки
             } else {
-                health = health - 3; // здоровый бот
+                botDouble(this); // если бот был свободным или находился внутри цепочки
+                // то его потомок рождается свободным
             }
+        }
+    }
 
-            if (health < 1) {       // если энергии стало меньше 1
-                bot2Organic(this);  // то время умирать, превращаясь в огранику
-                return;             // и передаем управление к следующему боту
-            }
+    private void updateHealth() {
+        // трата энергии за ход
+        if (pest > 0) {
+            health = health - 20; // паразит
+        } else {
+            health = health - 3; // здоровый бот
+        }
+    }
 
-            // бот накапливает минералы с вероятностью, зависящей от глубины, но не более 999
-            if (mineral < 999 && random.nextInt(101) < (int) (y / (world.height * 0.01))) {
-                mineral++;
-            }
+    private void updateMinerals() {
+
+        // бот накапливает минералы с вероятностью, зависящей от глубины, но не более 999
+        if (mineral < 999 && RANDOM.nextInt(101) < (int) (y / (world.height * 0.01))) {
+            mineral++;
         }
     }
 
@@ -1260,10 +1306,8 @@ public class Bot implements IBot {
             return 4; // возвращаем 4
         }
 
-        Random rnd = new Random();
-
         // размер копируемого участка от четверти до половины генома
-        int len = (int) (MIND_SIZE / 4) + rnd.nextInt((int) (MIND_SIZE / 4));
+        int len = (int) (MIND_SIZE / 4) + RANDOM.nextInt((int) (MIND_SIZE / 4));
 
         // адрес начала участка копирования из генома другого бота
         int adrFrom = (int) (Math.random() * MIND_SIZE);
