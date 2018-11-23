@@ -222,10 +222,8 @@ public class MainWindow extends JFrame implements IWindow {
                     //buf.append("");
                     IBotGeneController cont;
                     for (int i = 0; i < Bot.MIND_SIZE; i++) { //15
-                        int command = bot.mind[i];  // текущая команда
-
                         // Получаем обработчика команды
-                        cont = bot.getCurrentCommand();
+                        cont = bot.getGeneControllerForCommand(bot.mind[i]);
                         // если обработчик такой команды назначен
                         if (cont != null) {
                             buf.append("<p>");

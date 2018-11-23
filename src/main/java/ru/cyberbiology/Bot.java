@@ -148,6 +148,15 @@ public class Bot implements IBot {
     }
 
     /**
+     * Возвращает контроллер гена для указанного номера команды.
+     * @param command номер команды
+     * @return контроллер гена, или null
+     */
+    public IBotGeneController getGeneControllerForCommand(int command) {
+        return geneController[command];
+    }
+
+    /**
      * Главная функция жизнедеятельности бота. Здесь выполняется код его
      * мозга-генома
      */
