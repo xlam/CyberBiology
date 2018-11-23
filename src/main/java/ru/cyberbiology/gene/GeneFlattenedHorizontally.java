@@ -1,5 +1,6 @@
 package ru.cyberbiology.gene;
 
+import java.util.concurrent.ThreadLocalRandom;
 import ru.cyberbiology.prototype.IBot;
 import ru.cyberbiology.prototype.gene.ABotGeneController;
 
@@ -10,9 +11,11 @@ import ru.cyberbiology.prototype.gene.ABotGeneController;
  */
 public class GeneFlattenedHorizontally extends ABotGeneController {
 
+    private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
+
     @Override
     public boolean onGene(IBot bot) {
-        if (Math.random() < 0.5) {  // кидаем монетку
+        if (RANDOM.nextInt(101) < 50) {  // кидаем монетку
             bot.setDirection(3);    // если ноль, то поворачиваем в одну сторону
         } else {
             bot.setDirection(7);    // если один, то поворачиваем в другую сторону
