@@ -7,4 +7,5 @@
 <entry key="EnableMultiCell">true</entry>
 <entry key="EnableRelativeByEnergy">false</entry>
 <entry key="EnableRelativeByMinerals">false</entry>
+<entry key="MineralsAccumulation">classic</entry>
 </properties>

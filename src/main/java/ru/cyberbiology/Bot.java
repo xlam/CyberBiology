@@ -308,11 +308,9 @@ public class Bot implements IBot {
     }
 
     private void updateMinerals() {
-
-        // бот накапливает минералы с вероятностью, зависящей от глубины, но не более 999
-        if (mineral < 999 && RANDOM.nextInt(101) < (int) (y / (world.height * 0.01))) {
-            // количество получаемых минералов от 1 на самом верху до 5 в самом низу
-            mineral += RANDOM.nextInt(1, 2 + (int) (4 * y / world.height));
+        // бот накапливает минералы, но не более 999
+        if (mineral < 999) {
+            mineral += world.getMineralsAt(y);
             if (mineral > 999) {
                 mineral = 999;
             }
