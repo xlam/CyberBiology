@@ -6,9 +6,6 @@ import ru.cyberbiology.prototype.view.View;
 
 public class ViewPest extends View {
 
-    public ViewPest() {
-    }
-
     @Override
     public String getName() {
         return "Паразиты";

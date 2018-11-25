@@ -6,9 +6,6 @@ import ru.cyberbiology.prototype.view.View;
 
 public class ViewMineral extends View {
 
-    public ViewMineral() {
-    }
-
     @Override
     public String getName() {
         return "Минералы";

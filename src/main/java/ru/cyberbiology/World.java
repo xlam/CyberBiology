@@ -20,7 +20,7 @@ public class World implements IWorld {
     public World world;
     public IWindow window;
 
-    PlaybackManager playback;
+    private PlaybackManager playback;
     IRecordManager recorder;
 
     /**
@@ -42,7 +42,7 @@ public class World implements IWorld {
     public int pestGenes;
 
     boolean started;
-    Worker thread;
+    private Worker thread;
 
     private ProjectProperties properties;
 
@@ -101,10 +101,8 @@ public class World implements IWorld {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Bot bot = getBot(x, y);
-                if (bot != null) {
-                    if (bot.alive == Bot.LV_ALIVE) {
-                        bot.adr = (byte) (Math.random() * Bot.MIND_SIZE);
-                    }
+                if (bot != null && bot.alive == Bot.LV_ALIVE) {
+                    bot.adr = (byte) (Math.random() * Bot.MIND_SIZE);
                 }
             }
         }
@@ -210,8 +208,6 @@ public class World implements IWorld {
         }
 
         setBot(bot); // даём ссылку на бота в массиве world[]
-
-        return;
     }
 
     @Override
@@ -220,14 +216,12 @@ public class World implements IWorld {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 bot = getBot(x, y);
-                if (bot != null) {
-                    if (bot.alive == bot.LV_ALIVE) {
-                        if (bot.mprevX > -1 && bot.mprevY > -1) {
-                            bot.mprev = getBot(bot.mprevX, bot.mprevY);
-                        }
-                        if (bot.mnextX > -1 && bot.mnextY > -1) {
-                            bot.mnext = getBot(bot.mnextX, bot.mnextY);
-                        }
+                if (bot != null && bot.alive == bot.LV_ALIVE) {
+                    if (bot.mprevX > -1 && bot.mprevY > -1) {
+                        bot.mprev = getBot(bot.mprevX, bot.mprevY);
+                    }
+                    if (bot.mnextX > -1 && bot.mnextY > -1) {
+                        bot.mnext = getBot(bot.mnextX, bot.mnextY);
                     }
                 }
             }

@@ -7,9 +7,6 @@ import ru.cyberbiology.prototype.view.View;
 
 public class ViewBasic extends View {
 
-    public ViewBasic() {
-    }
-
     @Override
     public String getName() {
         return "Базовое";

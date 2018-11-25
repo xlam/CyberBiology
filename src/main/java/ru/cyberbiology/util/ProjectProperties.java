@@ -29,14 +29,13 @@ public class ProjectProperties extends Properties {
     }
 
     public void setFileDirectory(String name) {
-        if (name == null) {
-            name = "";
+        String dirName = "";
+        if (name != null) {
+            if (name.length() > 0 && !name.endsWith(File.separator)) {
+                dirName = name + File.separator;
+            }
         }
-        if (name.length() > 0 && !name.endsWith(File.separator)) {
-            name += File.separator;
-        }
-
-        this.setProperty("FileDirectory", name);
+        this.setProperty("FileDirectory", dirName);
     }
 
     public String getFileDirectory() {

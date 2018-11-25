@@ -345,7 +345,7 @@ public class Bot implements IBot {
      * @param n направление
      * @return X - координата по абсолютному направлению
      */
-    int xFromVektorR(Bot bot, int n) {
+    private int xFromVektorR(int n) {
         int xt = x + Const.INCREMENT_X[direction + n];
         if (xt >= world.width) {
             xt = 0;
@@ -363,7 +363,7 @@ public class Bot implements IBot {
      * @param n направление
      * @return X - координата по абсолютному направлению
      */
-    int xFromVektorA(Bot bot, int n) {
+    private int xFromVektorA(int n) {
         return correctX(x + Const.INCREMENT_X[n]);
     }
 
@@ -374,7 +374,7 @@ public class Bot implements IBot {
      * @return 0 - если координата вышла за правую границу
      * <ширина мира>-1 - ессли координата вышла за левую границу
      */
-    int correctX(int x) {
+    private int correctX(int x) {
         return (x >= world.width) ? 0 : ((x < 0) ? world.width - 1 : x);
     }
 
@@ -385,7 +385,7 @@ public class Bot implements IBot {
      * @param n направление
      * @return Y координата по относительному направлению
      */
-    int yFromVektorR(Bot bot, int n) {
+    private int yFromVektorR(int n) {
         return y + Const.INCREMENT_Y[direction + n];
     }
 
@@ -396,7 +396,7 @@ public class Bot implements IBot {
      * @param n направление
      * @return Y координата по абсолютному направлению
      */
-    int yFromVektorA(Bot bot, int n) {
+    private int yFromVektorA(int n) {
         return y + Const.INCREMENT_Y[n];
     }
 
@@ -405,17 +405,20 @@ public class Bot implements IBot {
      *
      * @return 1-окружен 2-нет
      */
-    int fullAroud(Bot bot) {
+    private int fullAroud(Bot bot) {
         for (int i = 0; i < 8; i++) {
-            int xt = xFromVektorR(bot, i);
-            int yt = yFromVektorR(bot, i);
-            if ((yt >= 0) && (yt < world.height)) {
-                if (world.getBot(xt, yt) == null) {
-                    return 2;
-                }
+            int xt = xFromVektorR(i);
+            int yt = yFromVektorR(i);
+            if ((yt >= 0) && (yt < world.height) && world.getBot(xt, yt) == null) {
+                return 2;
             }
         }
         return 1;
+    }
+
+    @Override
+    public int fullAroud() {
+        return fullAroud(this);
     }
 
     /**
@@ -423,10 +426,10 @@ public class Bot implements IBot {
      *
      * @return номер направление или 8 , если свободных нет
      */
-    int findEmptyDirection(Bot bot) {
+    private int findEmptyDirection(Bot bot) {
         for (int i = 0; i < 8; i++) {
-            int xt = xFromVektorR(bot, i);
-            int yt = yFromVektorR(bot, i);
+            int xt = xFromVektorR(i);
+            int yt = yFromVektorR(i);
             if ((yt >= 0) && (yt < world.height)) {
                 if (world.getBot(xt, yt) == null) {
                     return i;
@@ -442,7 +445,7 @@ public class Bot implements IBot {
      *
      * @return возвращает число из днк, следующее за выполняемой командой
      */
-    int botGetParam(Bot bot) {
+    private int botGetParam(Bot bot) {
         int paramadr = bot.adr + 1;
         if (paramadr >= MIND_SIZE) {
             paramadr = paramadr - MIND_SIZE;
@@ -455,7 +458,7 @@ public class Bot implements IBot {
      *
      * @param a насколько прибавить адрес
      */
-    void botIncCommandAddress(Bot bot, int a) {
+    private void botIncCommandAddress(Bot bot, int a) {
         int paramadr = bot.adr + a;
         if (paramadr >= MIND_SIZE) {
             paramadr = paramadr - MIND_SIZE;
@@ -468,7 +471,7 @@ public class Bot implements IBot {
      *
      * @param a смещение до команды, которая станет смещением
      */
-    void botIndirectIncCmdAddress(Bot bot, int a) {
+    private void botIndirectIncCmdAddress(Bot bot, int a) {
         int paramadr = bot.adr + a;
         if (paramadr >= MIND_SIZE) {
             paramadr = paramadr - MIND_SIZE;
@@ -480,7 +483,7 @@ public class Bot implements IBot {
     /**
      * Превращение бота в органику.
      */
-    void bot2Organic(Bot bot) {
+    private void bot2Organic(Bot bot) {
         bot.alive = LV_ORGANIC_SINK;    // отметим в массиве bots[], что бот органика
         Bot pbot = bot.mprev;
         Bot nbot = bot.mnext;
@@ -506,7 +509,7 @@ public class Bot implements IBot {
      *
      * @return 0 - нет, 1 - есть MPREV, 2 - есть MNEXT, 3 есть MPREV и MNEXT
      */
-    int isMulti(Bot bot) {
+    private int isMulti(Bot bot) {
         int a = 0;
         if (bot.mprev != null) {
             a = 1;
@@ -517,13 +520,18 @@ public class Bot implements IBot {
         return a;
     }
 
+    @Override
+    public int isMulti() {
+        return isMulti(this);
+    }
+
     /**
      * Перемещает бота в нужную точку без проверок.
      *
      * @param xt новые координаты x
      * @param yt новые координаты y
      */
-    void moveBot(Bot bot, int xt, int yt) {
+    private void moveBot(Bot bot, int xt, int yt) {
         world.matrix[world.width * yt + xt] = bot;
         world.clearBot(bot.x, bot.y);
         bot.x = xt;
@@ -532,8 +540,9 @@ public class Bot implements IBot {
 
     /**
      * Удаление бота.
+     * @param bot бот
      */
-    public void deleteBot(Bot bot) {
+    private void deleteBot(Bot bot) {
         Bot pbot = bot.mprev;
         Bot nbot = bot.mnext;
         if (pbot != null) {
@@ -559,11 +568,11 @@ public class Bot implements IBot {
     }
 
     /**
-     * Фотосинтез. Этой командой забит геном первого бота бот получает энергию
-     * солнца в зависимости от глубины и количества минералов, накопленных
-     * ботом.
+     * Фотосинтез.Этой командой забит геном первого бота бот получает энергию
+     * солнца в зависимости от глубины и количества минералов, накопленных ботом.
+     * @param bot
      */
-    public void botEatSun(Bot bot) {
+    private void botEatSun(Bot bot) {
         int t;
         if (bot.mineral < 100) {
             t = 0;
@@ -588,8 +597,9 @@ public class Bot implements IBot {
 
     /**
      * Преобразование минералов в энергию.
+     * @param bot бот
      */
-    public void botMineral2Energy(Bot bot) {
+    private void botMineral2Energy(Bot bot) {
         if (bot.mineral > 100) {   // максимальное количество минералов, которые можно преобразовать в энергию = 100
             bot.mineral = bot.mineral - 100;
             bot.health = bot.health + 400; // 1 минерал = 4 энергии
@@ -609,16 +619,16 @@ public class Bot implements IBot {
      * @param ra флажок(относительное или абсолютное направление)
      * @return
      */
-    public int botMove(Bot bot, int direction, int ra) { // ссылка на бота, направлелие и флажок(относительное или абсолютное направление)
+    private int botMove(Bot bot, int direction, int ra) {
         // на выходе   2-пусто  3-стена  4-органика 5-бот 6-родня
         int xt;
         int yt;
         if (ra == 0) {          // вычисляем координату клетки, куда перемещается бот (относительное направление)
-            xt = xFromVektorR(bot, direction);
-            yt = yFromVektorR(bot, direction);
+            xt = xFromVektorR(direction);
+            yt = yFromVektorR(direction);
         } else {                // вычисляем координату клетки, куда перемещается бот (абсолютное направление)
-            xt = xFromVektorA(bot, direction);
-            yt = yFromVektorA(bot, direction);
+            xt = xFromVektorA(direction);
+            yt = yFromVektorA(direction);
         }
         if ((yt < 0) || (yt >= world.height)) {  // если там ... стена
             return 3;                       // то возвращаем 3
@@ -646,17 +656,17 @@ public class Bot implements IBot {
      * @param ra флажок(относительное или абсолютное направление)
      * @return пусто - 2 стена - 3 органик - 4 бот - 5
      */
-    int botEat(Bot bot, int direction, int ra) { // на входе ссылка на бота, направлелие и флажок(относительное или абсолютное направление)
+    private int botEat(Bot bot, int direction, int ra) {
         // на выходе пусто - 2  стена - 3  органик - 4  бот - 5
         bot.health = bot.health - 4; // бот теряет на этом 4 энергии в независимости от результата
         int xt;
         int yt;
         if (ra == 0) {  // вычисляем координату клетки, с которой хочет скушать бот (относительное направление)
-            xt = xFromVektorR(bot, direction);
-            yt = yFromVektorR(bot, direction);
+            xt = xFromVektorR(direction);
+            yt = yFromVektorR(direction);
         } else {        // вычисляем координату клетки, с которой хочет скушать бот (абсолютное направление)
-            xt = xFromVektorA(bot, direction);
-            yt = yFromVektorA(bot, direction);
+            xt = xFromVektorA(direction);
+            yt = yFromVektorA(direction);
         }
         if ((yt < 0) || (yt >= world.height)) {  // если там стена возвращаем 3
             return 3;
@@ -714,16 +724,16 @@ public class Bot implements IBot {
      * @param ra флажок(относительное или абсолютное направление)
      * @return пусто - 2 стена - 3 органик - 4 бот - 5 родня - 6
      */
-    int botSeeBots(Bot bot, int direction, int ra) { // на входе ссылка на бота, направлелие и флажок(относительное или абсолютное направление)
+    private int botSeeBots(Bot bot, int direction, int ra) { // на входе ссылка на бота, направлелие и флажок(относительное или абсолютное направление)
         // на выходе  пусто - 2  стена - 3  органик - 4  бот - 5  родня - 6
         int xt;
         int yt;
         if (ra == 0) {  // выясняем, есть ли что в этом  направлении (относительном)
-            xt = xFromVektorR(bot, direction);
-            yt = yFromVektorR(bot, direction);
+            xt = xFromVektorR(direction);
+            yt = yFromVektorR(direction);
         } else {       // выясняем, есть ли что в этом  направлении (абсолютном)
-            xt = xFromVektorA(bot, direction);
-            yt = yFromVektorA(bot, direction);
+            xt = xFromVektorA(direction);
+            yt = yFromVektorA(direction);
         }
         if (yt < 0 || yt >= world.height) {  // если там стена возвращаем 3
             return 3;
@@ -743,16 +753,17 @@ public class Bot implements IBot {
     /**
      * Атака на геном соседа, меняем случайный ген случайным образом.
      */
-    void botGenAttack(Bot bot) {   // вычисляем кто у нас перед ботом (используется только относительное направление вперед)
-        int xt = xFromVektorR(bot, 0);
-        int yt = yFromVektorR(bot, 0);
+    private void botGenAttack(Bot bot) {   // вычисляем кто у нас перед ботом (используется только относительное направление вперед)
+        int xt = xFromVektorR(0);
+        int yt = yFromVektorR(0);
         Bot bot2 = world.getBot(xt, yt);
-        if ((yt >= 0) && (yt < world.height) && (bot2 != null)) {
-            if (bot2.alive == LV_ALIVE) { // если там живой бот
-                bot.health = bot.health - 10; // то атакуюий бот теряет на атаку 10 энергии
-                if (bot.health > 0) {
-                    bot2.modifyMind();
-                }
+        if (bot2 == null) {
+            return;
+        }
+        if ((yt >= 0) && (yt < world.height) && (bot2.alive == LV_ALIVE)) {
+            bot.health = bot.health - 10; // то атакуюий бот теряет на атаку 10 энергии
+            if (bot.health > 0) {
+                bot2.modifyMind();
             }
         }
     }
@@ -766,16 +777,16 @@ public class Bot implements IBot {
      * @param ra флажок(относительное или абсолютное направление)
      * @return
      */
-    int botCare(Bot bot, int direction, int ra) { // на входе ссылка на бота, направлелие и флажок(относительное или абсолютное направление)
+    private int botCare(Bot bot, int direction, int ra) { // на входе ссылка на бота, направлелие и флажок(относительное или абсолютное направление)
         // на выходе стена - 2 пусто - 3 органика - 4 удачно - 5
         int xt;
         int yt;
         if (ra == 0) {  // определяем координаты для относительного направления
-            xt = xFromVektorR(bot, direction);
-            yt = yFromVektorR(bot, direction);
+            xt = xFromVektorR(direction);
+            yt = yFromVektorR(direction);
         } else {        // определяем координаты для абсолютного направления
-            xt = xFromVektorA(bot, direction);
-            yt = yFromVektorA(bot, direction);
+            xt = xFromVektorA(direction);
+            yt = yFromVektorA(direction);
         }
         if (yt < 0 || yt >= world.height) {  // если там стена возвращаем 3
             return 3;
@@ -812,15 +823,15 @@ public class Bot implements IBot {
      * @param ra флажок(относительное или абсолютное направление)
      * @return стена - 2 пусто - 3 органика - 4 удачно - 5
      */
-    int botGive(Bot bot, int direction, int ra) { // на выходе стена - 2 пусто - 3 органика - 4 удачно - 5
+    private int botGive(Bot bot, int direction, int ra) { // на выходе стена - 2 пусто - 3 органика - 4 удачно - 5
         int xt;
         int yt;
         if (ra == 0) { // определяем координаты для относительного направления
-            xt = xFromVektorR(bot, direction);
-            yt = yFromVektorR(bot, direction);
+            xt = xFromVektorR(direction);
+            yt = yFromVektorR(direction);
         } else {        // определяем координаты для абсолютного направления
-            xt = xFromVektorA(bot, direction);
-            yt = yFromVektorA(bot, direction);
+            xt = xFromVektorA(direction);
+            yt = yFromVektorA(direction);
         }
         if (yt < 0 || yt >= world.height) {  // если там стена возвращаем 3
             return 3;
@@ -865,8 +876,8 @@ public class Bot implements IBot {
 
         Bot newbot = new Bot(this.world);
 
-        int xt = xFromVektorR(bot, n);   // координаты X и Y
-        int yt = yFromVektorR(bot, n);
+        int xt = xFromVektorR(n);   // координаты X и Y
+        int yt = yFromVektorR(n);
 
         System.arraycopy(bot.mind, 0, newbot.mind, 0, MIND_SIZE);
 
@@ -936,8 +947,8 @@ public class Bot implements IBot {
         Bot newbot = new Bot(this.world);
         newbot.pest = bot.pest;
 
-        int xt = xFromVektorR(bot, n);   // координаты X и Y
-        int yt = yFromVektorR(bot, n);
+        int xt = xFromVektorR(n);   // координаты X и Y
+        int yt = yFromVektorR(n);
 
         System.arraycopy(bot.mind, 0, newbot.mind, 0, MIND_SIZE);   // копируем геном в нового бота
 
@@ -1017,7 +1028,7 @@ public class Bot implements IBot {
      *
      * @return 1 - да, 2 - нет
      */
-    int isHealthGrow(Bot bot) {
+    private int isHealthGrow(Bot bot) {
         int t;
         if (bot.mineral < 100) {
             t = 0;
@@ -1034,12 +1045,17 @@ public class Bot implements IBot {
         }
     }
 
+    @Override
+    public int isHealthGrow() {
+        return isHealthGrow(this);
+    }
+
     /**
      * Родственники ли боты?.
      *
      * @return 0 - нет, 1 - да
      */
-    int isRelative(Bot bot0, Bot bot1) {
+    private int isRelative(Bot bot0, Bot bot1) {
         if (bot1.alive != LV_ALIVE) {
             return 0;
         }
@@ -1060,7 +1076,7 @@ public class Bot implements IBot {
      *
      * @param num номер бота, на сколько озеленить
      */
-    void goGreen(Bot bot, int num) {  // добавляем зелени
+    private void goGreen(Bot bot, int num) {  // добавляем зелени
         bot.c_green = bot.c_green + num;
         if (bot.c_green + num > 255) {
             bot.c_green = 255;
@@ -1089,7 +1105,7 @@ public class Bot implements IBot {
      *
      * @param num номер бота, на сколько осинить
      */
-    void goBlue(Bot bot, int num) {  // добавляем синевы
+    private void goBlue(Bot bot, int num) {  // добавляем синевы
         bot.c_blue = bot.c_blue + num;
         if (bot.c_blue > 255) {
             bot.c_blue = 255;
@@ -1118,7 +1134,7 @@ public class Bot implements IBot {
      *
      * @param num номер бота, на сколько окраснить
      */
-    void goRed(Bot bot, int num) {  // добавляем красноты
+    private void goRed(Bot bot, int num) {  // добавляем красноты
         bot.c_red = bot.c_red + num;
         if (bot.c_red > 255) {
             bot.c_red = 255;
@@ -1154,10 +1170,11 @@ public class Bot implements IBot {
 
     @Override
     public void setDirection(int newdrct) {
-        if (newdrct >= 8) {
-            newdrct = newdrct - 8; // результат должен быть в пределах от 0 до 8
+        int dir = newdrct;
+        if (dir >= 8) {
+            dir = dir - 8; // результат должен быть в пределах от 0 до 8
         }
-        this.direction = newdrct;
+        this.direction = dir;
     }
 
     @Override
@@ -1173,11 +1190,6 @@ public class Bot implements IBot {
     @Override
     public void indirectIncCmdAddress(int a) {
         botIndirectIncCmdAddress(this, a);
-    }
-
-    @Override
-    public int isMulti() {
-        return isMulti(this);
     }
 
     @Override
@@ -1231,16 +1243,6 @@ public class Bot implements IBot {
     }
 
     @Override
-    public int fullAroud() {
-        return fullAroud(this);
-    }
-
-    @Override
-    public int isHealthGrow() {
-        return isHealthGrow(this);
-    }
-
-    @Override
     public void mineral2Energy() {
         botMineral2Energy(this);
     }
@@ -1264,8 +1266,8 @@ public class Bot implements IBot {
 
     @Override
     public void pestAttack() {
-        int xt = xFromVektorR(this, 0);
-        int yt = yFromVektorR(this, 0);
+        int xt = xFromVektorR(0);
+        int yt = yFromVektorR(0);
         Bot victim;
         if ((yt >= 0) && (yt < world.height) && ((victim = world.getBot(xt, yt)) != null)) {
             // паразит атакует только живых и незараженных ботов
@@ -1311,8 +1313,8 @@ public class Bot implements IBot {
         // на выходе пусто - 2  стена - 3  органик - 4  бот - 5
         health = health - 4; // бот теряет на этом 4 энергии в независимости от результата
         // вычисляем относительное направление действия
-        int xt = xFromVektorR(this, direction);
-        int yt = yFromVektorR(this, direction);
+        int xt = xFromVektorR(direction);
+        int yt = yFromVektorR(direction);
         if ((yt < 0) || (yt >= world.height)) {  // если там стена возвращаем 3
             return 3;
         }
