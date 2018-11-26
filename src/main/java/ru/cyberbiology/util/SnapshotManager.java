@@ -1,4 +1,4 @@
-package ru.cyberbiology.record;
+package ru.cyberbiology.util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,10 +13,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
+import ru.cyberbiology.BasicBot;
+import ru.cyberbiology.BasicWorld;
 import ru.cyberbiology.Bot;
-import ru.cyberbiology.World;
-import ru.cyberbiology.prototype.IBot;
 
 /**
  *
@@ -26,9 +25,9 @@ public class SnapshotManager {
 
     private static final int VERSION = 0;
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss");
-    public static final int BOT_DATA_LENGTH = 14 + Bot.MIND_SIZE;
+    public static final int BOT_DATA_LENGTH = 14 + BasicBot.MIND_SIZE;
 
-    public void saveSnapshot(World world) {
+    public void saveSnapshot(BasicWorld world) {
 
         String dirName = world.getProperties().getFileDirectory();
         new File(dirName).mkdirs();
@@ -50,8 +49,8 @@ public class SnapshotManager {
             // Высота мира
             out.writeInt(height);
 
-            Frame frame = new Frame();
-            Bot bot;
+            SnapShotFrame frame = new SnapShotFrame();
+            BasicBot bot;
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
                     bot = world.getBot(x, y);
@@ -73,7 +72,7 @@ public class SnapshotManager {
      * @param world мир, в которые будет загружен снимок
      * @param file файл снимка
      */
-    public void loadSnapshot(World world, File file) {
+    public void loadSnapshot(BasicWorld world, File file) {
         if (file.getName().endsWith(".frame.cb.zip")) {
 
             try (ZipInputStream filein = new ZipInputStream((new FileInputStream(file)));
@@ -92,7 +91,7 @@ public class SnapshotManager {
 
                 int i = 0;
                 while (i < frameLength) {
-                    Bot bot = new Bot((World) world);
+                    BasicBot bot = new BasicBot((BasicWorld) world);
                     bot.adr = in.readByte();        //data[0]
                     bot.x = in.readInt();           //data[1]
                     bot.y = in.readInt();           //data[2]=
@@ -125,11 +124,11 @@ public class SnapshotManager {
         }
     }
 
-    class Frame implements IFrame {
+    private class SnapShotFrame implements Frame {
 
         List<Item> list;
 
-        public Frame() {
+        SnapShotFrame() {
             list = new ArrayList<>();
         }
 
@@ -144,12 +143,12 @@ public class SnapshotManager {
         }
 
         @Override
-        public void addBot(IBot bot, int x, int y) {
-            this.list.add(new Item((Bot) bot, x, y));
+        public void addBot(Bot bot, int x, int y) {
+            this.list.add(new Item((BasicBot) bot, x, y));
         }
     }
 
-    class Item {
+    private class Item {
 
         byte bot_adr;
         int bot_x;
@@ -167,7 +166,7 @@ public class SnapshotManager {
         int bot_mnext_y;
         byte[] mind;
 
-        public Item(Bot bot, int x, int y) {
+        Item(BasicBot bot, int x, int y) {
             // жестко сохраняем все зхначения, так как к моменту сохранения кадра данные могут изменится
             bot_adr = (byte) bot.adr;
             bot_x = bot.x;

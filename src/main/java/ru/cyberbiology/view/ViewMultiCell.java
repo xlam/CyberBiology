@@ -1,10 +1,9 @@
 package ru.cyberbiology.view;
 
 import java.awt.Color;
-import ru.cyberbiology.Bot;
-import ru.cyberbiology.prototype.view.View;
+import ru.cyberbiology.BasicBot;
 
-public class ViewMultiCell extends View {
+public class ViewMultiCell extends AbstractView {
 
     public ViewMultiCell() {
     }
@@ -15,15 +14,15 @@ public class ViewMultiCell extends View {
     }
 
     @Override
-    public Color getBotColor(Bot bot) {
+    public Color getBotColor(BasicBot bot) {
 
         Color color = Color.WHITE;
 
         if (bot == null) {
-            // Color.WHITE
-        } else if ((bot.alive == Bot.LV_ORGANIC_SINK) || (bot.alive == Bot.LV_ORGANIC_HOLD)) {
+            return color;
+        } else if ((bot.alive == BasicBot.LV_ORGANIC_SINK) || (bot.alive == BasicBot.LV_ORGANIC_HOLD)) {
             color = new Color(200, 200, 200);
-        } else if (bot.alive == Bot.LV_ALIVE) {
+        } else if (bot.alive == BasicBot.LV_ALIVE) {
             switch (bot.isMulti()) {
                 case 1:     // - есть MPREV,
                     color = Color.MAGENTA;

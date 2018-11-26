@@ -33,21 +33,25 @@ import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
-import ru.cyberbiology.prototype.IWindow;
-import ru.cyberbiology.prototype.gene.IBotGeneController;
-import ru.cyberbiology.prototype.view.IView;
-import ru.cyberbiology.record.SnapshotManager;
+import ru.cyberbiology.gene.BotGeneController;
 import ru.cyberbiology.util.PerfMeter;
 import ru.cyberbiology.util.ProjectProperties;
+import ru.cyberbiology.util.SnapshotManager;
+import ru.cyberbiology.view.View;
 import ru.cyberbiology.view.ViewBasic;
 import ru.cyberbiology.view.ViewEnergy;
 import ru.cyberbiology.view.ViewMineral;
 import ru.cyberbiology.view.ViewMultiCell;
 import ru.cyberbiology.view.ViewPest;
 
-public class MainWindow extends JFrame implements IWindow {
+public class MainWindow extends JFrame implements Window {
 
-    public static World world;
+    public static BasicWorld world;
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new MainWindow();
+        });
+    }
 
     /**
      * буфер для отрисовки ботов
@@ -57,12 +61,12 @@ public class MainWindow extends JFrame implements IWindow {
     /**
      * актуальный отрисовщик
      */
-    private IView view;
+    private View view;
 
     /**
      * Перечень возможных отрисовщиков
      */
-    private final IView[] views = new IView[]{
+    private final View[] views = new View[]{
         new ViewBasic(),
         new ViewEnergy(),
         new ViewMineral(),
@@ -131,7 +135,7 @@ public class MainWindow extends JFrame implements IWindow {
     }
 
     @Override
-    public void setView(IView view) {
+    public void setView(View view) {
         this.view = view;
         if (null != world && !world.started()) {
             paint();
@@ -165,8 +169,7 @@ public class MainWindow extends JFrame implements IWindow {
 
     private void setupPaintPanel() {
         add(paintPanel, BorderLayout.CENTER); // добавляем нашу карту в центр
-        paintPanel.addMouseListener(
-            new MouseAdapter() {
+        paintPanel.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (world == null) {
@@ -180,7 +183,7 @@ public class MainWindow extends JFrame implements IWindow {
                     int y = (int) p.getY();
                     int botX = (x - 2) / properties.botSize();
                     int botY = (y - 2) / properties.botSize();
-                    Bot bot = world.getBot(botX, botY);
+                    BasicBot bot = world.getBot(botX, botY);
                     if (bot == null) {
                         return;
                     }
@@ -216,8 +219,8 @@ public class MainWindow extends JFrame implements IWindow {
                     buf.append("<p>mineral=").append(bot.mineral);
 
                     //buf.append("");
-                    IBotGeneController cont;
-                    for (int i = 0; i < Bot.MIND_SIZE; i++) { //15
+                    BotGeneController cont;
+                    for (int i = 0; i < BasicBot.MIND_SIZE; i++) { //15
                         // Получаем обработчика команды
                         cont = bot.getGeneControllerForCommand(bot.mind[i]);
                         // если обработчик такой команды назначен
@@ -270,7 +273,7 @@ public class MainWindow extends JFrame implements IWindow {
                 // Доступная часть экрана для рисования карты
                 int width1 = paintPanel.getWidth() / properties.botSize();
                 int height1 = paintPanel.getHeight() / properties.botSize();
-                world = new World(MainWindow.this, width1, height1);
+                world = new BasicWorld(MainWindow.this, width1, height1);
                 world.generateAdam();
                 paint();
             }
@@ -290,7 +293,7 @@ public class MainWindow extends JFrame implements IWindow {
             world.stop();
             int width1 = paintPanel.getWidth() / properties.botSize();
             int height1 = paintPanel.getHeight() / properties.botSize();
-            world = new World(MainWindow.this, width1, height1);
+            world = new BasicWorld(MainWindow.this, width1, height1);
             world.generateAdam();
             paint();
             world.start();
@@ -307,8 +310,7 @@ public class MainWindow extends JFrame implements IWindow {
 
         JMenuItem adressJumpItem = new JMenuItem("Сбой программы генома");
         adressJumpItem.addActionListener((ActionEvent e) -> {
-            // TODO переименовать
-            world.jumpBotsCmdAdress();
+            world.setRandomCmdAdress();
         });
 
         snapShotItem.addActionListener((ActionEvent e) -> {
@@ -349,7 +351,7 @@ public class MainWindow extends JFrame implements IWindow {
                 if (world == null) {
                     int width = paintPanel.getWidth() / properties.botSize();
                     int height = paintPanel.getHeight() / properties.botSize();
-                    world = new World(this, width, height);
+                    world = new BasicWorld(this, width, height);
                 }
                 snapshotManager.loadSnapshot(world, fc.getSelectedFile());
             }
@@ -379,9 +381,9 @@ public class MainWindow extends JFrame implements IWindow {
          * Меню выбора вида.
          */
         ButtonGroup viewGroup = new ButtonGroup();
-        for (IView view: views) {
-            JRadioButtonMenuItem item = new JRadioButtonMenuItem(view.getName(), view instanceof ViewBasic);
-            item.addActionListener(e -> setView(view));
+        for (View v: views) {
+            JRadioButtonMenuItem item = new JRadioButtonMenuItem(v.getName(), v instanceof ViewBasic);
+            item.addActionListener(e -> setView(v));
             viewGroup.add(item);
             viewMenu.add(item);
         }
@@ -476,9 +478,4 @@ public class MainWindow extends JFrame implements IWindow {
         return version;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new MainWindow();
-        });
-    }
 }

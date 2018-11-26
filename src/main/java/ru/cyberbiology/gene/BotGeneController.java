@@ -1,13 +1,13 @@
-package ru.cyberbiology.prototype.gene;
+package ru.cyberbiology.gene;
 
-import ru.cyberbiology.prototype.IBot;
+import ru.cyberbiology.Bot;
 
 /**
  * Интерфейс обработчика гена бота.
  *
  * @author Nickolay
  */
-public interface IBotGeneController {
+public interface BotGeneController {
 
     /**
      * Реализация одного шага интерпетации гена.
@@ -16,7 +16,7 @@ public interface IBotGeneController {
      * @return true, если обработка в данной серии этому боту больше
      * не требуется.
      */
-    public boolean onGene(IBot bot);
+    public boolean onGene(Bot bot);
 
-    public String getDescription(IBot bot, int i);
+    public String getDescription(Bot bot, int i);
 }

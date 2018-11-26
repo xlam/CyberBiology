@@ -6,13 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import ru.cyberbiology.Const;
+import ru.cyberbiology.Constant;
 
 public class ProjectProperties extends Properties {
 
     private static final String PROPERTIES_FILE = "properties.xml";
     private static ProjectProperties instance;
-    private String fileName = PROPERTIES_FILE;
 
     public static ProjectProperties getInstance() {
         if (!(instance instanceof ProjectProperties)) {
@@ -20,6 +19,8 @@ public class ProjectProperties extends Properties {
         }
         return instance;
     }
+
+    private String fileName = PROPERTIES_FILE;
 
     private ProjectProperties(String fileName) {
         defaults = new Properties();
@@ -43,7 +44,7 @@ public class ProjectProperties extends Properties {
     }
 
     public int botSize() {
-        return Integer.parseInt(getProperty("botSize", "" + Const.DEFAULT_BOT_SIZE));
+        return Integer.parseInt(getProperty("botSize", "" + Constant.DEFAULT_BOT_SIZE));
     }
 
     private void loadUser() {
@@ -62,8 +63,8 @@ public class ProjectProperties extends Properties {
         }
         try {
             defaults.loadFromXML(propertiesStream);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

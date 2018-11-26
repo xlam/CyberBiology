@@ -1,20 +1,19 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
 
 /**
  * Какое моё здоровье?.
  *
  * @author Nickolay
  */
-public class GeneMyHealth extends ABotGeneController {
+public class GeneMyHealth extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         // байт в геноме может иметь значение от 0 до 63
         // умножая значение байта на 15 получаем значение от 0 до 945
-        int param = bot.getParam() * 1000 / IBot.MIND_SIZE;   // берем следующий за командой байт и умножаем на 15
+        int param = bot.getParam() * 1000 / Bot.MIND_SIZE;   // берем следующий за командой байт и умножаем на 15
         // если здоровье бота ниже, чем полученное значение,
         // то прибавляем к указатели текущей команды значение 2-го байта, после выполняемой команды
         if (bot.getHealth() < param) {
@@ -26,7 +25,7 @@ public class GeneMyHealth extends ABotGeneController {
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "какое моё здоровье";
     }
 }

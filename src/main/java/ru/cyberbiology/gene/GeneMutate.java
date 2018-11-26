@@ -1,7 +1,6 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
 
 /**
  * Мутировать. Спорная команда, во время её выполнения меняются случайным
@@ -10,10 +9,10 @@ import ru.cyberbiology.prototype.gene.ABotGeneController;
  *
  * @author Nickolay
  */
-public class GeneMutate extends ABotGeneController {
+public class GeneMutate extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         bot.modifyMind();
         bot.modifyMind();
         bot.incCommandAddress(1);
@@ -21,7 +20,7 @@ public class GeneMutate extends ABotGeneController {
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "мутировать";
     }
 }

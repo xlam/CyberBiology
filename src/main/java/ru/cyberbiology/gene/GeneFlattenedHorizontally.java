@@ -1,20 +1,19 @@
 package ru.cyberbiology.gene;
 
 import java.util.concurrent.ThreadLocalRandom;
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
 
 /**
  * Выравнится по горизонтали.
  *
  * @author Nickolay
  */
-public class GeneFlattenedHorizontally extends ABotGeneController {
+public class GeneFlattenedHorizontally extends AbstractBotGeneController {
 
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         if (RANDOM.nextInt(101) < 50) {  // кидаем монетку
             bot.setDirection(3);    // если ноль, то поворачиваем в одну сторону
         } else {
@@ -25,7 +24,7 @@ public class GeneFlattenedHorizontally extends ABotGeneController {
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "выравнится по горизонтали";
     }
 }

@@ -4,7 +4,7 @@ package ru.cyberbiology;
  *
  * @author Sergey Sokolov <xlamserg@gmail.com>
  */
-public class Const {
+public interface Constant {
 
     public static final int DEFAULT_BOT_SIZE = 4;
 

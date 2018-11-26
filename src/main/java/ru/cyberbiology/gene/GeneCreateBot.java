@@ -1,17 +1,16 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
 
 /**
  * Деление (создание свободноживущего потомка).
  *
  * @author Nickolay
  */
-public class GeneCreateBot extends ABotGeneController {
+public class GeneCreateBot extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         // 0 - если бот не входит в многоклеточную цепочку
         // 1 или 2 - если бот является крайним в цепочке
         // 3 - если бот внутри цепочки
@@ -26,7 +25,7 @@ public class GeneCreateBot extends ABotGeneController {
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "деление (создание свободноживущего потомка)";
     }
 }

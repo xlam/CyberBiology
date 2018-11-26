@@ -1,17 +1,16 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
 
 /**
  * Многоклеточный ли я?.
  *
  * @author Nickolay
  */
-public class GeneIsMultiCell extends ABotGeneController {
+public class GeneIsMultiCell extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         int mu = bot.isMulti();
         if (mu == 0) {
             bot.indirectIncCmdAddress(1); // бот свободно живущий
@@ -24,7 +23,7 @@ public class GeneIsMultiCell extends ABotGeneController {
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "многоклеточный ли я ?";
     }
 }

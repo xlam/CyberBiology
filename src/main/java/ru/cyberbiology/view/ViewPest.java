@@ -1,10 +1,9 @@
 package ru.cyberbiology.view;
 
 import java.awt.Color;
-import ru.cyberbiology.Bot;
-import ru.cyberbiology.prototype.view.View;
+import ru.cyberbiology.BasicBot;
 
-public class ViewPest extends View {
+public class ViewPest extends AbstractView {
 
     @Override
     public String getName() {
@@ -12,15 +11,15 @@ public class ViewPest extends View {
     }
 
     @Override
-    public Color getBotColor(Bot bot) {
+    public Color getBotColor(BasicBot bot) {
 
         Color color = Color.WHITE;
 
         if (bot == null) {
-            color = Color.WHITE;
-        } else if ((bot.alive == Bot.LV_ORGANIC_HOLD) || (bot.alive == Bot.LV_ORGANIC_SINK)) {
+            return color;
+        } else if ((bot.alive == BasicBot.LV_ORGANIC_HOLD) || (bot.alive == BasicBot.LV_ORGANIC_SINK)) {
             color = new Color(200, 200, 200);
-        } else if (bot.alive == Bot.LV_ALIVE) {
+        } else if (bot.alive == BasicBot.LV_ALIVE) {
             // цвет бота без генов паразитизма
             int colorRed = 170;
             int colorGreen = 170;
