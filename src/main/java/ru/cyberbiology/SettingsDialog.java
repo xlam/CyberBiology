@@ -39,9 +39,14 @@ public class SettingsDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bgMineralsAccumulation = new javax.swing.ButtonGroup();
         tabbedPane = new javax.swing.JTabbedPane();
         panelSettingsGeneral = new javax.swing.JPanel();
         labelDevNote = new javax.swing.JLabel();
+        panelSettingsWorld = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        rbMineralsAccClassic = new javax.swing.JRadioButton();
+        rbMineralsAccHeight = new javax.swing.JRadioButton();
         panelSettingaBots = new javax.swing.JPanel();
         cbMultiCell = new javax.swing.JCheckBox();
         cbRelativeByEnergy = new javax.swing.JCheckBox();
@@ -76,6 +81,54 @@ public class SettingsDialog extends javax.swing.JDialog {
         );
 
         tabbedPane.addTab("Общие", panelSettingsGeneral);
+
+        jLabel1.setText("Накопление минералов:");
+
+        bgMineralsAccumulation.add(rbMineralsAccClassic);
+        rbMineralsAccClassic.setSelected(properties.getProperty("MineralsAccumulation", "").equals("classic"));
+        rbMineralsAccClassic.setText("классическое");
+        rbMineralsAccClassic.setToolTipText("Минералы накапливаются только в нижней половине мира с постоянной скоростью 1 минерал в пересчет");
+        rbMineralsAccClassic.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbMineralsAccClassicActionPerformed(evt);
+            }
+        });
+
+        bgMineralsAccumulation.add(rbMineralsAccHeight);
+        rbMineralsAccHeight.setSelected(properties.getProperty("MineralsAccumulation", "").equals("height"));
+        rbMineralsAccHeight.setText("по всей глубине");
+        rbMineralsAccHeight.setToolTipText("Минералы накапливаются по всей глубине мира. Вероятность их получения и количество зависят от глубины (от 1 на верху до 5 внизу)");
+        rbMineralsAccHeight.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbMineralsAccHeightActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelSettingsWorldLayout = new javax.swing.GroupLayout(panelSettingsWorld);
+        panelSettingsWorld.setLayout(panelSettingsWorldLayout);
+        panelSettingsWorldLayout.setHorizontalGroup(
+            panelSettingsWorldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSettingsWorldLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelSettingsWorldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(rbMineralsAccClassic)
+                    .addComponent(rbMineralsAccHeight))
+                .addContainerGap(160, Short.MAX_VALUE))
+        );
+        panelSettingsWorldLayout.setVerticalGroup(
+            panelSettingsWorldLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSettingsWorldLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rbMineralsAccClassic)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rbMineralsAccHeight)
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+
+        tabbedPane.addTab("Мир", panelSettingsWorld);
 
         cbMultiCell.setText("многоклеточность");
         cbMultiCell.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -158,7 +211,16 @@ public class SettingsDialog extends javax.swing.JDialog {
         changedSettings.put("EnableMultiCell", cb.isSelected() ? "true" : "false");
     }//GEN-LAST:event_cbMultiCellStateChanged
 
+    private void rbMineralsAccClassicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbMineralsAccClassicActionPerformed
+        changedSettings.put("MineralsAccumulation", "classic");
+    }//GEN-LAST:event_rbMineralsAccClassicActionPerformed
+
+    private void rbMineralsAccHeightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbMineralsAccHeightActionPerformed
+        changedSettings.put("MineralsAccumulation", "height");
+    }//GEN-LAST:event_rbMineralsAccHeightActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup bgMineralsAccumulation;
     private javax.swing.JButton buttonCancel;
     private javax.swing.JButton buttonOk;
     private javax.swing.JPanel buttonPanel;
@@ -168,9 +230,13 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelDevNote;
     private javax.swing.JPanel panelSettingaBots;
     private javax.swing.JPanel panelSettingsGeneral;
+    private javax.swing.JPanel panelSettingsWorld;
+    private javax.swing.JRadioButton rbMineralsAccClassic;
+    private javax.swing.JRadioButton rbMineralsAccHeight;
     private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
 

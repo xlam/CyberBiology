@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ru.cyberbiology.gene.GeneMutate;
@@ -31,6 +32,8 @@ public class World implements IWorld {
      */
     public static final int PAINT_STEP = 1000;
 
+    private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
+
     public int width;
     public int height;
 
@@ -45,6 +48,7 @@ public class World implements IWorld {
     private Worker thread;
 
     private ProjectProperties properties;
+    private static String mineralsAccumulation;
 
     protected World(IWindow win) {
         world = this;
@@ -298,6 +302,7 @@ public class World implements IWorld {
 
     public final void start() {
         if (!this.started()) {
+            mineralsAccumulation = properties.getProperty("MineralsAccumulation", "classic");
             this.thread = new Worker();
             // запуск таймера при запуске потока
             PerfMeter.start();
@@ -328,6 +333,47 @@ public class World implements IWorld {
 
     public final boolean stopRecording() {
         return this.recorder.stopRecording();
+    }
+
+    /**
+     * Вычисляет количество минералов, которое может накопить бот на данной глубине.
+     * @param y глубина
+     * @return количество минералов
+     */
+    final int getMineralsAt(int y) {
+
+        if (mineralsAccumulation.equals("height")) {
+            return getMineralsAccHeight(y);
+        }
+
+        if (mineralsAccumulation.equals("classic")) {
+            return getMineralsAccClassic(y);
+        }
+
+        return 0;
+    }
+
+    private int getMineralsAccClassic(int y) {
+        // если бот находится на глубине ниже 48 уровня
+        int minerals = 0;
+        if (y > world.height / 2) {
+            minerals++;
+            if (y > world.height / 6 * 4) {
+                minerals++;
+            }
+            if (y > world.height / 6 * 5) {
+                minerals++;
+            }
+        }
+        return minerals;
+    }
+
+    private int getMineralsAccHeight(int y) {
+        if (RANDOM.nextInt(101) < (int) (y / (height * 0.01))) {
+            return 0;
+        }
+        // количество получаемых минералов от 1 на самом верху до 5 в самом низу
+        return RANDOM.nextInt(1, 2 + (int) (4 * y / height));
     }
 
     public final Bot getBot(int botX, int botY) {

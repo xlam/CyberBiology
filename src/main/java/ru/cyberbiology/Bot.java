@@ -317,16 +317,9 @@ public class Bot implements IBot {
     }
 
     private void updateMinerals() {
-        // если бот находится на глубине ниже 48 уровня
-        // то он автоматом накапливает минералы, но не более 999
-        if (y > world.height / 2) {
-            mineral = mineral + 1;
-            if (y > world.height / 6 * 4) {
-                mineral = mineral + 1;
-            }
-            if (y > world.height / 6 * 5) {
-                mineral = mineral + 1;
-            }
+        // бот накапливает минералы, но не более 999
+        if (mineral < 999) {
+            mineral += world.getMineralsAt(y);
             if (mineral > 999) {
                 mineral = 999;
             }
