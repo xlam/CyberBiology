@@ -5,9 +5,6 @@ import ru.cyberbiology.BasicBot;
 
 public class ViewMultiCell extends AbstractView {
 
-    public ViewMultiCell() {
-    }
-
     @Override
     public String getName() {
         return "Многоклеточные";

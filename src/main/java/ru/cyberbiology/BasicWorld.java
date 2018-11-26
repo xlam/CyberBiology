@@ -87,7 +87,7 @@ public class BasicWorld implements World {
      * Сбой в программе генома. Перемещает указатель текущей команды каждого
      * бота случайным образом.
      */
-    void setRandomCmdAdress() {
+    public void setRandomCmdAdress() {
         if (started()) {
             stop();
         }
@@ -188,7 +188,6 @@ public class BasicWorld implements World {
                     organic++;
                 }
                 population++;
-                // TODO pestGenes всегда равно pest*2 ?!
                 if (bot.pest > 0) {
                     pestGenes += bot.pest;
                     pests++;

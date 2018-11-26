@@ -391,7 +391,8 @@ public class BasicBot implements Bot {
      *
      * @return 1-окружен 2-нет
      */
-    private int fullAroud(BasicBot bot) {
+    @Override
+    public int fullAroud() {
         for (int i = 0; i < 8; i++) {
             int xt = xFromVektorR(i);
             int yt = yFromVektorR(i);
@@ -402,24 +403,17 @@ public class BasicBot implements Bot {
         return 1;
     }
 
-    @Override
-    public int fullAroud() {
-        return fullAroud(this);
-    }
-
     /**
      * Ищет свободные ячейки вокруг бота кругу через низ.
      *
      * @return номер направление или 8 , если свободных нет
      */
-    private int findEmptyDirection(BasicBot bot) {
+    private int findEmptyDirection() {
         for (int i = 0; i < 8; i++) {
             int xt = xFromVektorR(i);
             int yt = yFromVektorR(i);
-            if ((yt >= 0) && (yt < world.height)) {
-                if (world.getBot(xt, yt) == null) {
-                    return i;
-                }
+            if (yt >= 0 && yt < world.height && world.getBot(xt, yt) == null) {
+                return i;
             }
         }
         // свободных направлений нет
@@ -857,7 +851,7 @@ public class BasicBot implements Bot {
         if (bot.health <= 0) {
             return; // если у него было меньше 150, то пора помирать
         }
-        int n = findEmptyDirection(bot);    // проверим, окружен ли бот
+        int n = findEmptyDirection();    // проверим, окружен ли бот
         if (n == 8) {                       // если бот окружен, то он в муках погибает
             bot.health = 0;
             return;
@@ -927,7 +921,7 @@ public class BasicBot implements Bot {
         if (bot.health <= 0) {
             return; // если у него было меньше 150, то пора помирать
         }
-        int n = findEmptyDirection(bot); // проверим, окружен ли бот
+        int n = findEmptyDirection(); // проверим, окружен ли бот
 
         if (n == 8) {  // если бот окружен, то он в муках погибает
             bot.health = 0;
@@ -1222,12 +1216,12 @@ public class BasicBot implements Bot {
     }
 
     @Override
-    public void Double() {
+    public void doubleFree() {
         this.botDouble(this);
     }
 
     @Override
-    public void multi() {
+    public void doubleMulti() {
         this.botMulti(this);
     }
 
@@ -1258,9 +1252,10 @@ public class BasicBot implements Bot {
         int xt = xFromVektorR(0);
         int yt = yFromVektorR(0);
         BasicBot victim;
-        if ((yt >= 0) && (yt < world.height) && ((victim = world.getBot(xt, yt)) != null)) {
+        if (yt >= 0 && yt < world.height) {
+             victim = world.getBot(xt, yt);
             // паразит атакует только живых и незараженных ботов
-            if (victim.alive == LV_ALIVE && victim.pest == 0) {
+            if (victim != null && victim.alive == LV_ALIVE && victim.pest == 0) {
                 int healthDrain = victim.health > 100 ? 100 : victim.health;
                 this.health += healthDrain;
                 if (this.health > 1000) {

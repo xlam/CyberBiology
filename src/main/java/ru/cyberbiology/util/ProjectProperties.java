@@ -12,6 +12,7 @@ public class ProjectProperties extends Properties {
 
     private static final String PROPERTIES_FILE = "properties.xml";
     private static ProjectProperties instance;
+    private String fileName = PROPERTIES_FILE;
 
     public static ProjectProperties getInstance() {
         if (!(instance instanceof ProjectProperties)) {
@@ -19,8 +20,6 @@ public class ProjectProperties extends Properties {
         }
         return instance;
     }
-
-    private String fileName = PROPERTIES_FILE;
 
     private ProjectProperties(String fileName) {
         defaults = new Properties();
@@ -31,10 +30,8 @@ public class ProjectProperties extends Properties {
 
     public void setFileDirectory(String name) {
         String dirName = "";
-        if (name != null) {
-            if (name.length() > 0 && !name.endsWith(File.separator)) {
-                dirName = name + File.separator;
-            }
+        if (name != null && name.length() > 0 && !name.endsWith(File.separator)) {
+            dirName = name + File.separator;
         }
         this.setProperty("FileDirectory", dirName);
     }

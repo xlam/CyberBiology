@@ -47,11 +47,6 @@ import ru.cyberbiology.view.ViewPest;
 public class MainWindow extends JFrame implements Window {
 
     public static BasicWorld world;
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new MainWindow();
-        });
-    }
 
     /**
      * буфер для отрисовки ботов
@@ -478,4 +473,9 @@ public class MainWindow extends JFrame implements Window {
         return version;
     }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new MainWindow();
+        });
+    }
 }

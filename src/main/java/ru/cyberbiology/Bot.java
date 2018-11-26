@@ -66,9 +66,9 @@ public interface Bot {
 
     public int getMineral();
 
-    public void Double();
+    public void doubleFree();
 
-    public void multi();
+    public void doubleMulti();
 
     public int fullAroud();
 

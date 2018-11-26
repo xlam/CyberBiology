@@ -16,9 +16,9 @@ public class GeneCreateBot extends AbstractBotGeneController {
         // 3 - если бот внутри цепочки
         int a = bot.isMulti();
         if ((a == 0) || (a == 3)) {
-            bot.Double();   // если бот свободный или внутри цепочки, , то новый бот рождается свободным
+            bot.doubleFree();   // если бот свободный или внутри цепочки, , то новый бот рождается свободным
         } else {
-            bot.multi();    // если бот крайний в цепочке, новый бот рождается приклеенным к боту-предку
+            bot.doubleMulti();    // если бот крайний в цепочке, новый бот рождается приклеенным к боту-предку
         }
         bot.incCommandAddress(1);
         return true;

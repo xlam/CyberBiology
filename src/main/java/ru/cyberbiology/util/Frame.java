@@ -6,7 +6,7 @@ import ru.cyberbiology.Bot;
 
 public interface Frame {
 
-    public void addBot(Bot bot, int x, int y);
+    public void addBot(Bot bot);
 
     public int save(DataOutputStream fileout) throws IOException;
 

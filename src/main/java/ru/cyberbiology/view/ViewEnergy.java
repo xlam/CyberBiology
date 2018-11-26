@@ -5,9 +5,6 @@ import ru.cyberbiology.BasicBot;
 
 public class ViewEnergy extends AbstractView {
 
-    public ViewEnergy() {
-    }
-
     @Override
     public String getName() {
         return "Энергия";

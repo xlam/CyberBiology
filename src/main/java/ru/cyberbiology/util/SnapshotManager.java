@@ -55,7 +55,7 @@ public class SnapshotManager {
                 for (int x = 0; x < width; x++) {
                     bot = world.getBot(x, y);
                     if (bot != null) {
-                        frame.addBot(bot, x, y);
+                        frame.addBot(bot);
                     }
                 }
             }
@@ -80,6 +80,10 @@ public class SnapshotManager {
 
                 ZipEntry zipEntry = filein.getNextEntry();
                 int version = in.readInt();
+                if (version != VERSION) {
+                    System.err.println("WARNING: Snapshot '" + file.getName() + "' was made by another application version!");
+                    System.err.println("WARNING: There is no guarantee it loads correctly!");
+                }
                 int width = in.readInt();
                 int height = in.readInt();
                 world.setSize(width, height);
@@ -126,7 +130,7 @@ public class SnapshotManager {
 
     private class SnapShotFrame implements Frame {
 
-        List<Item> list;
+        private final List<Item> list;
 
         SnapShotFrame() {
             list = new ArrayList<>();
@@ -143,30 +147,30 @@ public class SnapshotManager {
         }
 
         @Override
-        public void addBot(Bot bot, int x, int y) {
-            this.list.add(new Item((BasicBot) bot, x, y));
+        public void addBot(Bot bot) {
+            this.list.add(new Item((BasicBot) bot));
         }
     }
 
     private class Item {
 
-        byte bot_adr;
-        int bot_x;
-        int bot_y;
-        int bot_health;
-        int bot_mineral;
-        byte bot_alive;
-        int bot_c_red;
-        int bot_c_green;
-        int bot_c_blue;
-        byte bot_direction;
-        int bot_mprev_x;
-        int bot_mprev_y;
-        int bot_mnext_x;
-        int bot_mnext_y;
-        byte[] mind;
+        private final byte bot_adr;
+        private final int bot_x;
+        private final int bot_y;
+        private final int bot_health;
+        private final int bot_mineral;
+        private final byte bot_alive;
+        private final int bot_c_red;
+        private final int bot_c_green;
+        private final int bot_c_blue;
+        private final byte bot_direction;
+        private final int bot_mprev_x;
+        private final int bot_mprev_y;
+        private final int bot_mnext_x;
+        private final int bot_mnext_y;
+        private final byte[] mind;
 
-        Item(BasicBot bot, int x, int y) {
+        Item(BasicBot bot) {
             // жестко сохраняем все зхначения, так как к моменту сохранения кадра данные могут изменится
             bot_adr = (byte) bot.adr;
             bot_x = bot.x;

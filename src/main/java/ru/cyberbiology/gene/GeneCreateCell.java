@@ -16,9 +16,9 @@ public class GeneCreateCell extends AbstractBotGeneController {
         // 3 - если бот внутри цепочки
         int a = bot.isMulti();  // 0 - нету, 1 - есть MPREV, 2 - есть MNEXT, 3 есть MPREV и MNEXT
         if (a == 3) {
-            bot.Double();
+            bot.doubleFree();
         } else {            // если бот уже находится внутри цепочки, то новый бот рождается свободным
-            bot.multi();    // в другом случае, новый бот рождается приклеенным к боту-предку
+            bot.doubleMulti();    // в другом случае, новый бот рождается приклеенным к боту-предку
         }
         bot.incCommandAddress(1);   // увеличиваем адрес текущей команды на 1
         return true;
