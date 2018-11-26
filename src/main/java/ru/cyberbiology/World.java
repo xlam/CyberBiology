@@ -1,6 +1,5 @@
 package ru.cyberbiology;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -10,9 +9,6 @@ import java.util.logging.Logger;
 import ru.cyberbiology.gene.GeneMutate;
 import ru.cyberbiology.prototype.IWindow;
 import ru.cyberbiology.prototype.IWorld;
-import ru.cyberbiology.prototype.record.IRecordManager;
-import ru.cyberbiology.record.PlaybackManager;
-import ru.cyberbiology.record.RecordManager;
 import ru.cyberbiology.util.ProjectProperties;
 import ru.cyberbiology.util.PerfMeter;
 
@@ -20,9 +16,6 @@ public class World implements IWorld {
 
     public World world;
     public IWindow window;
-
-    private PlaybackManager playback;
-    IRecordManager recorder;
 
     /**
      * Шаг отрисовки. Состояние мира отрисовывается на каждом PAINT_STEP
@@ -58,7 +51,6 @@ public class World implements IWorld {
         organic = 0;
         pests = 0;
         pestGenes = 0;
-        recorder = new RecordManager(this);
         properties = ProjectProperties.getInstance();
     }
 
@@ -120,13 +112,6 @@ public class World implements IWorld {
             // заканчивает работу
             while (started) {
 
-                boolean rec = recorder.isRecording(); // запоминаем флаг
-                // "записывать" на
-                // полную итерацию кадра
-                if (rec) {  // вызываем обработчика "старт кадра"
-                    recorder.startFrame();
-                }
-
                 /**
                  * Пересчет мира.
                  * Параллельный стрим работает быстрее предыдущего многопоточного
@@ -137,17 +122,8 @@ public class World implements IWorld {
                 Arrays.stream(matrix)
                         .filter(b -> b != null)
                         .parallel()
-                        .forEach(b -> {
-                            b.step();
-                            if (recorder.isRecording()) {
-                                // вызываем обработчика записи бота
-                                recorder.writeBot(b, b.x, b.y);
-                            }
-                        });
+                        .forEach(b -> b.step());
 
-                if (rec) {  // вызываем обработчика "конец кадра"
-                    recorder.stopFrame();
-                }
                 generation = generation + 1;
                 // отрисовка на экран через каждые "paintstep" шагов
                 if (generation % Integer.parseInt(properties.getProperty("paintstep", "" + PAINT_STEP)) == 0) {
@@ -323,18 +299,6 @@ public class World implements IWorld {
         thread = null;
     }
 
-    public final boolean isRecording() {
-        return this.recorder.isRecording();
-    }
-
-    public final void startRecording() {
-        this.recorder.startRecording();
-    }
-
-    public final boolean stopRecording() {
-        return this.recorder.stopRecording();
-    }
-
     /**
      * Вычисляет количество минералов, которое может накопить бот на данной глубине.
      * @param y глубина
@@ -390,20 +354,8 @@ public class World implements IWorld {
         return height;
     }
 
-    public final boolean haveRecord() {
-        return this.recorder.haveRecord();
-    }
-
-    public final void makeSnapShot() {
-        this.recorder.makeSnapShot();
-    }
-
     @Override
     public Bot[] getWorldArray() {
         return this.matrix;
-    }
-
-    public final void openFile(File file) {
-        playback = new PlaybackManager(this, file);
     }
 }
