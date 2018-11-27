@@ -122,7 +122,7 @@ public class BasicBot implements Bot {
         // 42 занято
         geneController[43] = new GeneFullAroud();                   // 43  окружен ли бот
         geneController[44] = new GeneIsHealthGrow();                // 44  окружен ли бот
-        if (properties.getProperty("MineralsAccumulation", "").equals("height")) {
+        if (properties.getProperty("MineralsAccumulation", "").equals("classic")) {
             geneController[45] = new GeneIsMineralGrow();               // 45  прибавляются ли минералы
         }
         // 46 занято
