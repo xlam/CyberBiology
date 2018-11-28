@@ -321,6 +321,33 @@ public class BasicWorld implements World {
         return this.matrix;
     }
 
+    /**
+     * Выполнить один пересчет мира.
+     */
+    public void doIteration() {
+        doMatrixIteration();
+        updateStats();
+        paint();
+    }
+
+    /**
+     * Один пересчет матрицы без обновления статистики и отрисовки.
+     */
+    private void doMatrixIteration() {
+        /**
+         * Параллельный стрим работает быстрее предыдущего многопоточного
+         * варианта? (см. коммит 0bc13cc)
+         * Быстрее, но не намного, процентов на 5. Зато реализация намного проще.
+         * Будем надеяться на отсутствие побочных эффектов.
+         */
+        Arrays.stream(matrix)
+                .filter(b -> b != null)
+                .parallel()
+                .forEach(b -> b.step());
+
+        generation++;
+    }
+
     private class Worker extends Thread {
         @Override
         public void run() {
@@ -329,19 +356,8 @@ public class BasicWorld implements World {
             
             while (started) {
 
-                /**
-                 * Пересчет мира.
-                 * Параллельный стрим работает быстрее предыдущего многопоточного
-                 * варианта? (см. коммит 0bc13cc)
-                 * Быстрее, но не намного, процентов на 5. Зато реализация намного проще.
-                 * Будем надеяться на отсутствие побочных эффектов.
-                 */
-                Arrays.stream(matrix)
-                        .filter(b -> b != null)
-                        .parallel()
-                        .forEach(b -> b.step());
+                doMatrixIteration();
 
-                generation++;
                 // отрисовка на экран через каждые "paintstep" шагов
                 if (generation % Integer.parseInt(properties.getProperty("paintstep", "" + PAINT_STEP)) == 0) {
                     updateStats();

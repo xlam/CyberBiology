@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -18,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -29,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.WindowConstants;
@@ -77,6 +81,10 @@ public class MainWindow extends JFrame implements Window {
     private final JLabel perfLabel = new JLabel(" WIPS: 0 ");
     private final JLabel memoryLabel = new JLabel("");
 
+    private final JButton pauseButton = new JButton();
+    private final JButton startButton = new JButton();
+    private final JButton doIterationButton = new JButton();
+
     private final JPanel paintPanel = new JPanel() {
         @Override
         public void paint(Graphics g) {
@@ -99,9 +107,10 @@ public class MainWindow extends JFrame implements Window {
         // у этого лейаута приятная особенность - центральная часть растягивается автоматически
         setLayout(new BorderLayout());
 
-        setupStatusPanel();
-        setupPaintPanel();
         setupMenuBar();
+        setupToolBar();
+        setupPaintPanel();
+        setupStatusPanel();
 
         view = new ViewBasic();
         pack();
@@ -276,10 +285,12 @@ public class MainWindow extends JFrame implements Window {
                 world.start();//Запускаем его
                 runItem.setText("Пауза");
                 botSizeMenu.setVisible(false);
+                doIterationButton.setEnabled(false);
             } else {
                 world.stop();
                 runItem.setText("Продолжить");
                 snapShotItem.setEnabled(true);
+                doIterationButton.setEnabled(true);
             }
         });
 
@@ -293,6 +304,7 @@ public class MainWindow extends JFrame implements Window {
             paint();
             world.start();
             runItem.setText("Пауза");
+            doIterationButton.setEnabled(false);
         });
 
         JMenuItem mutateItem = new JMenuItem("Cлучайная мутация");
@@ -416,6 +428,54 @@ public class MainWindow extends JFrame implements Window {
         }
 
         setJMenuBar(menuBar);
+    }
+
+    private void setupToolBar() {
+        JToolBar toolBar = new JToolBar("Инструменты");
+
+        pauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/icon-pause-16.png")));
+        pauseButton.setMargin(new Insets(0, 0, 0, 0));
+        pauseButton.setToolTipText("Пауза");
+        pauseButton.addActionListener(e -> {
+            world.stop();
+            doIterationButton.setEnabled(true);
+            pauseButton.setEnabled(false);
+            startButton.setEnabled(true);
+        });
+        pauseButton.setEnabled(false);
+
+        startButton.setIcon(new ImageIcon(getClass().getResource("/icons/icon-start-16.png")));
+        startButton.setMargin(new Insets(0, 0, 0, 0));
+        startButton.setToolTipText("Запустить/продолжить");
+        startButton.addActionListener(e -> {
+            if (world == null) {
+                int width1 = paintPanel.getWidth() / properties.botSize();
+                int height1 = paintPanel.getHeight() / properties.botSize();
+                world = new BasicWorld(MainWindow.this, width1, height1);
+                world.generateAdam();
+                paint();
+            }
+            if (!world.started()) {
+                world.start();
+//                runItem.setText("Пауза");
+//                botSizeMenu.setVisible(false);
+                doIterationButton.setEnabled(false);
+                pauseButton.setEnabled(true);
+                startButton.setEnabled(false);
+            }
+        });
+
+        doIterationButton.setIcon(new ImageIcon(getClass().getResource("/icons/icon-step1-16.png")));
+        doIterationButton.setMargin(new Insets(0, 0, 0, 0));
+        doIterationButton.setToolTipText("Выполнить один пересчет мира");
+        doIterationButton.addActionListener(e -> world.doIteration());
+        doIterationButton.setEnabled(false);
+
+        toolBar.add(pauseButton);
+        toolBar.add(startButton);
+        toolBar.add(doIterationButton);
+        toolBar.setFloatable(false);
+        add(toolBar, BorderLayout.NORTH);
     }
 
     private void setupStatusPanel() {
