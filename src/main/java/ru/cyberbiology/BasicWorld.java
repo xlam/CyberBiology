@@ -141,7 +141,7 @@ public class BasicWorld implements World {
         bot.c_red = 170; // задаем цвет бота
         bot.c_blue = 170;
         bot.c_green = 170;
-        bot.direction = 5; // направление
+        bot.direction = RANDOM.nextInt(8); // направление
         bot.mprev = null; // бот не входит в многоклеточные цепочки, поэтому
         // ссылки
         bot.mnext = null; // на предыдущего, следующего в многоклеточной цепочке

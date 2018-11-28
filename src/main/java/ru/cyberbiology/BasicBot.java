@@ -87,7 +87,7 @@ public class BasicBot implements Bot {
     public BasicBot(BasicWorld world) {
         this.world = world;
         setupGeneControllers();
-        direction = 2;
+        direction = RANDOM.nextInt(8);
         health = 5;
         alive = LV_ALIVE;
     }
@@ -902,8 +902,6 @@ public class BasicBot implements Bot {
         newbot.c_green = bot.c_green;   // цвет такой же, как у предка
         newbot.c_blue = bot.c_blue;     // цвет такой же, как у предка
 
-        newbot.direction = RANDOM.nextInt(8);   // направление, куда повернут новорожденный, генерируется случайно
-
         world.setBot(newbot);    // отмечаем нового бота в массиве matrix
 // todo: https://github.com/xlam/CyberBiology/issues/2
 //        this.world.population++;
@@ -955,8 +953,6 @@ public class BasicBot implements Bot {
         newbot.c_red = bot.c_red;       // цвет такой же, как у предка
         newbot.c_green = bot.c_green;   // цвет такой же, как у предка
         newbot.c_blue = bot.c_blue;     // цвет такой же, как у предка
-
-        newbot.direction = RANDOM.nextInt(8);   // направление, куда повернут новорожденный, генерируется случайно
 
         world.setBot(newbot);    // отмечаем нового бота в массиве matrix
 // todo: https://github.com/xlam/CyberBiology/issues/2
