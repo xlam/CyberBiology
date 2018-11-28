@@ -1,17 +1,16 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
 
 /**
  * Фотосинтез.
  *
  * @author Nickolay
  */
-public class GenePhotosynthesis extends ABotGeneController {
+public class GenePhotosynthesis extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         bot.eatSun();               // выполняем команду фотосинтеза
         bot.incCommandAddress(1);   // адрес текущей команды увеличивается на 1,
 
@@ -19,7 +18,7 @@ public class GenePhotosynthesis extends ABotGeneController {
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "фотосинтез";
     }
 }

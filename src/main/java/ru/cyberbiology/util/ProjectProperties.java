@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import ru.cyberbiology.Const;
+import ru.cyberbiology.Constant;
 
 public class ProjectProperties extends Properties {
 
@@ -29,14 +29,11 @@ public class ProjectProperties extends Properties {
     }
 
     public void setFileDirectory(String name) {
-        if (name == null) {
-            name = "";
+        String dirName = "";
+        if (name != null && name.length() > 0 && !name.endsWith(File.separator)) {
+            dirName = name + File.separator;
         }
-        if (name.length() > 0 && !name.endsWith(File.separator)) {
-            name += File.separator;
-        }
-
-        this.setProperty("FileDirectory", name);
+        this.setProperty("FileDirectory", dirName);
     }
 
     public String getFileDirectory() {
@@ -44,7 +41,7 @@ public class ProjectProperties extends Properties {
     }
 
     public int botSize() {
-        return Integer.parseInt(getProperty("botSize", "" + Const.DEFAULT_BOT_SIZE));
+        return Integer.parseInt(getProperty("botSize", "" + Constant.DEFAULT_BOT_SIZE));
     }
 
     private void loadUser() {
@@ -63,8 +60,8 @@ public class ProjectProperties extends Properties {
         }
         try {
             defaults.loadFromXML(propertiesStream);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

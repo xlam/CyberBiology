@@ -1,7 +1,6 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
 
 /**
  * //****************************************************************************
@@ -14,17 +13,17 @@ import ru.cyberbiology.prototype.gene.ABotGeneController;
  * @author Nickolay
  *
  */
-public class GeneAttack extends ABotGeneController {
+public class GeneAttack extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         bot.genAttack(); // случайным образом меняет один байт
         bot.incCommandAddress(1);
         return true;//// выходим, так как команда мутировать - завершающая
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "генная атака";
     }
 }

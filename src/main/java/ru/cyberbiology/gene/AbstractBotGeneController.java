@@ -1,4 +1,4 @@
-package ru.cyberbiology.prototype.gene;
+package ru.cyberbiology.gene;
 
 /**
  * Абстрактный класс обработчика гена. Введен, если какие либо методы
@@ -7,6 +7,5 @@ package ru.cyberbiology.prototype.gene;
  * @author Nickolay
  *
  */
-public abstract class ABotGeneController implements IBotGeneController {
-
+public abstract class AbstractBotGeneController implements BotGeneController {
 }

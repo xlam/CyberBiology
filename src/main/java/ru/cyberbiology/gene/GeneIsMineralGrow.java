@@ -1,17 +1,16 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
 
 /**
  * Минералы прибавляются?.
  *
  * @author Nickolay
  */
-public class GeneIsMineralGrow extends ABotGeneController {
+public class GeneIsMineralGrow extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         if (bot.getY() > (bot.getWorld().getHeight() / 2)) {
             bot.indirectIncCmdAddress(1);
         } else {
@@ -21,7 +20,7 @@ public class GeneIsMineralGrow extends ABotGeneController {
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "минералы прибавляются?";
     }
 }

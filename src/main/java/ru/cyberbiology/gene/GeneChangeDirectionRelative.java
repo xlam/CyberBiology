@@ -1,8 +1,7 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.Const;
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
+import ru.cyberbiology.Constant;
 
 /**
  * Cменить направление относительно.
@@ -10,12 +9,12 @@ import ru.cyberbiology.prototype.gene.ABotGeneController;
  * @author Nickolay
  *
  */
-public class GeneChangeDirectionRelative extends ABotGeneController {
+public class GeneChangeDirectionRelative extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         // вычисляем новое направление
-        int param = Const.DIRECTION[bot.getParam()];          // берём следующи байт за командой и вычисляем остаток от деления на 8
+        int param = Constant.DIRECTION[bot.getParam()];          // берём следующи байт за командой и вычисляем остаток от деления на 8
         int newdrct = bot.getDirection() + param;            // полученное число прибавляем к значению направления бота
         if (newdrct >= 8) {
             newdrct = newdrct - 8;
@@ -27,7 +26,7 @@ public class GeneChangeDirectionRelative extends ABotGeneController {
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "сменить направление относительно";
     }
 }

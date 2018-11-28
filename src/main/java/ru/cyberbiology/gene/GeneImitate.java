@@ -1,8 +1,7 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.Const;
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
+import ru.cyberbiology.Constant;
 
 /**
  * Имитирование, подражание в поведении. Команда копирует случайный участок
@@ -10,12 +9,12 @@ import ru.cyberbiology.prototype.gene.ABotGeneController;
  *
  * @author Sergey Sokolov <xlamserg@gmail.com>
  */
-public class GeneImitate extends ABotGeneController {
+public class GeneImitate extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         // направление действия
-        int dir = Const.DIRECTION[bot.getParam()];
+        int dir = Constant.DIRECTION[bot.getParam()];
         // адрес начала копирования в геноме другого бота
         bot.incCommandAddress(bot.imitate(dir));
         // команда завершающая
@@ -23,7 +22,7 @@ public class GeneImitate extends ABotGeneController {
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "имитирование";
     }
 

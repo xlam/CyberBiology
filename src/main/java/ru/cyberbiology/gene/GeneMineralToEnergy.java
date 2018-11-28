@@ -1,24 +1,23 @@
 package ru.cyberbiology.gene;
 
-import ru.cyberbiology.prototype.IBot;
-import ru.cyberbiology.prototype.gene.ABotGeneController;
+import ru.cyberbiology.Bot;
 
 /**
  * Преобразовать минералы в энерию.
  *
  * @author Nickolay
  */
-public class GeneMineralToEnergy extends ABotGeneController {
+public class GeneMineralToEnergy extends AbstractBotGeneController {
 
     @Override
-    public boolean onGene(IBot bot) {
+    public boolean onGene(Bot bot) {
         bot.mineral2Energy();
         bot.incCommandAddress(1);
         return true;
     }
 
     @Override
-    public String getDescription(IBot bot, int i) {
+    public String getDescription(Bot bot, int i) {
         return "преобразовать минералы в энерию";
     }
 }

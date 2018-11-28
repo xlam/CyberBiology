@@ -41,7 +41,7 @@ public class DirectionArraySpeedTest {
         // замер скорости доступа к предварительно расчитанным значениям
         start = System.nanoTime();
         for (int i=0; i<RUNS; i++) {
-            dir = Const.DIRECTION[r.nextInt(SIZE)];
+            dir = Constant.DIRECTION[r.nextInt(SIZE)];
         }
         double t2 = (System.nanoTime() - start) / 1000000f;
 
