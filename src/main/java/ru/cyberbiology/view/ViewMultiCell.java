@@ -32,14 +32,8 @@ public class ViewMultiCell extends AbstractView {
                     break;
                 default:
                     int green = (int) (bot.c_green - ((bot.c_green * bot.health) / 2000));
-                    if (green < 0) {
-                        green = 0;
-                    }
-                    if (green > 255) {
-                        green = 255;
-                    }
                     int blue = (int) (bot.c_blue * 0.8 - ((bot.c_blue * bot.mineral) / 2000));
-                    color = new Color(bot.c_red, green, blue);
+                    color = new Color(validColor(bot.c_red), validColor(green), validColor(blue));
                     break;
             }
         }

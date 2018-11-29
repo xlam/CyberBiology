@@ -51,4 +51,13 @@ public abstract class AbstractView implements View {
     }
 
     public abstract Color getBotColor(BasicBot bot);
+
+    /**
+     * Проверка и корректировка значения цвета.
+     * @param color проверяемое значение.
+     * @return значение цвета в диапазоне от 0 до 255.
+     */
+    public int validColor(int color) {
+        return color > 255 ? 255 : color < 0 ? 0 : color;
+    }
 }

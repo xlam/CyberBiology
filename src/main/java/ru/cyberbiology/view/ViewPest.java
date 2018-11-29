@@ -29,13 +29,10 @@ public class ViewPest extends AbstractView {
             if (bot.pest > 0) {
                 colorRed = 255;
                 colorGreen = 255 - bot.pest * 4;
-                if (colorGreen < 0) {
-                    colorGreen = 0;
-                }
                 colorBlue = 0;
             }
 
-            color = new Color(colorRed, colorGreen, colorBlue);
+            color = new Color(validColor(colorRed), validColor(colorGreen), validColor(colorBlue));
         }
         return color;
     }
