@@ -270,32 +270,11 @@ public class MainWindow extends JFrame implements Window {
         menuBar.add(worldEventsMenu);
         menuBar.add(settingsMenu);
 
-        JMenuItem snapShotItem = new JMenuItem("Сделать снимок");
-        JMenuItem runItem = new JMenuItem("Запустить");
-        runItem.addActionListener((ActionEvent e) -> {
-            if (world == null) {
-                // Доступная часть экрана для рисования карты
-                int width1 = paintPanel.getWidth() / properties.botSize();
-                int height1 = paintPanel.getHeight() / properties.botSize();
-                world = new BasicWorld(MainWindow.this, width1, height1);
-                world.generateAdam();
-                paint();
-            }
-            if (!world.started()) {
-                world.start();//Запускаем его
-                runItem.setText("Пауза");
-                botSizeMenu.setVisible(false);
-                doIterationButton.setEnabled(false);
-            } else {
-                world.stop();
-                runItem.setText("Продолжить");
-                snapShotItem.setEnabled(true);
-                doIterationButton.setEnabled(true);
-            }
-        });
-
         JMenuItem restartItem = new JMenuItem("Перезапуск");
         restartItem.addActionListener((ActionEvent e) -> {
+            if (world == null) {
+                return;
+            }
             world.stop();
             int width1 = paintPanel.getWidth() / properties.botSize();
             int height1 = paintPanel.getHeight() / properties.botSize();
@@ -303,7 +282,8 @@ public class MainWindow extends JFrame implements Window {
             world.generateAdam();
             paint();
             world.start();
-            runItem.setText("Пауза");
+            pauseButton.setEnabled(true);
+            startButton.setEnabled(false);
             doIterationButton.setEnabled(false);
         });
 
@@ -320,10 +300,13 @@ public class MainWindow extends JFrame implements Window {
             world.setRandomCmdAdress();
         });
 
+        JMenuItem snapShotItem = new JMenuItem("Сделать снимок");
         snapShotItem.addActionListener((ActionEvent e) -> {
             if (world != null) {
                 world.stop();
-                runItem.setText("Продолжить");
+                pauseButton.setEnabled(false);
+                startButton.setEnabled(true);
+                doIterationButton.setEnabled(true);
                 snapshotManager.saveSnapshot(world);
             }
         });
@@ -369,7 +352,6 @@ public class MainWindow extends JFrame implements Window {
             settingsDialog.showSettingsDialog();
         });
 
-        fileMenu.add(runItem);
         fileMenu.add(restartItem);
         fileMenu.add(snapShotItem);
         fileMenu.add(loadWorldItem);
