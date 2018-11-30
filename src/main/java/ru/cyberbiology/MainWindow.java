@@ -48,14 +48,14 @@ import ru.cyberbiology.view.ViewMineral;
 import ru.cyberbiology.view.ViewMultiCell;
 import ru.cyberbiology.view.ViewPest;
 
-public class MainWindow extends JFrame implements Window {
-
-    public static BasicWorld world;
+public class MainWindow extends JFrame implements Painter {
 
     /**
      * Буфер для отрисовки ботов.
      */
     public Image buffer = null;
+
+    private BasicWorld world;
 
     /**
      * Актуальный отрисовщик.
@@ -141,12 +141,16 @@ public class MainWindow extends JFrame implements Window {
         return properties.getFileDirectory();
     }
 
-    @Override
-    public void setView(View view) {
+    private void setView(View view) {
         this.view = view;
         if (null != world && !world.started()) {
             paint();
         }
+    }
+
+    @Override
+    public void setWorld(World world) {
+        this.world = (BasicWorld) world;
     }
 
     @Override
@@ -167,11 +171,6 @@ public class MainWindow extends JFrame implements Window {
         memoryLabel.setText(" Memory MB: " + String.valueOf(memory / (1024L * 1024L)));
 
         paintPanel.repaint();
-    }
-
-    @Override
-    public ProjectProperties getProperties() {
-        return properties;
     }
 
     private void setupPaintPanel() {

@@ -24,9 +24,11 @@ import ru.cyberbiology.Bot;
  */
 public class SnapshotManager {
 
+    public static final int BOT_DATA_LENGTH = 14 + BasicBot.MIND_SIZE;
+
     private static final int VERSION = 0;
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss");
-    public static final int BOT_DATA_LENGTH = 14 + BasicBot.MIND_SIZE;
+    private final ProjectProperties properties = ProjectProperties.getInstance();
 
     /**
      * Сохраняет снимок мира.
@@ -35,7 +37,7 @@ public class SnapshotManager {
      */
     public void saveSnapshot(BasicWorld world) {
 
-        String dirName = world.getProperties().getFileDirectory();
+        String dirName = properties.getFileDirectory();
         new File(dirName).mkdirs();
 
         //Создаем временный файл с данными

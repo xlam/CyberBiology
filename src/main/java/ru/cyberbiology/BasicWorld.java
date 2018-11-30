@@ -23,7 +23,7 @@ public class BasicWorld implements World {
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
     private static String mineralsAccumulation;
     public BasicWorld world;
-    public Window window;
+    public Painter painter;
 
     public int width;
     public int height;
@@ -40,9 +40,10 @@ public class BasicWorld implements World {
 
     private ProjectProperties properties;
 
-    protected BasicWorld(Window win) {
+    protected BasicWorld(Painter painter) {
         world = this;
-        window = win;
+        this.painter = painter;
+        this.painter.setWorld(this);
         population = 0;
         generation = 0;
         organic = 0;
@@ -51,8 +52,8 @@ public class BasicWorld implements World {
         properties = ProjectProperties.getInstance();
     }
 
-    public BasicWorld(Window win, int width, int height) {
-        this(win);
+    public BasicWorld(Painter painter, int width, int height) {
+        this(painter);
         this.setSize(width, height);
     }
 
@@ -75,12 +76,7 @@ public class BasicWorld implements World {
 
     @Override
     public void paint() {
-        window.paint();
-    }
-
-    @Override
-    public ProjectProperties getProperties() {
-        return window.getProperties();
+        painter.paint();
     }
 
     /**
@@ -101,7 +97,6 @@ public class BasicWorld implements World {
         }
         start();
     }
-
 
     /**
     * Подсчет фактических значений населения и органики.
