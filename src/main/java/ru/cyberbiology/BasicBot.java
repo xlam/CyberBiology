@@ -56,14 +56,14 @@ public class BasicBot implements Bot {
     public static final int LV_ALIVE = 3;
 
     public int adr;
-    public int x;
-    public int y;
+    public int posX;
+    public int posY;
     public int health;
     public int mineral;
     public int alive;
-    public int c_red;
-    public int c_green;
-    public int c_blue;
+    public int colorRed;
+    public int colorGreen;
+    public int colorBlue;
     public int direction;
     public int pest;
     public BasicBot mprev;
@@ -84,6 +84,11 @@ public class BasicBot implements Bot {
 
     private final BasicWorld world;
 
+    /**
+     * Создает нового бота.
+     *
+     * @param world мир, в котором будет жить бот
+     */
     public BasicBot(BasicWorld world) {
         this.world = world;
         setupGeneControllers();
@@ -314,7 +319,7 @@ public class BasicBot implements Bot {
     private void updateMinerals() {
         // бот накапливает минералы, но не более 999
         if (mineral < 999) {
-            mineral += world.getMineralsAt(y);
+            mineral += world.getMineralsAt(posY);
             if (mineral > 999) {
                 mineral = 999;
             }
@@ -333,8 +338,8 @@ public class BasicBot implements Bot {
      * @param n направление
      * @return X - координата по абсолютному направлению
      */
-    private int xFromVektorR(int n) {
-        int xt = x + Constant.INCREMENT_X[direction + n];
+    private int getRelativeDirectionX(int n) {
+        int xt = posX + Constant.INCREMENT_X[direction + n];
         if (xt >= world.width) {
             xt = 0;
         }
@@ -351,16 +356,16 @@ public class BasicBot implements Bot {
      * @param n направление
      * @return X - координата по абсолютному направлению
      */
-    private int xFromVektorA(int n) {
-        return correctX(x + Constant.INCREMENT_X[n]);
+    private int getAbsoluteDirectionX(int n) {
+        return correctX(posX + Constant.INCREMENT_X[n]);
     }
 
     /**
-     * Проверка и корректировка координаты X при выходе за границы мира
+     * Проверка и корректировка координаты X при выходе за границы мира.
      *
      * @param x - проверяемая координата X
-     * @return 0 - если координата вышла за правую границу
-     * <ширина мира>-1 - ессли координата вышла за левую границу
+     * @return 0 - если координата вышла за правую границу;
+     *      [ширина мира]-1 - если координата вышла за левую границу
      */
     private int correctX(int x) {
         return (x >= world.width) ? 0 : ((x < 0) ? world.width - 1 : x);
@@ -373,8 +378,8 @@ public class BasicBot implements Bot {
      * @param n направление
      * @return Y координата по относительному направлению
      */
-    private int yFromVektorR(int n) {
-        return y + Constant.INCREMENT_Y[direction + n];
+    private int getRelativeDirectionY(int n) {
+        return posY + Constant.INCREMENT_Y[direction + n];
     }
 
     /**
@@ -384,8 +389,8 @@ public class BasicBot implements Bot {
      * @param n направление
      * @return Y координата по абсолютному направлению
      */
-    private int yFromVektorA(int n) {
-        return y + Constant.INCREMENT_Y[n];
+    private int getAbsoluteDirectionY(int n) {
+        return posY + Constant.INCREMENT_Y[n];
     }
 
     /**
@@ -396,8 +401,8 @@ public class BasicBot implements Bot {
     @Override
     public int fullAroud() {
         for (int i = 0; i < 8; i++) {
-            int xt = xFromVektorR(i);
-            int yt = yFromVektorR(i);
+            int xt = getRelativeDirectionX(i);
+            int yt = getRelativeDirectionY(i);
             if ((yt >= 0) && (yt < world.height) && world.getBot(xt, yt) == null) {
                 return 2;
             }
@@ -412,8 +417,8 @@ public class BasicBot implements Bot {
      */
     private int findEmptyDirection() {
         for (int i = 0; i < 8; i++) {
-            int xt = xFromVektorR(i);
-            int yt = yFromVektorR(i);
+            int xt = getRelativeDirectionX(i);
+            int yt = getRelativeDirectionY(i);
             if (yt >= 0 && yt < world.height && world.getBot(xt, yt) == null) {
                 return i;
             }
@@ -477,13 +482,6 @@ public class BasicBot implements Bot {
         }
         bot.mprev = null;
         bot.mnext = null;
-// todo: https://github.com/xlam/CyberBiology/issues/2
-//        this.world.organic++;
-//        this.world.population--;
-//        if (bot.pest > 0) {
-//            this.world.pests--;
-//            this.world.pestGenes -= bot.pest;
-//        }
     }
 
     /**
@@ -515,9 +513,9 @@ public class BasicBot implements Bot {
      */
     private void moveBot(BasicBot bot, int xt, int yt) {
         world.matrix[world.width * yt + xt] = bot;
-        world.clearBot(bot.x, bot.y);
-        bot.x = xt;
-        bot.y = yt;
+        world.clearBot(bot.posX, bot.posY);
+        bot.posX = xt;
+        bot.posY = yt;
     }
 
     /**
@@ -536,25 +534,14 @@ public class BasicBot implements Bot {
         }
         bot.mprev = null;
         bot.mnext = null;
-// todo: https://github.com/xlam/CyberBiology/issues/2
-//        if (bot.alive == bot.LV_ORGANIC_HOLD || bot.alive == bot.LV_ORGANIC_SINK) {
-//            this.world.organic--;
-//        }
-//        if (bot.alive == bot.LV_ALIVE) {
-//            this.world.population--;
-//            if (bot.pest > 0) {
-//                this.world.pests--;
-//                this.world.pestGenes -= bot.pest;
-//            }
-//        }
-        world.clearBot(bot.x, bot.y); // удаление бота с карты
+        world.clearBot(bot.posX, bot.posY); // удаление бота с карты
     }
 
     /**
      * Фотосинтез.Этой командой забит геном первого бота бот получает энергию солнца в зависимости от глубины и
      * количества минералов, накопленных ботом.
      *
-     * @param bot
+     * @param bot бот
      */
     private void botEatSun(BasicBot bot) {
         int t;
@@ -572,7 +559,7 @@ public class BasicBot implements Bot {
         if (bot.mnext != null) {
             a += 4;
         }
-        int hlt = a + 1 * (11 - (15 * bot.y / world.height) + t); // формула вычисления энергии
+        int hlt = a + 1 * (11 - (15 * bot.posY / world.height) + t); // формула вычисления энергии
         if (hlt > 0) {
             bot.health += hlt;  // прибавляем полученную энергия к энергии бота
             goGreen(bot, hlt);              // бот от этого зеленеет
@@ -609,11 +596,11 @@ public class BasicBot implements Bot {
         int xt;
         int yt;
         if (ra == 0) {          // вычисляем координату клетки, куда перемещается бот (относительное направление)
-            xt = xFromVektorR(direction);
-            yt = yFromVektorR(direction);
+            xt = getRelativeDirectionX(direction);
+            yt = getRelativeDirectionY(direction);
         } else {                // вычисляем координату клетки, куда перемещается бот (абсолютное направление)
-            xt = xFromVektorA(direction);
-            yt = yFromVektorA(direction);
+            xt = getAbsoluteDirectionX(direction);
+            yt = getAbsoluteDirectionY(direction);
         }
         if ((yt < 0) || (yt >= world.height)) {  // если там ... стена
             return 3;                       // то возвращаем 3
@@ -647,11 +634,11 @@ public class BasicBot implements Bot {
         int xt;
         int yt;
         if (ra == 0) {  // вычисляем координату клетки, с которой хочет скушать бот (относительное направление)
-            xt = xFromVektorR(direction);
-            yt = yFromVektorR(direction);
+            xt = getRelativeDirectionX(direction);
+            yt = getRelativeDirectionY(direction);
         } else {        // вычисляем координату клетки, с которой хочет скушать бот (абсолютное направление)
-            xt = xFromVektorA(direction);
-            yt = yFromVektorA(direction);
+            xt = getAbsoluteDirectionX(direction);
+            yt = getAbsoluteDirectionY(direction);
         }
         if ((yt < 0) || (yt >= world.height)) {  // если там стена возвращаем 3
             return 3;
@@ -714,11 +701,11 @@ public class BasicBot implements Bot {
         int xt;
         int yt;
         if (ra == 0) {  // выясняем, есть ли что в этом  направлении (относительном)
-            xt = xFromVektorR(direction);
-            yt = yFromVektorR(direction);
+            xt = getRelativeDirectionX(direction);
+            yt = getRelativeDirectionY(direction);
         } else {       // выясняем, есть ли что в этом  направлении (абсолютном)
-            xt = xFromVektorA(direction);
-            yt = yFromVektorA(direction);
+            xt = getAbsoluteDirectionX(direction);
+            yt = getAbsoluteDirectionY(direction);
         }
         if (yt < 0 || yt >= world.height) {  // если там стена возвращаем 3
             return 3;
@@ -739,8 +726,8 @@ public class BasicBot implements Bot {
      * Атака на геном соседа, меняем случайный ген случайным образом.
      */
     private void botGenAttack(BasicBot bot) {   // вычисляем кто у нас перед ботом (используется только относительное направление вперед)
-        int xt = xFromVektorR(0);
-        int yt = yFromVektorR(0);
+        int xt = getRelativeDirectionX(0);
+        int yt = getRelativeDirectionY(0);
         BasicBot bot2 = world.getBot(xt, yt);
         if (bot2 == null) {
             return;
@@ -767,11 +754,11 @@ public class BasicBot implements Bot {
         int xt;
         int yt;
         if (ra == 0) {  // определяем координаты для относительного направления
-            xt = xFromVektorR(direction);
-            yt = yFromVektorR(direction);
+            xt = getRelativeDirectionX(direction);
+            yt = getRelativeDirectionY(direction);
         } else {        // определяем координаты для абсолютного направления
-            xt = xFromVektorA(direction);
-            yt = yFromVektorA(direction);
+            xt = getAbsoluteDirectionX(direction);
+            yt = getAbsoluteDirectionY(direction);
         }
         if (yt < 0 || yt >= world.height) {  // если там стена возвращаем 3
             return 3;
@@ -812,11 +799,11 @@ public class BasicBot implements Bot {
         int xt;
         int yt;
         if (ra == 0) { // определяем координаты для относительного направления
-            xt = xFromVektorR(direction);
-            yt = yFromVektorR(direction);
+            xt = getRelativeDirectionX(direction);
+            yt = getRelativeDirectionY(direction);
         } else {        // определяем координаты для абсолютного направления
-            xt = xFromVektorA(direction);
-            yt = yFromVektorA(direction);
+            xt = getAbsoluteDirectionX(direction);
+            yt = getAbsoluteDirectionY(direction);
         }
         if (yt < 0 || yt >= world.height) {  // если там стена возвращаем 3
             return 3;
@@ -861,9 +848,6 @@ public class BasicBot implements Bot {
 
         BasicBot newbot = new BasicBot(this.world);
 
-        int xt = xFromVektorR(n);   // координаты X и Y
-        int yt = yFromVektorR(n);
-
         System.arraycopy(bot.mind, 0, newbot.mind, 0, MIND_SIZE);
 
         // информация о паразитных генах сохраняется в новом боте
@@ -888,8 +872,8 @@ public class BasicBot implements Bot {
         }
 
         newbot.adr = 0; // указатель текущей команды в новорожденном устанавливается в 0
-        newbot.x = xt;
-        newbot.y = yt;
+        newbot.posX = getRelativeDirectionX(n);
+        newbot.posY = getRelativeDirectionY(n);
 
         newbot.health = bot.health / 2;   // забирается половина здоровья у предка
         bot.health /= 2;
@@ -898,13 +882,11 @@ public class BasicBot implements Bot {
 
         newbot.alive = LV_ALIVE;        // отмечаем, что бот живой
 
-        newbot.c_red = bot.c_red;       // цвет такой же, как у предка
-        newbot.c_green = bot.c_green;   // цвет такой же, как у предка
-        newbot.c_blue = bot.c_blue;     // цвет такой же, как у предка
+        newbot.colorRed = bot.colorRed;       // цвет такой же, как у предка
+        newbot.colorGreen = bot.colorGreen;   // цвет такой же, как у предка
+        newbot.colorBlue = bot.colorBlue;     // цвет такой же, как у предка
 
         world.setBot(newbot);    // отмечаем нового бота в массиве matrix
-// todo: https://github.com/xlam/CyberBiology/issues/2
-//        this.world.population++;
     }
 
     /**
@@ -930,9 +912,6 @@ public class BasicBot implements Bot {
         BasicBot newbot = new BasicBot(this.world);
         newbot.pest = bot.pest;
 
-        int xt = xFromVektorR(n);   // координаты X и Y
-        int yt = yFromVektorR(n);
-
         System.arraycopy(bot.mind, 0, newbot.mind, 0, MIND_SIZE);   // копируем геном в нового бота
 
         if (RANDOM.nextInt(100) <= 25) { // в одном случае из четырех случайным образом меняем один случайный байт в геноме
@@ -940,8 +919,8 @@ public class BasicBot implements Bot {
         }
 
         newbot.adr = 0;     // указатель текущей команды в новорожденном устанавливается в 0
-        newbot.x = xt;
-        newbot.y = yt;
+        newbot.posX = getRelativeDirectionX(n);
+        newbot.posY = getRelativeDirectionY(n);
 
         newbot.health = bot.health / 2;   // забирается половина здоровья у предка
         bot.health /= 2;
@@ -950,13 +929,11 @@ public class BasicBot implements Bot {
 
         newbot.alive = LV_ALIVE;        // отмечаем, что бот живой
 
-        newbot.c_red = bot.c_red;       // цвет такой же, как у предка
-        newbot.c_green = bot.c_green;   // цвет такой же, как у предка
-        newbot.c_blue = bot.c_blue;     // цвет такой же, как у предка
+        newbot.colorRed = bot.colorRed;       // цвет такой же, как у предка
+        newbot.colorGreen = bot.colorGreen;   // цвет такой же, как у предка
+        newbot.colorBlue = bot.colorBlue;     // цвет такой же, как у предка
 
         world.setBot(newbot);    // отмечаем нового бота в массиве matrix
-// todo: https://github.com/xlam/CyberBiology/issues/2
-//        this.world.population++;
 
         if (nbot == null) { // если у бота-предка ссылка на следующего бота в многоклеточной цепочке пуста
             bot.mnext = newbot;     // то вставляем туда новорожденного бота
@@ -972,8 +949,10 @@ public class BasicBot implements Bot {
     /**
      * Меняет один ген случайным образом.
      *
-     * @return byte[3] массив с информацией об измененном гене [0] - адрес измененной команды [1] - старая команда [2] -
-     * новая команда
+     * @return byte[3] массив с информацией об измененном гене, где:
+     *      [0] - адрес измененной команды
+     *      [1] - старая команда
+     *      [2] - новая команда
      */
     @Override
     public byte[] modifyMind() {
@@ -1018,7 +997,7 @@ public class BasicBot implements Bot {
         } else {
             t = 2;
         }
-        int hlt = 10 - (15 * bot.y / world.height) + t; // SEZON!!!
+        int hlt = 10 - (15 * bot.posY / world.height) + t; // SEZON!!!
         if (hlt >= 3) {
             return 1;
         } else {
@@ -1058,26 +1037,26 @@ public class BasicBot implements Bot {
      * @param num номер бота, на сколько озеленить
      */
     private void goGreen(BasicBot bot, int num) {  // добавляем зелени
-        bot.c_green += num;
-        if (bot.c_green > 255) {
-            bot.c_green = 255;
+        bot.colorGreen += num;
+        if (bot.colorGreen > 255) {
+            bot.colorGreen = 255;
         }
         int nm = num / 2;
         // убавляем красноту
-        bot.c_red -= nm;
-        if (bot.c_red < 0) {
-            bot.c_blue += bot.c_red;
+        bot.colorRed -= nm;
+        if (bot.colorRed < 0) {
+            bot.colorBlue += bot.colorRed;
         }
         // убавляем синеву
-        bot.c_blue -= nm;
-        if (bot.c_blue < 0) {
-            bot.c_red += bot.c_blue;
+        bot.colorBlue -= nm;
+        if (bot.colorBlue < 0) {
+            bot.colorRed += bot.colorBlue;
         }
-        if (bot.c_red < 0) {
-            bot.c_red = 0;
+        if (bot.colorRed < 0) {
+            bot.colorRed = 0;
         }
-        if (bot.c_blue < 0) {
-            bot.c_blue = 0;
+        if (bot.colorBlue < 0) {
+            bot.colorBlue = 0;
         }
     }
 
@@ -1087,26 +1066,26 @@ public class BasicBot implements Bot {
      * @param num номер бота, на сколько осинить
      */
     private void goBlue(BasicBot bot, int num) {  // добавляем синевы
-        bot.c_blue += num;
-        if (bot.c_blue > 255) {
-            bot.c_blue = 255;
+        bot.colorBlue += num;
+        if (bot.colorBlue > 255) {
+            bot.colorBlue = 255;
         }
         int nm = num / 2;
         // убавляем зелень
-        bot.c_green -= nm;
-        if (bot.c_green < 0) {
-            bot.c_red += bot.c_green;
+        bot.colorGreen -= nm;
+        if (bot.colorGreen < 0) {
+            bot.colorRed += bot.colorGreen;
         }
         // убавляем красноту
-        bot.c_red -= nm;
-        if (bot.c_red < 0) {
-            bot.c_green += bot.c_red;
+        bot.colorRed -= nm;
+        if (bot.colorRed < 0) {
+            bot.colorGreen += bot.colorRed;
         }
-        if (bot.c_red < 0) {
-            bot.c_red = 0;
+        if (bot.colorRed < 0) {
+            bot.colorRed = 0;
         }
-        if (bot.c_green < 0) {
-            bot.c_green = 0;
+        if (bot.colorGreen < 0) {
+            bot.colorGreen = 0;
         }
     }
 
@@ -1116,26 +1095,26 @@ public class BasicBot implements Bot {
      * @param num номер бота, на сколько окраснить
      */
     private void goRed(BasicBot bot, int num) {  // добавляем красноты
-        bot.c_red += num;
-        if (bot.c_red > 255) {
-            bot.c_red = 255;
+        bot.colorRed += num;
+        if (bot.colorRed > 255) {
+            bot.colorRed = 255;
         }
         int nm = num / 2;
         // убавляем зелень
-        bot.c_green -= nm;
-        if (bot.c_green < 0) {
-            bot.c_blue += bot.c_green;
+        bot.colorGreen -= nm;
+        if (bot.colorGreen < 0) {
+            bot.colorBlue += bot.colorGreen;
         }
         // убавляем синеву
-        bot.c_blue -= nm;
-        if (bot.c_blue < 0) {
-            bot.c_green += bot.c_blue;
+        bot.colorBlue -= nm;
+        if (bot.colorBlue < 0) {
+            bot.colorGreen += bot.colorBlue;
         }
-        if (bot.c_blue < 0) {
-            bot.c_blue = 0;
+        if (bot.colorBlue < 0) {
+            bot.colorBlue = 0;
         }
-        if (bot.c_green < 0) {
-            bot.c_green = 0;
+        if (bot.colorGreen < 0) {
+            bot.colorGreen = 0;
         }
     }
 
@@ -1200,7 +1179,7 @@ public class BasicBot implements Bot {
 
     @Override
     public int getY() {
-        return y;
+        return posY;
     }
 
     @Override
@@ -1247,11 +1226,11 @@ public class BasicBot implements Bot {
 
     @Override
     public void pestAttack() {
-        int xt = xFromVektorR(0);
-        int yt = yFromVektorR(0);
+        int xt = getRelativeDirectionX(0);
+        int yt = getRelativeDirectionY(0);
         BasicBot victim;
         if (yt >= 0 && yt < world.height) {
-             victim = world.getBot(xt, yt);
+            victim = world.getBot(xt, yt);
             // паразит атакует только живых и незараженных ботов
             if (victim != null && victim.alive == LV_ALIVE && victim.pest == 0) {
                 int healthDrain = victim.health > 100 ? 100 : victim.health;
@@ -1295,8 +1274,8 @@ public class BasicBot implements Bot {
         // на выходе пусто - 2  стена - 3  органик - 4  бот - 5
         health -= 4; // бот теряет на этом 4 энергии в независимости от результата
         // вычисляем относительное направление действия
-        int xt = xFromVektorR(direction);
-        int yt = yFromVektorR(direction);
+        int xt = getRelativeDirectionX(direction);
+        int yt = getRelativeDirectionY(direction);
         if ((yt < 0) || (yt >= world.height)) {  // если там стена возвращаем 3
             return 3;
         }

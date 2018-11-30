@@ -1,8 +1,9 @@
 package ru.cyberbiology;
 
 /**
+ * Константы приложения.
  *
- * @author Sergey Sokolov <xlamserg@gmail.com>
+ * @author Sergey Sokolov (xlamserg@gmail.com)
  */
 public interface Constant {
 

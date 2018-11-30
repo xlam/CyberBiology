@@ -14,6 +14,10 @@ public class ProjectProperties extends Properties {
     private static ProjectProperties instance;
     private String fileName = PROPERTIES_FILE;
 
+    /**
+     * Возвращает единственно-существующий экземпляр класса свойств приложения.
+     * @return 
+     */
     public static ProjectProperties getInstance() {
         if (!(instance instanceof ProjectProperties)) {
             instance = new ProjectProperties(PROPERTIES_FILE);
@@ -28,6 +32,11 @@ public class ProjectProperties extends Properties {
         this.loadUser();
     }
 
+    /**
+     * Установка каталога для сохранения снимков мира.
+     *
+     * @param name имя каталога
+     */
     public void setFileDirectory(String name) {
         String dirName = "";
         if (name != null && name.length() > 0 && !name.endsWith(File.separator)) {
@@ -65,6 +74,9 @@ public class ProjectProperties extends Properties {
         }
     }
 
+    /**
+     * Сохраняет текущие настройки в файле.
+     */
     public void save() {
         try {
             this.storeToXML(new FileOutputStream(this.fileName), null);

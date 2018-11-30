@@ -18,6 +18,7 @@ import ru.cyberbiology.BasicWorld;
 import ru.cyberbiology.Bot;
 
 /**
+ * Класс управляет процессом сохранения и загрузки снимков мира.
  *
  * @author Nickolay, Sergey Sokolov
  */
@@ -27,6 +28,11 @@ public class SnapshotManager {
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("dd.MM.yyyy HH.mm.ss");
     public static final int BOT_DATA_LENGTH = 14 + BasicBot.MIND_SIZE;
 
+    /**
+     * Сохраняет снимок мира.
+     *
+     * @param world сохраняемый мир
+     */
     public void saveSnapshot(BasicWorld world) {
 
         String dirName = world.getProperties().getFileDirectory();
@@ -68,8 +74,9 @@ public class SnapshotManager {
     }
 
     /**
-     * Загрузка снимка мира.
-     * @param world мир, в которые будет загружен снимок
+     * Загружает снимок мира.
+     *
+     * @param world мир, в который будет загружен снимок
      * @param file файл снимка
      */
     public void loadSnapshot(BasicWorld world, File file) {
@@ -97,14 +104,14 @@ public class SnapshotManager {
                 while (i < frameLength) {
                     BasicBot bot = new BasicBot((BasicWorld) world);
                     bot.adr = in.readByte();        //data[0]
-                    bot.x = in.readInt();           //data[1]
-                    bot.y = in.readInt();           //data[2]=
+                    bot.posX = in.readInt();           //data[1]
+                    bot.posY = in.readInt();           //data[2]=
                     bot.health = in.readInt();      //data[3]=
                     bot.mineral = in.readInt();     //data[4]=
                     bot.alive = in.readByte();      //data[5]=
-                    bot.c_red = in.readInt();       //data[6]=
-                    bot.c_green = in.readInt();     //data[7]=
-                    bot.c_blue = in.readInt();      //data[8]=
+                    bot.colorRed = in.readInt();       //data[6]=
+                    bot.colorGreen = in.readInt();     //data[7]=
+                    bot.colorBlue = in.readInt();      //data[8]=
                     bot.direction = in.readByte();  //data[9]=
                     bot.mprevX = in.readInt();      //data[10]
                     bot.mprevY = in.readInt();      //data[11]
@@ -154,66 +161,66 @@ public class SnapshotManager {
 
     private class Item {
 
-        private final byte bot_adr;
-        private final int bot_x;
-        private final int bot_y;
-        private final int bot_health;
-        private final int bot_mineral;
-        private final byte bot_alive;
-        private final int bot_c_red;
-        private final int bot_c_green;
-        private final int bot_c_blue;
-        private final byte bot_direction;
-        private final int bot_mprev_x;
-        private final int bot_mprev_y;
-        private final int bot_mnext_x;
-        private final int bot_mnext_y;
+        private final byte botAdr;
+        private final int botX;
+        private final int botY;
+        private final int botHealth;
+        private final int botMineral;
+        private final byte botAlive;
+        private final int botColorRed;
+        private final int botColorGreen;
+        private final int botColorBlue;
+        private final byte botDirection;
+        private final int botMprevX;
+        private final int botMprevY;
+        private final int botMnextX;
+        private final int botMnextY;
         private final byte[] mind;
 
         Item(BasicBot bot) {
             // жестко сохраняем все зхначения, так как к моменту сохранения кадра данные могут изменится
-            bot_adr = (byte) bot.adr;
-            bot_x = bot.x;
-            bot_y = bot.y;
-            bot_health = bot.health;
-            bot_mineral = bot.mineral;
-            bot_alive = (byte) bot.alive;
-            bot_c_red = bot.c_red;
-            bot_c_green = bot.c_green;
-            bot_c_blue = bot.c_blue;
-            bot_direction = (byte) bot.direction;
+            botAdr = (byte) bot.adr;
+            botX = bot.posX;
+            botY = bot.posY;
+            botHealth = bot.health;
+            botMineral = bot.mineral;
+            botAlive = (byte) bot.alive;
+            botColorRed = bot.colorRed;
+            botColorGreen = bot.colorGreen;
+            botColorBlue = bot.colorBlue;
+            botDirection = (byte) bot.direction;
 
             if (bot.mprev != null) {
-                bot_mprev_x = bot.mprev.x;
-                bot_mprev_y = bot.mprev.y;
+                botMprevX = bot.mprev.posX;
+                botMprevY = bot.mprev.posY;
             } else {
-                bot_mprev_x = bot_mprev_y = -1;
+                botMprevX = botMprevY = -1;
             }
             if (bot.mnext != null) {
-                bot_mnext_x = bot.mnext.x;
-                bot_mnext_y = bot.mnext.y;
+                botMnextX = bot.mnext.posX;
+                botMnextY = bot.mnext.posY;
             } else {
-                bot_mnext_x = bot_mnext_y = -1;
+                botMnextX = botMnextY = -1;
             }
             mind = new byte[bot.mind.length];
             System.arraycopy(bot.mind, 0, mind, 0, bot.mind.length);
         }
 
         public void save(DataOutputStream fileout) throws IOException {
-            fileout.writeByte(bot_adr);
-            fileout.writeInt(bot_x);
-            fileout.writeInt(bot_y);
-            fileout.writeInt(bot_health);
-            fileout.writeInt(bot_mineral);
-            fileout.writeByte(bot_alive);
-            fileout.writeInt(bot_c_red);
-            fileout.writeInt(bot_c_green);
-            fileout.writeInt(bot_c_blue);
-            fileout.writeByte(bot_direction);
-            fileout.writeInt(bot_mprev_x);
-            fileout.writeInt(bot_mprev_y);
-            fileout.writeInt(bot_mnext_x);
-            fileout.writeInt(bot_mnext_y);
+            fileout.writeByte(botAdr);
+            fileout.writeInt(botX);
+            fileout.writeInt(botY);
+            fileout.writeInt(botHealth);
+            fileout.writeInt(botMineral);
+            fileout.writeByte(botAlive);
+            fileout.writeInt(botColorRed);
+            fileout.writeInt(botColorGreen);
+            fileout.writeInt(botColorBlue);
+            fileout.writeByte(botDirection);
+            fileout.writeInt(botMprevX);
+            fileout.writeInt(botMprevY);
+            fileout.writeInt(botMnextX);
+            fileout.writeInt(botMnextY);
             for (int i = 0; i < mind.length; i++) {
                 fileout.writeByte(mind[i]);
             }

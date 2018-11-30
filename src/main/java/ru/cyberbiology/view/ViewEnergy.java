@@ -31,8 +31,8 @@ public class ViewEnergy extends AbstractView {
                 colorGreen = (int) Math.round(Math.abs(bot.health * 0.255 - 255));
             }
 
-                color = new Color(validColor(colorRed), validColor(colorGreen), validColor(colorBlue));
-            }
+            color = new Color(validColor(colorRed), validColor(colorGreen), validColor(colorBlue));
+        }
         return color;
     }
 }

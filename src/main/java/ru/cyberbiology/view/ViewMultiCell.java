@@ -31,9 +31,9 @@ public class ViewMultiCell extends AbstractView {
                     color = Color.MAGENTA;
                     break;
                 default:
-                    int green = (int) (bot.c_green - ((bot.c_green * bot.health) / 2000));
-                    int blue = (int) (bot.c_blue * 0.8 - ((bot.c_blue * bot.mineral) / 2000));
-                    color = new Color(validColor(bot.c_red), validColor(green), validColor(blue));
+                    int green = (int) (bot.colorGreen - ((bot.colorGreen * bot.health) / 2000));
+                    int blue = (int) (bot.colorBlue * 0.8 - ((bot.colorBlue * bot.mineral) / 2000));
+                    color = new Color(validColor(bot.colorRed), validColor(green), validColor(blue));
                     break;
             }
         }

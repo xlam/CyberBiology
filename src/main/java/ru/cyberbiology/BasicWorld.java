@@ -65,7 +65,7 @@ public class BasicWorld implements World {
 
     @Override
     public void setBot(BasicBot bot) {
-        matrix[width * bot.y + bot.x] = bot;
+        matrix[width * bot.posY + bot.posX] = bot;
     }
 
     @Override
@@ -127,20 +127,23 @@ public class BasicWorld implements World {
                .sum();
     }
 
+    /**
+     * Создает первого бота в новом мире.
+     */
     public final void generateAdam() {
         // ========== 1 ==============
         // бот номер 1 - это уже реальный бот
         BasicBot bot = new BasicBot(this);
 
         bot.adr = 0;
-        bot.x = width / 2; // координаты бота
-        bot.y = height / 2;
+        bot.posX = width / 2; // координаты бота
+        bot.posY = height / 2;
         bot.health = 990; // энергия
         bot.mineral = 0; // минералы
         bot.alive = 3; // отмечаем, что бот живой
-        bot.c_red = 170; // задаем цвет бота
-        bot.c_blue = 170;
-        bot.c_green = 170;
+        bot.colorRed = 170; // задаем цвет бота
+        bot.colorBlue = 170;
+        bot.colorGreen = 170;
         bot.direction = RANDOM.nextInt(8); // направление
         bot.mprev = null; // бот не входит в многоклеточные цепочки, поэтому
         // ссылки
@@ -238,6 +241,9 @@ public class BasicWorld implements World {
         return this.thread != null;
     }
 
+    /**
+     * Запускает пересчет мира.
+     */
     public final void start() {
         if (!this.started()) {
             mineralsAccumulation = properties.getProperty("MineralsAccumulation", "classic");
@@ -248,6 +254,9 @@ public class BasicWorld implements World {
         }
     }
 
+    /**
+     * Останавливает пересчет мира.
+     */
     public final void stop() {
         if (thread == null) {
             return;

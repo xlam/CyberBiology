@@ -53,17 +53,17 @@ public class MainWindow extends JFrame implements Window {
     public static BasicWorld world;
 
     /**
-     * буфер для отрисовки ботов
+     * Буфер для отрисовки ботов.
      */
     public Image buffer = null;
 
     /**
-     * актуальный отрисовщик
+     * Актуальный отрисовщик.
      */
     private View view;
 
     /**
-     * Перечень возможных отрисовщиков
+     * Перечень возможных отрисовщиков.
      */
     private final View[] views = new View[]{
         new ViewBasic(),
@@ -96,6 +96,9 @@ public class MainWindow extends JFrame implements Window {
     private final SettingsDialog settingsDialog;
     private final SnapshotManager snapshotManager = new SnapshotManager();
 
+    /**
+     * Создает главное окно приложения и показывает его на экране.
+     */
     public MainWindow() {
 
         properties = ProjectProperties.getInstance();
@@ -215,9 +218,9 @@ public class MainWindow extends JFrame implements Window {
                         default:
                             break;
                     }
-                    buf.append("<p>c_blue=").append(bot.c_blue);
-                    buf.append("<p>c_green=").append(bot.c_green);
-                    buf.append("<p>c_red=").append(bot.c_red);
+                    buf.append("<p>c_blue=").append(bot.colorBlue);
+                    buf.append("<p>c_green=").append(bot.colorGreen);
+                    buf.append("<p>c_red=").append(bot.colorRed);
                     buf.append("<p>direction=").append(bot.direction);
                     buf.append("<p>health=").append(bot.health);
                     buf.append("<p>mineral=").append(bot.mineral);
@@ -413,7 +416,6 @@ public class MainWindow extends JFrame implements Window {
     }
 
     private void setupToolBar() {
-        JToolBar toolBar = new JToolBar("Инструменты");
 
         pauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/icon-pause-16.png")));
         pauseButton.setMargin(new Insets(0, 0, 0, 0));
@@ -439,8 +441,6 @@ public class MainWindow extends JFrame implements Window {
             }
             if (!world.started()) {
                 world.start();
-//                runItem.setText("Пауза");
-//                botSizeMenu.setVisible(false);
                 doIterationButton.setEnabled(false);
                 pauseButton.setEnabled(true);
                 startButton.setEnabled(false);
@@ -453,6 +453,8 @@ public class MainWindow extends JFrame implements Window {
         doIterationButton.addActionListener(e -> world.doIteration());
         doIterationButton.setEnabled(false);
 
+        JToolBar toolBar = new JToolBar("Инструменты");
+
         toolBar.add(pauseButton);
         toolBar.add(startButton);
         toolBar.add(doIterationButton);
@@ -461,6 +463,7 @@ public class MainWindow extends JFrame implements Window {
     }
 
     private void setupStatusPanel() {
+
         JPanel statusPanel = new JPanel(new FlowLayout());
         statusPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         statusPanel.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -515,6 +518,10 @@ public class MainWindow extends JFrame implements Window {
         return version;
     }
 
+    /**
+     * Точка входа.
+     * @param args параметры командной строки
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new MainWindow();
