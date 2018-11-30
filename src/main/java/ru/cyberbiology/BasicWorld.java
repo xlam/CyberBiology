@@ -266,6 +266,17 @@ public class BasicWorld implements World {
     }
 
     /**
+     * Устанавливает алгоритм накопления минералов.
+     *
+     * @param acc classic|height
+     */
+    public void setMineralsAccumulation(String acc) {
+        if ("classic".equals(acc) || "height".equals(acc)) {
+            mineralsAccumulation = acc;
+        }
+    }
+
+    /**
      * Вычисляет количество минералов, которое может накопить бот на данной глубине.
      * @param y глубина
      * @return количество минералов
@@ -299,11 +310,12 @@ public class BasicWorld implements World {
     }
 
     private int getMineralsAccHeight(int y) {
-        if (RANDOM.nextInt(101) < (int) (y / (height * 0.01))) {
-            return 0;
+        // сначала определяется вероятность самого факта получения минералов
+        if (RANDOM.nextInt(101) <= (int) (y / ((height - 1) * 0.01))) {
+            // количество получаемых минералов от 1 на самом верху до 5 в самом низу
+            return RANDOM.nextInt(1, 2 + (int) (5 * y / height));
         }
-        // количество получаемых минералов от 1 на самом верху до 5 в самом низу
-        return RANDOM.nextInt(1, 2 + (int) (4 * y / height));
+        return 0;
     }
 
     public final BasicBot getBot(int botX, int botY) {
