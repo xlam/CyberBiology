@@ -22,7 +22,6 @@ public class BasicWorld implements World {
 
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
     private static String mineralsAccumulation;
-    public BasicWorld world;
     public Painter painter;
 
     public int width;
@@ -41,27 +40,26 @@ public class BasicWorld implements World {
     private ProjectProperties properties;
 
     protected BasicWorld(Painter painter) {
-        world = this;
         this.painter = painter;
-        this.painter.setWorld(this);
         population = 0;
         generation = 0;
         organic = 0;
         pests = 0;
         pestGenes = 0;
         properties = ProjectProperties.getInstance();
+        painter.setWorld(this);
     }
 
     public BasicWorld(Painter painter, int width, int height) {
         this(painter);
-        this.setSize(width, height);
+        setSize(width, height);
     }
 
     @Override
     public final void setSize(int width, int height) {
         this.width = width;
         this.height = height;
-        this.matrix = new BasicBot[height * width];
+        matrix = new BasicBot[height * width];
     }
 
     @Override
@@ -201,6 +199,10 @@ public class BasicWorld implements World {
      * @param mutatesCount Количество мутаций на одного бота (1..64)
      */
     public void randomMutation(int percent, int mutatesCount) {
+        boolean isStarted = started;
+        if (isStarted) {
+            stop();
+        }
         // получить список живых ботов
         ArrayList<BasicBot> aliveBots = new ArrayList();
         for (int x = 0; x < width; x++) {
@@ -222,7 +224,6 @@ public class BasicWorld implements World {
         GeneMutate mutagen = new GeneMutate();
         for (int i = 0; i < mutantsCount; i++) {
             BasicBot bot = aliveBots.get(rnd.nextInt(aliveBotsCount - 1));
-            //System.out.println("Mutating " + bot);
 
             // Мутации одного гена оказалось недостаточно чтобы
             // встряхнуть заснувший мир
@@ -230,10 +231,13 @@ public class BasicWorld implements World {
                 mutagen.onGene(bot);
             }
         }
+        if (isStarted) {
+            start();
+        }
     }
 
     public final boolean started() {
-        return this.thread != null;
+        return thread != null;
     }
 
     /**
@@ -242,10 +246,10 @@ public class BasicWorld implements World {
     public final void start() {
         if (!this.started()) {
             mineralsAccumulation = properties.getProperty("MineralsAccumulation", "classic");
-            this.thread = new Worker();
+            thread = new Worker();
             // запуск таймера при запуске потока
             PerfMeter.start();
-            this.thread.start();
+            thread.start();
         }
     }
 
@@ -297,12 +301,12 @@ public class BasicWorld implements World {
     private int getMineralsAccClassic(int y) {
         // если бот находится на глубине ниже 48 уровня
         int minerals = 0;
-        if (y > world.height / 2) {
+        if (y > height / 2) {
             minerals++;
-            if (y > world.height / 6 * 4) {
+            if (y > height / 6 * 4) {
                 minerals++;
             }
-            if (y > world.height / 6 * 5) {
+            if (y > height / 6 * 5) {
                 minerals++;
             }
         }
@@ -334,7 +338,7 @@ public class BasicWorld implements World {
 
     @Override
     public BasicBot[] getWorldArray() {
-        return this.matrix;
+        return matrix;
     }
 
     /**

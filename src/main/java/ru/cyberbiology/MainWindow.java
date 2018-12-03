@@ -277,12 +277,8 @@ public class MainWindow extends JFrame implements Painter {
             if (world == null) {
                 return;
             }
-            world.stop();
-            int width1 = paintPanel.getWidth() / properties.botSize();
-            int height1 = paintPanel.getHeight() / properties.botSize();
-            world = new BasicWorld(MainWindow.this, width1, height1);
+            createWorld();
             world.generateAdam();
-            paint();
             world.start();
             pauseButton.setEnabled(true);
             startButton.setEnabled(false);
@@ -291,15 +287,16 @@ public class MainWindow extends JFrame implements Painter {
 
         JMenuItem mutateItem = new JMenuItem("Cлучайная мутация");
         mutateItem.addActionListener((ActionEvent e) -> {
-            // мутацию проводим при отключенном мире
-            world.stop();
-            world.randomMutation(10, 32);
-            world.start();
+            if (world != null) {
+                world.randomMutation(10, 32);
+            }
         });
 
         JMenuItem adressJumpItem = new JMenuItem("Сбой программы генома");
         adressJumpItem.addActionListener((ActionEvent e) -> {
-            world.setRandomCmdAdress();
+            if (world != null) {
+                world.setRandomCmdAdress();
+            }
         });
 
         JMenuItem snapShotItem = new JMenuItem("Сделать снимок");
@@ -340,11 +337,7 @@ public class MainWindow extends JFrame implements Painter {
                 }
             });
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                if (world == null) {
-                    int width = paintPanel.getWidth() / properties.botSize();
-                    int height = paintPanel.getHeight() / properties.botSize();
-                    world = new BasicWorld(this, width, height);
-                }
+                createWorld();
                 snapshotManager.loadSnapshot(world, fc.getSelectedFile());
             }
         });
@@ -414,6 +407,16 @@ public class MainWindow extends JFrame implements Painter {
         setJMenuBar(menuBar);
     }
 
+    private void createWorld() {
+        if (world != null) {
+            world.stop();
+        }
+        int width = paintPanel.getWidth() / properties.botSize();
+        int height = paintPanel.getHeight() / properties.botSize();
+        world = new BasicWorld(this, width, height);
+        paint();
+    }
+
     private void setupToolBar() {
 
         pauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/icon-pause-16.png")));
@@ -432,9 +435,7 @@ public class MainWindow extends JFrame implements Painter {
         startButton.setToolTipText("Запустить/продолжить");
         startButton.addActionListener(e -> {
             if (world == null) {
-                int width1 = paintPanel.getWidth() / properties.botSize();
-                int height1 = paintPanel.getHeight() / properties.botSize();
-                world = new BasicWorld(MainWindow.this, width1, height1);
+                createWorld();
                 world.generateAdam();
                 paint();
             }
