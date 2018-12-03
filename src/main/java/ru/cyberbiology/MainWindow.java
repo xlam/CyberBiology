@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -107,6 +108,13 @@ public class MainWindow extends JFrame implements Painter {
         setTitle("CyberBiology " + getVersionFromProperties());
         setPreferredSize(new Dimension(1024, 768));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        try {
+            setIconImage(ImageIO.read(getClass().getResource("/icons/cb-app-03.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // у этого лейаута приятная особенность - центральная часть растягивается автоматически
         setLayout(new BorderLayout());
 
