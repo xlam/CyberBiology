@@ -4,7 +4,7 @@ package ru.cyberbiology.util;
  * Измерение произволительности (пересчетов в секунду). Оригинальный алгоритм
  * взят отсюда http://tv-games.ru/forum/blog.php?b=2025
  *
- * @author Sergey Sokolov <xlamserg@gmail.com>
+ * @author Sergey Sokolov (xlamserg@gmail.com)
  */
 public class PerfMeter {
 

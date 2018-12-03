@@ -14,7 +14,7 @@ public interface BotGeneController {
      *
      * @param bot бот, над которыым проводится процедура
      * @return true, если обработка в данной серии этому боту больше
-     * не требуется.
+     *      не требуется.
      */
     public boolean onGene(Bot bot);
 

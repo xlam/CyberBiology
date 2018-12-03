@@ -9,14 +9,21 @@ import javax.swing.JCheckBox;
 import ru.cyberbiology.util.ProjectProperties;
 
 /**
- *
- * @author Sergey Sokolov <xlamserg@gmail.com>
+ * Диалог параметров приложения.
+ * 
+ * @author Sergey Sokolov (xlamserg@gmail.com)
  */
 public class SettingsDialog extends javax.swing.JDialog {
 
     private final ProjectProperties properties;
     private final Map<String, String> changedSettings = new HashMap();
 
+    /**
+     * Создает окно диалога параметров и загружает в него текущие значения параметров.
+     * @param parent окно приложения, для которого вызывается диалог параметров
+     * @param modal флаг модальности (взаимодействие с окном приложения невозможно пока
+     *      не будет закрыт диалог параметров)
+     */
     public SettingsDialog(Frame parent, boolean modal) {
         super(parent, modal);
         properties = ProjectProperties.getInstance();
@@ -29,6 +36,8 @@ public class SettingsDialog extends javax.swing.JDialog {
         cbRelativeByEnergy.setSelected(properties.getBoolean("EnableRelativeByEnergy"));
         cbRelativeByMinerals.setSelected(properties.getBoolean("EnableRelativeByMinerals"));
     }
+    
+    //CHECKSTYLE:OFF
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -240,7 +249,12 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JTabbedPane tabbedPane;
     // End of variables declaration//GEN-END:variables
 
-    void showSettingsDialog() {
+    //CHECKSTYLE:ON
+
+    /**
+     * Отобразить диалог параметров.
+     */
+    public void showSettingsDialog() {
         setLocationRelativeTo(getParent());
         setVisible(true);
     }

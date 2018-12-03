@@ -22,8 +22,7 @@ public class BasicWorld implements World {
 
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
     private static String mineralsAccumulation;
-    public BasicWorld world;
-    public Window window;
+    public Painter painter;
 
     public int width;
     public int height;
@@ -40,32 +39,32 @@ public class BasicWorld implements World {
 
     private ProjectProperties properties;
 
-    protected BasicWorld(Window win) {
-        world = this;
-        window = win;
+    protected BasicWorld(Painter painter) {
+        this.painter = painter;
         population = 0;
         generation = 0;
         organic = 0;
         pests = 0;
         pestGenes = 0;
         properties = ProjectProperties.getInstance();
+        painter.setWorld(this);
     }
 
-    public BasicWorld(Window win, int width, int height) {
-        this(win);
-        this.setSize(width, height);
+    public BasicWorld(Painter painter, int width, int height) {
+        this(painter);
+        setSize(width, height);
     }
 
     @Override
     public final void setSize(int width, int height) {
         this.width = width;
         this.height = height;
-        this.matrix = new BasicBot[height * width];
+        matrix = new BasicBot[height * width];
     }
 
     @Override
     public void setBot(BasicBot bot) {
-        matrix[width * bot.y + bot.x] = bot;
+        matrix[width * bot.posY + bot.posX] = bot;
     }
 
     @Override
@@ -75,12 +74,7 @@ public class BasicWorld implements World {
 
     @Override
     public void paint() {
-        window.paint();
-    }
-
-    @Override
-    public ProjectProperties getProperties() {
-        return window.getProperties();
+        painter.paint();
     }
 
     /**
@@ -101,7 +95,6 @@ public class BasicWorld implements World {
         }
         start();
     }
-
 
     /**
     * Подсчет фактических значений населения и органики.
@@ -127,20 +120,23 @@ public class BasicWorld implements World {
                .sum();
     }
 
+    /**
+     * Создает первого бота в новом мире.
+     */
     public final void generateAdam() {
         // ========== 1 ==============
         // бот номер 1 - это уже реальный бот
         BasicBot bot = new BasicBot(this);
 
         bot.adr = 0;
-        bot.x = width / 2; // координаты бота
-        bot.y = height / 2;
+        bot.posX = width / 2; // координаты бота
+        bot.posY = height / 2;
         bot.health = 990; // энергия
         bot.mineral = 0; // минералы
         bot.alive = 3; // отмечаем, что бот живой
-        bot.c_red = 170; // задаем цвет бота
-        bot.c_blue = 170;
-        bot.c_green = 170;
+        bot.colorRed = 170; // задаем цвет бота
+        bot.colorBlue = 170;
+        bot.colorGreen = 170;
         bot.direction = RANDOM.nextInt(8); // направление
         bot.mprev = null; // бот не входит в многоклеточные цепочки, поэтому
         // ссылки
@@ -203,6 +199,10 @@ public class BasicWorld implements World {
      * @param mutatesCount Количество мутаций на одного бота (1..64)
      */
     public void randomMutation(int percent, int mutatesCount) {
+        boolean isStarted = started;
+        if (isStarted) {
+            stop();
+        }
         // получить список живых ботов
         ArrayList<BasicBot> aliveBots = new ArrayList();
         for (int x = 0; x < width; x++) {
@@ -224,7 +224,6 @@ public class BasicWorld implements World {
         GeneMutate mutagen = new GeneMutate();
         for (int i = 0; i < mutantsCount; i++) {
             BasicBot bot = aliveBots.get(rnd.nextInt(aliveBotsCount - 1));
-            //System.out.println("Mutating " + bot);
 
             // Мутации одного гена оказалось недостаточно чтобы
             // встряхнуть заснувший мир
@@ -232,22 +231,31 @@ public class BasicWorld implements World {
                 mutagen.onGene(bot);
             }
         }
-    }
-
-    public final boolean started() {
-        return this.thread != null;
-    }
-
-    public final void start() {
-        if (!this.started()) {
-            mineralsAccumulation = properties.getProperty("MineralsAccumulation", "classic");
-            this.thread = new Worker();
-            // запуск таймера при запуске потока
-            PerfMeter.start();
-            this.thread.start();
+        if (isStarted) {
+            start();
         }
     }
 
+    public final boolean started() {
+        return thread != null;
+    }
+
+    /**
+     * Запускает пересчет мира.
+     */
+    public final void start() {
+        if (!this.started()) {
+            mineralsAccumulation = properties.getProperty("MineralsAccumulation", "classic");
+            thread = new Worker();
+            // запуск таймера при запуске потока
+            PerfMeter.start();
+            thread.start();
+        }
+    }
+
+    /**
+     * Останавливает пересчет мира.
+     */
     public final void stop() {
         if (thread == null) {
             return;
@@ -259,6 +267,17 @@ public class BasicWorld implements World {
             Logger.getLogger(BasicWorld.class.getName()).log(Level.SEVERE, null, ex);
         }
         thread = null;
+    }
+
+    /**
+     * Устанавливает алгоритм накопления минералов.
+     *
+     * @param acc classic|height
+     */
+    public void setMineralsAccumulation(String acc) {
+        if ("classic".equals(acc) || "height".equals(acc)) {
+            mineralsAccumulation = acc;
+        }
     }
 
     /**
@@ -282,12 +301,12 @@ public class BasicWorld implements World {
     private int getMineralsAccClassic(int y) {
         // если бот находится на глубине ниже 48 уровня
         int minerals = 0;
-        if (y > world.height / 2) {
+        if (y > height / 2) {
             minerals++;
-            if (y > world.height / 6 * 4) {
+            if (y > height / 6 * 4) {
                 minerals++;
             }
-            if (y > world.height / 6 * 5) {
+            if (y > height / 6 * 5) {
                 minerals++;
             }
         }
@@ -295,11 +314,12 @@ public class BasicWorld implements World {
     }
 
     private int getMineralsAccHeight(int y) {
-        if (RANDOM.nextInt(101) < (int) (y / (height * 0.01))) {
-            return 0;
+        // сначала определяется вероятность самого факта получения минералов
+        if (RANDOM.nextInt(101) <= (int) (y / ((height - 1) * 0.01))) {
+            // количество получаемых минералов от 1 на самом верху до 5 в самом низу
+            return RANDOM.nextInt(1, 2 + (int) (5 * y / height));
         }
-        // количество получаемых минералов от 1 на самом верху до 5 в самом низу
-        return RANDOM.nextInt(1, 2 + (int) (4 * y / height));
+        return 0;
     }
 
     public final BasicBot getBot(int botX, int botY) {
@@ -318,7 +338,34 @@ public class BasicWorld implements World {
 
     @Override
     public BasicBot[] getWorldArray() {
-        return this.matrix;
+        return matrix;
+    }
+
+    /**
+     * Выполнить один пересчет мира.
+     */
+    public void doIteration() {
+        doMatrixIteration();
+        updateStats();
+        paint();
+    }
+
+    /**
+     * Один пересчет матрицы без обновления статистики и отрисовки.
+     */
+    private void doMatrixIteration() {
+        /**
+         * Параллельный стрим работает быстрее предыдущего многопоточного
+         * варианта? (см. коммит 0bc13cc)
+         * Быстрее, но не намного, процентов на 5. Зато реализация намного проще.
+         * Будем надеяться на отсутствие побочных эффектов.
+         */
+        Arrays.stream(matrix)
+                .filter(b -> b != null)
+                .parallel()
+                .forEach(b -> b.step());
+
+        generation++;
     }
 
     private class Worker extends Thread {
@@ -329,19 +376,8 @@ public class BasicWorld implements World {
             
             while (started) {
 
-                /**
-                 * Пересчет мира.
-                 * Параллельный стрим работает быстрее предыдущего многопоточного
-                 * варианта? (см. коммит 0bc13cc)
-                 * Быстрее, но не намного, процентов на 5. Зато реализация намного проще.
-                 * Будем надеяться на отсутствие побочных эффектов.
-                 */
-                Arrays.stream(matrix)
-                        .filter(b -> b != null)
-                        .parallel()
-                        .forEach(b -> b.step());
+                doMatrixIteration();
 
-                generation++;
                 // отрисовка на экран через каждые "paintstep" шагов
                 if (generation % Integer.parseInt(properties.getProperty("paintstep", "" + PAINT_STEP)) == 0) {
                     updateStats();

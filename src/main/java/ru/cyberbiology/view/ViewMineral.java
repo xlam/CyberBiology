@@ -31,7 +31,7 @@ public class ViewMineral extends AbstractView {
                 colorGreen = (int) Math.round(Math.abs(bot.mineral * 0.255 - 255));
             }
 
-            color = new Color(colorRed, colorGreen, colorBlue);
+            color = new Color(validColor(colorRed), validColor(colorGreen), validColor(colorBlue));
         }
         return color;
     }

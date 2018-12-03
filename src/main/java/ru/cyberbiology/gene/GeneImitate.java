@@ -7,7 +7,7 @@ import ru.cyberbiology.Constant;
  * Имитирование, подражание в поведении. Команда копирует случайный участок
  * генома друго бота в свой геном.
  *
- * @author Sergey Sokolov <xlamserg@gmail.com>
+ * @author Sergey Sokolov (xlamserg@gmail.com)
  */
 public class GeneImitate extends AbstractBotGeneController {
 

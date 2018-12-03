@@ -5,7 +5,7 @@ import ru.cyberbiology.Bot;
 /**
  * Паразитирование. Забирает жизненную силу сругого бота.
  * 
- * @author Sergey Sokolov <xlamserg@gmail.com>
+ * @author Sergey Sokolov (xlamserg@gmail.com)
  */
 public class GenePest extends AbstractBotGeneController {
 

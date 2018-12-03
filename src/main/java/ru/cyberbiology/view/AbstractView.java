@@ -9,13 +9,14 @@ import ru.cyberbiology.BasicWorld;
 import ru.cyberbiology.util.ProjectProperties;
 
 /**
+ * Реализует общий функционал видов.
  *
- * @author Sergey Sokolov <xlamserg@gmail.com>
+ * @author Sergey Sokolov (xlamserg@gmail.com)
  */
 public abstract class AbstractView implements View {
 
     public Image buf;
-    public Graphics g;
+    public Graphics graphics;
     public BasicWorld world;
     private int botSize;
 
@@ -24,7 +25,7 @@ public abstract class AbstractView implements View {
         //Создаем временный буфер для рисования
         buf = canvas.createImage(canvas.getWidth(), canvas.getHeight());
         //подеменяем графику на временный буфер
-        g = buf.getGraphics();
+        graphics = buf.getGraphics();
         botSize = ProjectProperties.getInstance().botSize();
     }
 
@@ -33,17 +34,17 @@ public abstract class AbstractView implements View {
 
         init(world, canvas);
 
-        g.drawRect(0, 0, world.width * botSize + 1, world.height * botSize + 1);
+        graphics.drawRect(0, 0, world.width * botSize + 1, world.height * botSize + 1);
 
         for (int y = 0; y < world.height; y++) {
             for (int x = 0; x < world.width; x++) {
                 BasicBot bot = world.getBot(x, y);
                 Color color = getBotColor(bot);
-                g.setColor(color);
-                g.fillRect(x * botSize, y * botSize, botSize, botSize);
+                graphics.setColor(color);
+                graphics.fillRect(x * botSize, y * botSize, botSize, botSize);
                 if (bot != null && bot.alive == BasicBot.LV_ALIVE) {
-                    g.setColor(Color.BLACK);
-                    g.drawRect(x * botSize, y * botSize, botSize, botSize);
+                    graphics.setColor(Color.BLACK);
+                    graphics.drawRect(x * botSize, y * botSize, botSize, botSize);
                 }
             }
         }
@@ -51,4 +52,13 @@ public abstract class AbstractView implements View {
     }
 
     public abstract Color getBotColor(BasicBot bot);
+
+    /**
+     * Проверка и корректировка значения цвета.
+     * @param color проверяемое значение.
+     * @return значение цвета в диапазоне от 0 до 255.
+     */
+    public int validColor(int color) {
+        return color > 255 ? 255 : color < 0 ? 0 : color;
+    }
 }

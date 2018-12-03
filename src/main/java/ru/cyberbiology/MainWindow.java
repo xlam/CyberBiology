@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -16,8 +17,11 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -29,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.WindowConstants;
@@ -44,22 +49,22 @@ import ru.cyberbiology.view.ViewMineral;
 import ru.cyberbiology.view.ViewMultiCell;
 import ru.cyberbiology.view.ViewPest;
 
-public class MainWindow extends JFrame implements Window {
-
-    public static BasicWorld world;
+public class MainWindow extends JFrame implements Painter {
 
     /**
-     * буфер для отрисовки ботов
+     * Буфер для отрисовки ботов.
      */
     public Image buffer = null;
 
+    private BasicWorld world;
+
     /**
-     * актуальный отрисовщик
+     * Актуальный отрисовщик.
      */
     private View view;
 
     /**
-     * Перечень возможных отрисовщиков
+     * Перечень возможных отрисовщиков.
      */
     private final View[] views = new View[]{
         new ViewBasic(),
@@ -77,6 +82,10 @@ public class MainWindow extends JFrame implements Window {
     private final JLabel perfLabel = new JLabel(" WIPS: 0 ");
     private final JLabel memoryLabel = new JLabel("");
 
+    private final JButton pauseButton = new JButton();
+    private final JButton startButton = new JButton();
+    private final JButton doIterationButton = new JButton();
+
     private final JPanel paintPanel = new JPanel() {
         @Override
         public void paint(Graphics g) {
@@ -88,6 +97,9 @@ public class MainWindow extends JFrame implements Window {
     private final SettingsDialog settingsDialog;
     private final SnapshotManager snapshotManager = new SnapshotManager();
 
+    /**
+     * Создает главное окно приложения и показывает его на экране.
+     */
     public MainWindow() {
 
         properties = ProjectProperties.getInstance();
@@ -96,12 +108,20 @@ public class MainWindow extends JFrame implements Window {
         setTitle("CyberBiology " + getVersionFromProperties());
         setPreferredSize(new Dimension(1024, 768));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        try {
+            setIconImage(ImageIO.read(getClass().getResource("/icons/cb-app-03.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         // у этого лейаута приятная особенность - центральная часть растягивается автоматически
         setLayout(new BorderLayout());
 
-        setupStatusPanel();
-        setupPaintPanel();
         setupMenuBar();
+        setupToolBar();
+        setupPaintPanel();
+        setupStatusPanel();
 
         view = new ViewBasic();
         pack();
@@ -129,12 +149,16 @@ public class MainWindow extends JFrame implements Window {
         return properties.getFileDirectory();
     }
 
-    @Override
-    public void setView(View view) {
+    private void setView(View view) {
         this.view = view;
         if (null != world && !world.started()) {
             paint();
         }
+    }
+
+    @Override
+    public void setWorld(World world) {
+        this.world = (BasicWorld) world;
     }
 
     @Override
@@ -155,11 +179,6 @@ public class MainWindow extends JFrame implements Window {
         memoryLabel.setText(" Memory MB: " + String.valueOf(memory / (1024L * 1024L)));
 
         paintPanel.repaint();
-    }
-
-    @Override
-    public ProjectProperties getProperties() {
-        return properties;
     }
 
     private void setupPaintPanel() {
@@ -206,9 +225,9 @@ public class MainWindow extends JFrame implements Window {
                         default:
                             break;
                     }
-                    buf.append("<p>c_blue=").append(bot.c_blue);
-                    buf.append("<p>c_green=").append(bot.c_green);
-                    buf.append("<p>c_red=").append(bot.c_red);
+                    buf.append("<p>c_blue=").append(bot.colorBlue);
+                    buf.append("<p>c_green=").append(bot.colorGreen);
+                    buf.append("<p>c_red=").append(bot.colorRed);
                     buf.append("<p>direction=").append(bot.direction);
                     buf.append("<p>health=").append(bot.health);
                     buf.append("<p>mineral=").append(bot.mineral);
@@ -261,57 +280,40 @@ public class MainWindow extends JFrame implements Window {
         menuBar.add(worldEventsMenu);
         menuBar.add(settingsMenu);
 
-        JMenuItem snapShotItem = new JMenuItem("Сделать снимок");
-        JMenuItem runItem = new JMenuItem("Запустить");
-        runItem.addActionListener((ActionEvent e) -> {
-            if (world == null) {
-                // Доступная часть экрана для рисования карты
-                int width1 = paintPanel.getWidth() / properties.botSize();
-                int height1 = paintPanel.getHeight() / properties.botSize();
-                world = new BasicWorld(MainWindow.this, width1, height1);
-                world.generateAdam();
-                paint();
-            }
-            if (!world.started()) {
-                world.start();//Запускаем его
-                runItem.setText("Пауза");
-                botSizeMenu.setVisible(false);
-            } else {
-                world.stop();
-                runItem.setText("Продолжить");
-                snapShotItem.setEnabled(true);
-            }
-        });
-
         JMenuItem restartItem = new JMenuItem("Перезапуск");
         restartItem.addActionListener((ActionEvent e) -> {
-            world.stop();
-            int width1 = paintPanel.getWidth() / properties.botSize();
-            int height1 = paintPanel.getHeight() / properties.botSize();
-            world = new BasicWorld(MainWindow.this, width1, height1);
+            if (world == null) {
+                return;
+            }
+            createWorld();
             world.generateAdam();
-            paint();
             world.start();
-            runItem.setText("Пауза");
+            pauseButton.setEnabled(true);
+            startButton.setEnabled(false);
+            doIterationButton.setEnabled(false);
         });
 
         JMenuItem mutateItem = new JMenuItem("Cлучайная мутация");
         mutateItem.addActionListener((ActionEvent e) -> {
-            // мутацию проводим при отключенном мире
-            world.stop();
-            world.randomMutation(10, 32);
-            world.start();
+            if (world != null) {
+                world.randomMutation(10, 32);
+            }
         });
 
         JMenuItem adressJumpItem = new JMenuItem("Сбой программы генома");
         adressJumpItem.addActionListener((ActionEvent e) -> {
-            world.setRandomCmdAdress();
+            if (world != null) {
+                world.setRandomCmdAdress();
+            }
         });
 
+        JMenuItem snapShotItem = new JMenuItem("Сделать снимок");
         snapShotItem.addActionListener((ActionEvent e) -> {
             if (world != null) {
                 world.stop();
-                runItem.setText("Продолжить");
+                pauseButton.setEnabled(false);
+                startButton.setEnabled(true);
+                doIterationButton.setEnabled(true);
                 snapshotManager.saveSnapshot(world);
             }
         });
@@ -343,11 +345,7 @@ public class MainWindow extends JFrame implements Window {
                 }
             });
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                if (world == null) {
-                    int width = paintPanel.getWidth() / properties.botSize();
-                    int height = paintPanel.getHeight() / properties.botSize();
-                    world = new BasicWorld(this, width, height);
-                }
+                createWorld();
                 snapshotManager.loadSnapshot(world, fc.getSelectedFile());
             }
         });
@@ -357,7 +355,6 @@ public class MainWindow extends JFrame implements Window {
             settingsDialog.showSettingsDialog();
         });
 
-        fileMenu.add(runItem);
         fileMenu.add(restartItem);
         fileMenu.add(snapShotItem);
         fileMenu.add(loadWorldItem);
@@ -418,7 +415,63 @@ public class MainWindow extends JFrame implements Window {
         setJMenuBar(menuBar);
     }
 
+    private void createWorld() {
+        if (world != null) {
+            world.stop();
+        }
+        int width = paintPanel.getWidth() / properties.botSize();
+        int height = paintPanel.getHeight() / properties.botSize();
+        world = new BasicWorld(this, width, height);
+        paint();
+    }
+
+    private void setupToolBar() {
+
+        pauseButton.setIcon(new ImageIcon(getClass().getResource("/icons/icon-pause-16.png")));
+        pauseButton.setMargin(new Insets(0, 0, 0, 0));
+        pauseButton.setToolTipText("Пауза");
+        pauseButton.addActionListener(e -> {
+            world.stop();
+            doIterationButton.setEnabled(true);
+            pauseButton.setEnabled(false);
+            startButton.setEnabled(true);
+        });
+        pauseButton.setEnabled(false);
+
+        startButton.setIcon(new ImageIcon(getClass().getResource("/icons/icon-start-16.png")));
+        startButton.setMargin(new Insets(0, 0, 0, 0));
+        startButton.setToolTipText("Запустить/продолжить");
+        startButton.addActionListener(e -> {
+            if (world == null) {
+                createWorld();
+                world.generateAdam();
+                paint();
+            }
+            if (!world.started()) {
+                world.start();
+                doIterationButton.setEnabled(false);
+                pauseButton.setEnabled(true);
+                startButton.setEnabled(false);
+            }
+        });
+
+        doIterationButton.setIcon(new ImageIcon(getClass().getResource("/icons/icon-step1-16.png")));
+        doIterationButton.setMargin(new Insets(0, 0, 0, 0));
+        doIterationButton.setToolTipText("Выполнить один пересчет мира");
+        doIterationButton.addActionListener(e -> world.doIteration());
+        doIterationButton.setEnabled(false);
+
+        JToolBar toolBar = new JToolBar("Инструменты");
+
+        toolBar.add(pauseButton);
+        toolBar.add(startButton);
+        toolBar.add(doIterationButton);
+        toolBar.setFloatable(false);
+        add(toolBar, BorderLayout.NORTH);
+    }
+
     private void setupStatusPanel() {
+
         JPanel statusPanel = new JPanel(new FlowLayout());
         statusPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         statusPanel.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -473,6 +526,10 @@ public class MainWindow extends JFrame implements Window {
         return version;
     }
 
+    /**
+     * Точка входа.
+     * @param args параметры командной строки
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new MainWindow();

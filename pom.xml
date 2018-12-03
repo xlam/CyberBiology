@@ -4,7 +4,7 @@
 
     <groupId>ru</groupId>
     <artifactId>cyberbiology</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3-DEV</version>
 
     <name>cyberbiology</name>
     <description>Add project description here</description>
@@ -22,8 +22,7 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>app.properties</include>
-                    <include>properties.xml</include>
+                    <include>**/*</include>
                 </includes>
             </resource>
         </resources>
