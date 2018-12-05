@@ -85,6 +85,25 @@ class GeneQueue {
         return result;
     }
 
+    /**
+     * Возвращает представление очереди в виде массива строк.
+     *
+     * <p>Свойства массива такие же как у возвращаемого <code>toArray()</code>
+     *
+     * @return упорядоченный массив очереди
+     */
+    public String[] toStringArray() {
+        if (isEmpty()) {
+            return null;
+        }
+        String[] result = new String[count];
+        int j = 0;
+        for (int i : toArray()) {
+            result[j++] = String.valueOf(i);
+        }
+        return result;
+    }
+
     @Override
     public String toString() {
         if (isEmpty()) {

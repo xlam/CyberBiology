@@ -14,6 +14,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,6 +87,8 @@ public class MainWindow extends JFrame implements Painter {
     private final JButton pauseButton = new JButton();
     private final JButton startButton = new JButton();
     private final JButton doIterationButton = new JButton();
+
+    private final List<BotFrame> botFrames = new ArrayList<>();
 
     private final JPanel paintPanel = new JPanel() {
         @Override
@@ -179,6 +183,10 @@ public class MainWindow extends JFrame implements Painter {
         memoryLabel.setText(" Memory MB: " + String.valueOf(memory / (1024L * 1024L)));
 
         paintPanel.repaint();
+
+        for (BotFrame botFrame : botFrames) {
+            botFrame.update();
+        }
     }
 
     private void setupPaintPanel() {
@@ -201,6 +209,9 @@ public class MainWindow extends JFrame implements Painter {
                     if (bot == null) {
                         return;
                     }
+                    BotFrame botFrame = new BotFrame(bot);
+                    botFrame.showFrame();
+                    botFrames.add(botFrame);
                     Graphics g = buffer.getGraphics();
                     g.setColor(Color.MAGENTA);
                     g.fillRect(botX * properties.botSize(), botY * properties.botSize(), properties.botSize(), properties.botSize());
