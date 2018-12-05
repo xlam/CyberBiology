@@ -74,6 +74,8 @@ public class BasicBot implements Bot {
 
     public byte[] mind = new byte[MIND_SIZE];   // геном бота содержит 64 команды
 
+    public GeneQueue genesHistory = new GeneQueue(100);
+
     /**
      * Поля нужны для сериализации ботов координаты соседних клеток многоклеточного.
      */
@@ -213,6 +215,7 @@ public class BasicBot implements Bot {
 
             // Получаем обработчика команды
             cont = geneController[command];
+            genesHistory.add(command);
             if (cont != null) { // если обработчик такой команды назначен
                 if (cont.onGene(this)) { // передаем ему управление
                     break; // если обрабочик говорит, что он последний - завершаем цикл?

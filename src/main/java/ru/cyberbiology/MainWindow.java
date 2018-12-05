@@ -225,6 +225,7 @@ public class MainWindow extends JFrame implements Painter {
                         default:
                             break;
                     }
+                    buf.append("<p>Выполенные гены: ").append(bot.genesHistory.toString());
                     buf.append("<p>c_blue=").append(bot.colorBlue);
                     buf.append("<p>c_green=").append(bot.colorGreen);
                     buf.append("<p>c_red=").append(bot.colorRed);
@@ -243,6 +244,8 @@ public class MainWindow extends JFrame implements Painter {
                             buf.append(String.valueOf(i));
                             buf.append("&nbsp;");
                             buf.append(cont.getDescription(bot, i));
+                            buf.append("&nbsp;");
+                            buf.append(bot.mind[i]);
                             buf.append("</p>");
                         }
                     }
