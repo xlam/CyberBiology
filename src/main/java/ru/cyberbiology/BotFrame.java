@@ -1,5 +1,7 @@
 package ru.cyberbiology;
 
+import java.awt.Color;
+import java.awt.Component;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -7,8 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * Окно наблюдения за ботом.
@@ -49,6 +56,11 @@ public class BotFrame extends JFrame {
         jlEnergy = new JLabel();
         jlMineralsLabel = new JLabel();
         jlMinerals = new JLabel();
+        jSeparator1 = new JSeparator();
+        jScrollPane2 = new JScrollPane();
+        jtGenome = new JTable();
+        jlAddressLable = new JLabel();
+        jlAddress = new JLabel();
         jPanel4 = new JPanel();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -86,19 +98,81 @@ public class BotFrame extends JFrame {
         jlMinerals.setText("-");
         jlMinerals.setName("jlMinerals"); // NOI18N
 
+        jSeparator1.setName("jSeparator1"); // NOI18N
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jtGenome.setModel(new DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "1", "2", "3", "4", "5", "6", "7", "8"
+            }
+        ) {
+            Class[] types = new Class [] {
+                Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jtGenome.setCellSelectionEnabled(true);
+        jtGenome.setName("jtGenome"); // NOI18N
+        jtGenome.getTableHeader().setResizingAllowed(false);
+        jtGenome.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(jtGenome);
+        if (jtGenome.getColumnModel().getColumnCount() > 0) {
+            jtGenome.getColumnModel().getColumn(0).setResizable(false);
+            jtGenome.getColumnModel().getColumn(1).setResizable(false);
+            jtGenome.getColumnModel().getColumn(2).setResizable(false);
+            jtGenome.getColumnModel().getColumn(3).setResizable(false);
+            jtGenome.getColumnModel().getColumn(4).setResizable(false);
+            jtGenome.getColumnModel().getColumn(5).setResizable(false);
+            jtGenome.getColumnModel().getColumn(6).setResizable(false);
+            jtGenome.getColumnModel().getColumn(7).setResizable(false);
+        }
+
+        jlAddressLable.setText("Указатель команды:");
+        jlAddressLable.setName("jlAddressLable"); // NOI18N
+
+        jlAddress.setText("-");
+        jlAddress.setName("jlAddress"); // NOI18N
+
         GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addComponent(jlMineralsLabel)
-                    .addComponent(jlEnergyLable))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(jlEnergy)
-                    .addComponent(jlMinerals))
-                .addContainerGap(116, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(jlMineralsLabel)
+                            .addComponent(jlEnergyLable)
+                            .addComponent(jlAddressLable))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(jlEnergy)
+                            .addComponent(jlMinerals)
+                            .addComponent(jlAddress)))
+                    .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -110,7 +184,15 @@ public class BotFrame extends JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(jlMineralsLabel)
                     .addComponent(jlMinerals))
-                .addContainerGap(197, Short.MAX_VALUE))
+                .addGap(4, 4, 4)
+                .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(jlAddressLable)
+                    .addComponent(jlAddress))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         jPanel4.setName("jPanel4"); // NOI18N
@@ -164,11 +246,16 @@ public class BotFrame extends JFrame {
     private JPanel jPanel3;
     private JPanel jPanel4;
     private JScrollPane jScrollPane1;
+    private JScrollPane jScrollPane2;
+    private JSeparator jSeparator1;
+    private JLabel jlAddress;
+    private JLabel jlAddressLable;
     private JLabel jlEnergy;
     private JLabel jlEnergyLable;
     private JList<String> jlGenesHistory;
     private JLabel jlMinerals;
     private JLabel jlMineralsLabel;
+    private JTable jtGenome;
     // End of variables declaration//GEN-END:variables
 
     //CHECKSTYLE:ON
@@ -179,15 +266,42 @@ public class BotFrame extends JFrame {
     public void update() {
         jlEnergy.setText(String.valueOf(bot.health));
         jlMinerals.setText(String.valueOf(bot.mineral));
+        jlAddress.setText(String.valueOf(bot.adr));
         jlGenesHistory.setListData(bot.genesHistory.toStringArray());
+        TableModel genomeTableModel = jtGenome.getModel();
+        for (int row = 0; row < Bot.MIND_SIZE / 8; row++) {
+            for (int col = 0; col < Bot.MIND_SIZE / 8; col++) {
+                genomeTableModel.setValueAt(bot.mind[row * 8 + col], row, col);
+            }
+        }
     }
 
     /**
      * Отображает окно бота.
      */
     public void showFrame() {
+        for (int i = 0; i < 8; i++) {
+            jtGenome.getColumnModel().getColumn(i).setCellRenderer(new CurrentCommandRenderer());
+        }
         pack();
         update();
         setVisible(true);
+    }
+
+    /**
+     * Подсвечивает ген, на который указывает УТК.
+     */
+    private class CurrentCommandRenderer extends DefaultTableCellRenderer {
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            if (bot.adr == row * 8 + column) {
+                c.setForeground(Color.RED);
+            } else {
+                c.setForeground(Color.BLACK);
+            }
+            return c;
+        }
     }
 }
