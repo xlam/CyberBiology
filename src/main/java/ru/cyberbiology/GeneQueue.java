@@ -96,9 +96,10 @@ class GeneQueue {
         if (isEmpty()) {
             return null;
         }
-        String[] result = new String[count];
+        int[] arr = toArray();
+        String[] result = new String[arr.length];
         int j = 0;
-        for (int i : toArray()) {
+        for (int i : arr) {
             result[j++] = String.valueOf(i);
         }
         return result;
