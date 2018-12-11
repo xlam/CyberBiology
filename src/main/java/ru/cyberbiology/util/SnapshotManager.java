@@ -137,7 +137,7 @@ public class SnapshotManager {
         }
     }
 
-    private class SnapShotFrame implements Frame {
+    private class SnapShotFrame {
 
         private final List<Item> list;
 
@@ -145,7 +145,6 @@ public class SnapshotManager {
             list = new ArrayList<>();
         }
 
-        @Override
         public int save(DataOutputStream fileout) throws IOException {
             int length = list.size() * BOT_DATA_LENGTH;
             fileout.writeInt(length);
@@ -155,7 +154,6 @@ public class SnapshotManager {
             return length;
         }
 
-        @Override
         public void addBot(Bot bot) {
             this.list.add(new Item((BasicBot) bot));
         }
