@@ -20,7 +20,7 @@ public class GeneGiveRelativeDirection extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "отдать - безвозмездно отдать часть энергии и минералов соседу";
     }
 }

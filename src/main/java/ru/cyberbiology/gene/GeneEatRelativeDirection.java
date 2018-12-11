@@ -20,7 +20,7 @@ public class GeneEatRelativeDirection extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "съесть в относительном напралении";
     }
 }

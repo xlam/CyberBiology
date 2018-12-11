@@ -17,7 +17,7 @@ public class GeneMineralToEnergy extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "преобразовать минералы в энерию";
     }
 }

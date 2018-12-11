@@ -24,7 +24,7 @@ public class GeneChangeDirectionAbsolutely extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "сменить направление абсолютно";
     }
 }

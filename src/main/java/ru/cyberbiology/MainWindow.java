@@ -254,7 +254,7 @@ public class MainWindow extends JFrame implements Painter {
                             buf.append("<p>");
                             buf.append(String.valueOf(i));
                             buf.append("&nbsp;");
-                            buf.append(cont.getDescription(bot, i));
+                            buf.append(cont.getDescription());
                             buf.append("&nbsp;");
                             buf.append(bot.mind[i]);
                             buf.append("</p>");

@@ -25,7 +25,7 @@ public class GeneCreateCell extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "многоклеточность ( создание потомка, приклееного к боту )";
     }
 }

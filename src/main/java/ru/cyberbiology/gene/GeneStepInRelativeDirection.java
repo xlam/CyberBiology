@@ -24,7 +24,7 @@ public class GeneStepInRelativeDirection extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "шаг   в относительном направлении ";
     }
 }

@@ -25,7 +25,7 @@ public class GeneMyLevel extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "какой мой уровень (на какой высоте бот)";
     }
 }

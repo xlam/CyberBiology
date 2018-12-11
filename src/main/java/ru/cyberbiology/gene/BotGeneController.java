@@ -18,5 +18,5 @@ public interface BotGeneController {
      */
     public boolean onGene(Bot bot);
 
-    public String getDescription(Bot bot, int i);
+    public String getDescription();
 }

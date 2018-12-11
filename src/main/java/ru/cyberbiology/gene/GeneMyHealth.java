@@ -25,7 +25,7 @@ public class GeneMyHealth extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "какое моё здоровье";
     }
 }
