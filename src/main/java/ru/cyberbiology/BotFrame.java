@@ -2,6 +2,7 @@ package ru.cyberbiology;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.stream.Stream;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -16,6 +17,7 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import ru.cyberbiology.gene.BotGeneController;
 
 /**
  * Окно наблюдения за ботом.
@@ -61,7 +63,8 @@ public class BotFrame extends JFrame {
         jtGenome = new JTable();
         jlAddressLable = new JLabel();
         jlAddress = new JLabel();
-        jPanel4 = new JPanel();
+        jlControllerDescription = new JLabel();
+        jLabel1 = new JLabel();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -154,6 +157,12 @@ public class BotFrame extends JFrame {
         jlAddress.setText("-");
         jlAddress.setName("jlAddress"); // NOI18N
 
+        jlControllerDescription.setText("-");
+        jlControllerDescription.setName("jlControllerDescription"); // NOI18N
+
+        jLabel1.setText("Команда:");
+        jLabel1.setName("jLabel1"); // NOI18N
+
         GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -171,7 +180,9 @@ public class BotFrame extends JFrame {
                             .addComponent(jlMinerals)
                             .addComponent(jlAddress)))
                     .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jlControllerDescription)
+                    .addComponent(jLabel1))
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -192,36 +203,24 @@ public class BotFrame extends JFrame {
                 .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(50, Short.MAX_VALUE))
-        );
-
-        jPanel4.setName("jPanel4"); // NOI18N
-
-        GroupLayout jPanel4Layout = new GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jlControllerDescription)
+                .addContainerGap())
         );
 
         GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -241,15 +240,16 @@ public class BotFrame extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private JLabel jLabel1;
     private JPanel jPanel1;
     private JPanel jPanel2;
     private JPanel jPanel3;
-    private JPanel jPanel4;
     private JScrollPane jScrollPane1;
     private JScrollPane jScrollPane2;
     private JSeparator jSeparator1;
     private JLabel jlAddress;
     private JLabel jlAddressLable;
+    private JLabel jlControllerDescription;
     private JLabel jlEnergy;
     private JLabel jlEnergyLable;
     private JList<String> jlGenesHistory;
@@ -267,7 +267,14 @@ public class BotFrame extends JFrame {
         jlEnergy.setText(String.valueOf(bot.health));
         jlMinerals.setText(String.valueOf(bot.mineral));
         jlAddress.setText(String.valueOf(bot.adr));
-        jlGenesHistory.setListData(bot.genesHistory.toStringArray());
+        // TODO это не годится, нужно переделать!
+        jlGenesHistory.setListData(Stream.of(bot.genesHistory.toStringArray())
+                    .map(g -> {
+                            BotGeneController cont = bot.getGeneControllerForCommand(Integer.parseInt(g));
+                            return g + " [" + ((cont == null) ? "не назначено" : cont.getDescription()) + "]";
+                        })
+                    .toArray(String[]::new)
+                );
         TableModel genomeTableModel = jtGenome.getModel();
         for (int row = 0; row < Bot.MIND_SIZE / 8; row++) {
             for (int col = 0; col < Bot.MIND_SIZE / 8; col++) {
@@ -297,9 +304,12 @@ public class BotFrame extends JFrame {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             if (bot.adr == row * 8 + column) {
-                c.setForeground(Color.RED);
+                c.setBackground(Color.RED);
+                BotGeneController cont = bot.getGeneControllerForCommand(bot.mind[bot.adr]);
+                jlControllerDescription.setText(
+                        (cont == null) ? "не назначено" : cont.getDescription());
             } else {
-                c.setForeground(Color.BLACK);
+                c.setBackground(Color.WHITE);
             }
             return c;
         }
