@@ -86,7 +86,7 @@ public class SettingsDialog extends javax.swing.JDialog {
             .addGroup(panelSettingsGeneralLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labelDevNote)
-                .addContainerGap(84, Short.MAX_VALUE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Общие", panelSettingsGeneral);
@@ -134,7 +134,7 @@ public class SettingsDialog extends javax.swing.JDialog {
                 .addComponent(rbMineralsAccClassic)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rbMineralsAccHeight)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Мир", panelSettingsWorld);
@@ -146,12 +146,20 @@ public class SettingsDialog extends javax.swing.JDialog {
             }
         });
 
-        cbRelativeByEnergy.setText("родство по энергии");
-        cbRelativeByEnergy.setEnabled(false);
+        cbRelativeByEnergy.setText("похожие по энергии (experimental)");
+        cbRelativeByEnergy.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                energyRelativeChanged(evt);
+            }
+        });
 
-        cbRelativeByMinerals.setText("родство по минералам");
-        cbRelativeByMinerals.setToolTipText("");
-        cbRelativeByMinerals.setEnabled(false);
+        cbRelativeByMinerals.setText("похожие по минералам (experimental)");
+        cbRelativeByMinerals.setToolTipText("Боты будут отличать соседей, у которых количество минералов примерно такое-же");
+        cbRelativeByMinerals.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                mineralsRelativeChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelSettingaBotsLayout = new javax.swing.GroupLayout(panelSettingaBots);
         panelSettingaBots.setLayout(panelSettingaBotsLayout);
@@ -163,7 +171,7 @@ public class SettingsDialog extends javax.swing.JDialog {
                     .addComponent(cbMultiCell)
                     .addComponent(cbRelativeByEnergy)
                     .addComponent(cbRelativeByMinerals))
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         panelSettingaBotsLayout.setVerticalGroup(
             panelSettingaBotsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,10 +179,10 @@ public class SettingsDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(cbMultiCell)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbRelativeByEnergy)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbRelativeByMinerals)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbRelativeByEnergy)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabbedPane.addTab("Боты", panelSettingaBots);
@@ -227,6 +235,16 @@ public class SettingsDialog extends javax.swing.JDialog {
     private void rbMineralsAccHeightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbMineralsAccHeightActionPerformed
         changedSettings.put("MineralsAccumulation", "height");
     }//GEN-LAST:event_rbMineralsAccHeightActionPerformed
+
+    private void mineralsRelativeChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_mineralsRelativeChanged
+        JCheckBox cb = (JCheckBox) evt.getSource();
+        changedSettings.put("EnableRelativeByMinerals", cb.isSelected() ? "true" : "false");
+    }//GEN-LAST:event_mineralsRelativeChanged
+
+    private void energyRelativeChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_energyRelativeChanged
+        JCheckBox cb = (JCheckBox) evt.getSource();
+        changedSettings.put("EnableRelativeByEnergy", cb.isSelected() ? "true" : "false");
+    }//GEN-LAST:event_energyRelativeChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgMineralsAccumulation;
