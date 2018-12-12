@@ -13,11 +13,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle;
+import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import ru.cyberbiology.gene.BotGeneController;
+import ru.cyberbiology.util.MiscUtils;
 
 /**
  * Окно наблюдения за ботом.
@@ -53,6 +55,8 @@ public class BotFrame extends JFrame {
         jScrollPane1 = new JScrollPane();
         jlGenesHistory = new JList<>();
         jPanel2 = new JPanel();
+        jScrollPane3 = new JScrollPane();
+        jlProgram = new JList<>();
         jPanel3 = new JPanel();
         jlEnergyLable = new JLabel();
         jlEnergy = new JLabel();
@@ -87,6 +91,23 @@ public class BotFrame extends JFrame {
 
         jPanel2.setName("jPanel2"); // NOI18N
 
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
+
+        jlProgram.setBorder(BorderFactory.createTitledBorder("Пр."));
+        jlProgram.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        jlProgram.setName("jlProgram"); // NOI18N
+        jScrollPane3.setViewportView(jlProgram);
+
+        GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3)
+        );
+
+        jPanel3.setBorder(BorderFactory.createTitledBorder("Параметры бота"));
         jPanel3.setName("jPanel3"); // NOI18N
 
         jlEnergyLable.setText("Энергия:");
@@ -210,30 +231,20 @@ public class BotFrame extends JFrame {
                 .addContainerGap())
         );
 
-        GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -246,6 +257,7 @@ public class BotFrame extends JFrame {
     private JPanel jPanel3;
     private JScrollPane jScrollPane1;
     private JScrollPane jScrollPane2;
+    private JScrollPane jScrollPane3;
     private JSeparator jSeparator1;
     private JLabel jlAddress;
     private JLabel jlAddressLable;
@@ -255,6 +267,7 @@ public class BotFrame extends JFrame {
     private JList<String> jlGenesHistory;
     private JLabel jlMinerals;
     private JLabel jlMineralsLabel;
+    private JList<String> jlProgram;
     private JTable jtGenome;
     // End of variables declaration//GEN-END:variables
 
@@ -267,14 +280,19 @@ public class BotFrame extends JFrame {
         jlEnergy.setText(String.valueOf(bot.health));
         jlMinerals.setText(String.valueOf(bot.mineral));
         jlAddress.setText(String.valueOf(bot.adr));
+        String[] history = bot.genesHistory.toStringArray();
         // TODO это не годится, нужно переделать!
-        jlGenesHistory.setListData(Stream.of(bot.genesHistory.toStringArray())
+        jlGenesHistory.setListData(Stream.of(history)
                     .map(g -> {
                             BotGeneController cont = bot.getGeneControllerForCommand(Integer.parseInt(g));
                             return g + " [" + ((cont == null) ? "не назначено" : cont.getDescription()) + "]";
                         })
                     .toArray(String[]::new)
                 );
+        String[] program = MiscUtils.getProgram(history);
+        if (program != null) {
+            jlProgram.setListData(program);
+        }
         TableModel genomeTableModel = jtGenome.getModel();
         for (int row = 0; row < Bot.MIND_SIZE / 8; row++) {
             for (int col = 0; col < Bot.MIND_SIZE / 8; col++) {
