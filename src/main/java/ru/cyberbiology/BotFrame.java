@@ -283,12 +283,12 @@ public class BotFrame extends JFrame {
         String[] history = bot.genesHistory.toStringArray();
         // TODO это не годится, нужно переделать!
         jlGenesHistory.setListData(Stream.of(history)
-                    .map(g -> {
-                            BotGeneController cont = bot.getGeneControllerForCommand(Integer.parseInt(g));
-                            return g + " [" + ((cont == null) ? "не назначено" : cont.getDescription()) + "]";
-                        })
-                    .toArray(String[]::new)
-                );
+            .map(g -> {
+                BotGeneController cont = bot.getGeneControllerForCommand(Integer.parseInt(g));
+                return g + " [" + ((cont == null) ? "не назначено" : cont.getDescription()) + "]";
+            })
+            .toArray(String[]::new)
+        );
         String[] program = MiscUtils.getProgram(history);
         if (program != null) {
             jlProgram.setListData(program);
