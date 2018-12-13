@@ -69,6 +69,12 @@ public class BotFrame extends JFrame {
         jlAddress = new JLabel();
         jlControllerDescription = new JLabel();
         jLabel1 = new JLabel();
+        jLabel2 = new JLabel();
+        jlState = new JLabel();
+        jLabel4 = new JLabel();
+        jLabel5 = new JLabel();
+        jlPosX = new JLabel();
+        jlPosY = new JLabel();
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -172,7 +178,7 @@ public class BotFrame extends JFrame {
             jtGenome.getColumnModel().getColumn(7).setResizable(false);
         }
 
-        jlAddressLable.setText("Указатель команды:");
+        jlAddressLable.setText("УТК:");
         jlAddressLable.setName("jlAddressLable"); // NOI18N
 
         jlAddress.setText("-");
@@ -184,34 +190,73 @@ public class BotFrame extends JFrame {
         jLabel1.setText("Команда:");
         jLabel1.setName("jLabel1"); // NOI18N
 
+        jLabel2.setText("Состояние:");
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jlState.setText("-");
+        jlState.setName("jlState"); // NOI18N
+
+        jLabel4.setText("X:");
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        jLabel5.setText("Y:");
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        jlPosX.setText("-");
+        jlPosX.setToolTipText("");
+        jlPosX.setName("jlPosX"); // NOI18N
+
+        jlPosY.setText("-");
+        jlPosY.setName("jlPosY"); // NOI18N
+
         GroupLayout jPanel3Layout = new GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                             .addComponent(jlMineralsLabel)
                             .addComponent(jlEnergyLable)
-                            .addComponent(jlAddressLable))
+                            .addComponent(jlAddressLable)
+                            .addComponent(jLabel2))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jlAddress, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jlEnergy, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jlState, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jlMinerals, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(jlEnergy)
-                            .addComponent(jlMinerals)
-                            .addComponent(jlAddress)))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlPosX))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jlPosY))))
                     .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jlControllerDescription)
-                    .addComponent(jLabel1))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel1)
+                    .addComponent(jlControllerDescription))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jlState)
+                    .addComponent(jLabel4)
+                    .addComponent(jlPosX))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(jlEnergyLable)
-                    .addComponent(jlEnergy))
+                    .addComponent(jlEnergy)
+                    .addComponent(jLabel5)
+                    .addComponent(jlPosY))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(jlMineralsLabel)
@@ -220,15 +265,15 @@ public class BotFrame extends JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(jlAddressLable)
                     .addComponent(jlAddress))
-                .addGap(18, 18, 18)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 169, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlControllerDescription)
-                .addContainerGap())
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         GroupLayout layout = new GroupLayout(getContentPane());
@@ -239,7 +284,8 @@ public class BotFrame extends JFrame {
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -252,6 +298,9 @@ public class BotFrame extends JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JLabel jLabel1;
+    private JLabel jLabel2;
+    private JLabel jLabel4;
+    private JLabel jLabel5;
     private JPanel jPanel1;
     private JPanel jPanel2;
     private JPanel jPanel3;
@@ -267,7 +316,10 @@ public class BotFrame extends JFrame {
     private JList<String> jlGenesHistory;
     private JLabel jlMinerals;
     private JLabel jlMineralsLabel;
+    private JLabel jlPosX;
+    private JLabel jlPosY;
     private JList<String> jlProgram;
+    private JLabel jlState;
     private JTable jtGenome;
     // End of variables declaration//GEN-END:variables
 
@@ -277,9 +329,12 @@ public class BotFrame extends JFrame {
      * Обновляет информацию о боте.
      */
     public void update() {
+        jlState.setText(String.valueOf(bot.alive));
         jlEnergy.setText(String.valueOf(bot.health));
         jlMinerals.setText(String.valueOf(bot.mineral));
         jlAddress.setText(String.valueOf(bot.adr));
+        jlPosX.setText(String.valueOf(bot.posX));
+        jlPosY.setText(String.valueOf(bot.posY));
         String[] history = bot.genesHistory.toStringArray();
         // TODO это не годится, нужно переделать!
         jlGenesHistory.setListData(Stream.of(history)
