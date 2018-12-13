@@ -11,6 +11,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,10 +39,8 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
-import javax.swing.ToolTipManager;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
-import ru.cyberbiology.gene.BotGeneController;
 import ru.cyberbiology.util.PerfMeter;
 import ru.cyberbiology.util.ProjectProperties;
 import ru.cyberbiology.util.SnapshotManager;
@@ -211,71 +211,17 @@ public class MainWindow extends JFrame implements Painter {
                     }
                     BotFrame botFrame = new BotFrame(bot);
                     botFrame.showFrame();
+                    botFrame.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            botFrames.remove(botFrame);
+                        }
+                    });
                     botFrames.add(botFrame);
                     Graphics g = buffer.getGraphics();
                     g.setColor(Color.MAGENTA);
                     g.fillRect(botX * properties.botSize(), botY * properties.botSize(), properties.botSize(), properties.botSize());
                     paintPanel.repaint();
-
-                    StringBuilder buf = new StringBuilder();
-                    buf.append("<html>");
-                    buf.append("<p>Многоклеточный: ");
-                    switch (bot.isMulti()) {
-                        case 0:// - нет,
-                            buf.append("нет</p>");
-                            break;
-                        case 1:// - есть MPREV,
-                            buf.append("есть MPREV</p>");
-                            break;
-                        case 2:// - есть MNEXT,
-                            buf.append("есть MNEXT</p>");
-                            break;
-                        case 3:// есть MPREV и MNEXT
-                            buf.append("есть MPREV и MNEXT</p>");
-                            break;
-                        default:
-                            break;
-                    }
-                    buf.append("<p>Выполенные гены: ").append(bot.genesHistory.toString());
-                    buf.append("<p>c_blue=").append(bot.colorBlue);
-                    buf.append("<p>c_green=").append(bot.colorGreen);
-                    buf.append("<p>c_red=").append(bot.colorRed);
-                    buf.append("<p>direction=").append(bot.direction);
-                    buf.append("<p>health=").append(bot.health);
-                    buf.append("<p>mineral=").append(bot.mineral);
-
-                    //buf.append("");
-                    BotGeneController cont;
-                    for (int i = 0; i < BasicBot.MIND_SIZE; i++) { //15
-                        // Получаем обработчика команды
-                        cont = bot.getGeneControllerForCommand(bot.mind[i]);
-                        // если обработчик такой команды назначен
-                        if (cont != null) {
-                            buf.append("<p>");
-                            buf.append(String.valueOf(i));
-                            buf.append("&nbsp;");
-                            buf.append(cont.getDescription());
-                            buf.append("&nbsp;");
-                            buf.append(bot.mind[i]);
-                            buf.append("</p>");
-                        }
-                    }
-
-                    buf.append("</html>");
-                    JComponent component = (JComponent) e.getSource();
-                    //System.out.println(bot);
-                    paintPanel.setToolTipText(buf.toString());
-                    MouseEvent phantom = new MouseEvent(
-                            component,
-                            MouseEvent.MOUSE_MOVED,
-                            System.currentTimeMillis() - 2000,
-                            0,
-                            x,
-                            y,
-                            0,
-                            false);
-
-                    ToolTipManager.sharedInstance().mouseMoved(phantom);
                 }
             }
         );
