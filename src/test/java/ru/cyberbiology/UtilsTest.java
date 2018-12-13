@@ -21,6 +21,13 @@ public class UtilsTest {
         };
 
         String[] history2 = {
+            "23", "24", "1", "23", "24", "1",
+            "23", "24", "1", "23", "24", "1",
+            "23", "24", "1", "23", "24", "1",
+            "23", "24", "1", "23", "24", "1",
+        };
+
+        String[] history3 = {
             "23", "24", "1", "2", "36", "60",
             "41", "24", "24", "2", "36", "60",
         };
@@ -29,7 +36,12 @@ public class UtilsTest {
             "23", "24", "1", "2", "36", "60",
         };
 
+        String[] program2 = {
+            "23", "24", "1",
+        };
+
         assertArrayEquals(program1, MiscUtils.getProgram(history1));
-        assertNull(MiscUtils.getProgram(history2));
+        assertArrayEquals(program2, MiscUtils.getProgram(history2));
+        assertNull(MiscUtils.getProgram(history3));
     }
 }

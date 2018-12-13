@@ -24,7 +24,7 @@ public class MiscUtils {
             return null;
         }
         String delimeter = "-";
-        Pattern pattern = Pattern.compile("^([0-9" + delimeter + "]+)(\\1+)(.*)?$");
+        Pattern pattern = Pattern.compile("^([0-9" + delimeter + "]+?)(\\1+)(.*)?$");
         Matcher matcher = pattern.matcher(String.join(delimeter, history));
         if (matcher.matches()) {
             return matcher.group(1).split(delimeter);
