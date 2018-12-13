@@ -40,10 +40,12 @@ java -jar cyberbiology-X.X.X.jar
 ```bash
   mvn exec:java
 ```
-### Скриншоты
-
-![20181128_cb_01](https://user-images.githubusercontent.com/179263/49165619-095d3400-f34b-11e8-886d-4c35a2189855.png)
+## Скриншоты
 
 ![20181128_cb_02](https://user-images.githubusercontent.com/179263/49165762-5f31dc00-f34b-11e8-8fd0-450b10b2d0b5.png)
 
-![20181128_cb_03](https://user-images.githubusercontent.com/179263/49165767-622ccc80-f34b-11e8-8a40-824744c8b932.png)
+![20181213_cb_07](https://user-images.githubusercontent.com/179263/49951639-d5217000-ff13-11e8-81bd-c092c9e2eb9d.png)
+
+![20181213_cb_08](https://user-images.githubusercontent.com/179263/49951652-da7eba80-ff13-11e8-8cae-4dc19c13b676.png)
+
+![20181128_cb_01](https://user-images.githubusercontent.com/179263/49165619-095d3400-f34b-11e8-886d-4c35a2189855.png)
