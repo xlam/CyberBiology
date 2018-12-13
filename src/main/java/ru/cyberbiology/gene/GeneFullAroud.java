@@ -20,7 +20,7 @@ public class GeneFullAroud extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "окружен ли бот";
     }
 }

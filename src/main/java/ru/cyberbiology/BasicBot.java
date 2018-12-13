@@ -74,6 +74,8 @@ public class BasicBot implements Bot {
 
     public byte[] mind = new byte[MIND_SIZE];   // геном бота содержит 64 команды
 
+    public GeneQueue genesHistory = new GeneQueue(100);
+
     /**
      * Поля нужны для сериализации ботов координаты соседних клеток многоклеточного.
      */
@@ -213,6 +215,7 @@ public class BasicBot implements Bot {
 
             // Получаем обработчика команды
             cont = geneController[command];
+            genesHistory.add(command);
             if (cont != null) { // если обработчик такой команды назначен
                 if (cont.onGene(this)) { // передаем ему управление
                     break; // если обрабочик говорит, что он последний - завершаем цикл?
@@ -589,10 +592,10 @@ public class BasicBot implements Bot {
      * @param bot ссылка на бота
      * @param direction направлелие
      * @param ra флажок(относительное или абсолютное направление)
-     * @return
+     * @return  2-пусто; 3-стена; 4-органика; 5-бот; 6-родня;
+     *          7-похожий по минералам; 8-похожий по энергии
      */
     private int botMove(BasicBot bot, int direction, int ra) {
-        // на выходе   2-пусто  3-стена  4-органика 5-бот 6-родня
         int xt;
         int yt;
         if (ra == 0) {          // вычисляем координату клетки, куда перемещается бот (относительное направление)
@@ -616,6 +619,12 @@ public class BasicBot implements Bot {
         }
         if (isRelative(bot, bot2) == 1) {  // если на клетке родня
             return 6;                      // то возвращаем 6
+        }
+        if (properties.getBoolean("EnableRelativeByMinerals") && mineralsRelative(bot2)) {
+            return 7;
+        }
+        if (properties.getBoolean("EnableRelativeByEnergy") && energyRelative(bot2)) {
+            return 8;
         }
         return 5;                         // остался только один вариант - на клетке какой-то бот возвращаем 5
     }
@@ -694,10 +703,10 @@ public class BasicBot implements Bot {
      * @param bot ссылка на бота
      * @param direction направлелие
      * @param ra флажок(относительное или абсолютное направление)
-     * @return пусто - 2 стена - 3 органик - 4 бот - 5 родня - 6
+     * @return  2-пусто; 3-стена; 4-органика; 5-бот; 6-родня;
+     *          7-похожий по минералам; 8-похожий по энергии
      */
     private int botSeeBots(BasicBot bot, int direction, int ra) { // на входе ссылка на бота, направлелие и флажок(относительное или абсолютное направление)
-        // на выходе  пусто - 2  стена - 3  органик - 4  бот - 5  родня - 6
         int xt;
         int yt;
         if (ra == 0) {  // выясняем, есть ли что в этом  направлении (относительном)
@@ -717,6 +726,10 @@ public class BasicBot implements Bot {
             return 4;
         } else if (isRelative(bot, bot2) == 1) {  // если родня, то возвращаем 6
             return 6;
+        } else if (properties.getBoolean("EnableRelativeByMinerals") && mineralsRelative(bot2)) {
+            return 7;
+        } else if (properties.getBoolean("EnableRelativeByEnergy") && energyRelative(bot2)) {
+            return 8;
         } else { // если какой-то бот, то возвращаем 5
             return 5;
         }
@@ -1029,6 +1042,18 @@ public class BasicBot implements Bot {
             }       // то боты не родственики
         }
         return 1;
+    }
+
+    private boolean mineralsRelative(BasicBot bot) {
+        // 10% от своих минералов
+        int p = (int) (mineral * 0.01 * 10);
+        return Math.abs(mineral - bot.mineral) < p;
+    }
+
+    private boolean energyRelative(BasicBot bot) {
+        // 10% от своей энергии
+        int p = (int) (health * 0.01 * 10);
+        return Math.abs(health - bot.health) < p;
     }
 
     /**

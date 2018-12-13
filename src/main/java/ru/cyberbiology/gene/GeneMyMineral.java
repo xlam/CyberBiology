@@ -21,7 +21,7 @@ public class GeneMyMineral extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "сколько  минералов";
     }
 }

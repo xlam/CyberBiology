@@ -25,7 +25,7 @@ public class GeneCreateBot extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "деление (создание свободноживущего потомка)";
     }
 }

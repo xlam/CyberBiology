@@ -20,7 +20,7 @@ public class GeneIsHealthGrow extends AbstractBotGeneController {
     }
 
     @Override
-    public String getDescription(Bot bot, int i) {
+    public String getDescription() {
         return "приход энергии есть?";
     }
 }
