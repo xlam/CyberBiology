@@ -11,7 +11,7 @@ package ru.cyberbiology;
  *
  * @author Sergey Sokolov (xlamserg@gmail.com)
  */
-class GeneQueue {
+public class GeneQueue {
 
     private final int size;
     private final int[] data;
