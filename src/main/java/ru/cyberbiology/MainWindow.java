@@ -110,7 +110,7 @@ public class MainWindow extends JFrame implements Painter {
         settingsDialog = new SettingsDialog(this, true);
 
         setTitle("CyberBiology " + getVersionFromProperties());
-        setPreferredSize(new Dimension(1024, 768));
+        setPreferredSize(new Dimension(900, 700));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         try {
