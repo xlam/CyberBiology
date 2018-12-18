@@ -90,7 +90,7 @@ public class MainWindow extends JFrame implements Painter {
     private final JButton startButton = new JButton();
     private final JButton doIterationButton = new JButton();
 
-    private final List<BotFrame> botFrames = new ArrayList<>();
+    private final List<BotWindow> botWindows = new ArrayList<>();
 
     private final JPanel paintPanel = new JPanel() {
         @Override
@@ -186,8 +186,8 @@ public class MainWindow extends JFrame implements Painter {
 
         paintPanel.repaint();
 
-        for (BotFrame botFrame : botFrames) {
-            botFrame.update();
+        for (BotWindow botWindow : botWindows) {
+            botWindow.update();
         }
     }
 
@@ -211,15 +211,15 @@ public class MainWindow extends JFrame implements Painter {
                     if (bot == null) {
                         return;
                     }
-                    BotFrame botFrame = new BotFrame(bot);
-                    botFrame.showFrame();
-                    botFrame.addWindowListener(new WindowAdapter() {
+                    BotWindow botWindow = new BotWindow(bot);
+                    botWindow.showWindow();
+                    botWindow.addWindowListener(new WindowAdapter() {
                         @Override
                         public void windowClosed(WindowEvent e) {
-                            botFrames.remove(botFrame);
+                            botWindows.remove(botWindow);
                         }
                     });
-                    botFrames.add(botFrame);
+                    botWindows.add(botWindow);
                     Graphics g = buffer.getGraphics();
                     g.setColor(Color.MAGENTA);
                     g.fillRect(botX * properties.botSize(), botY * properties.botSize(), properties.botSize(), properties.botSize());
