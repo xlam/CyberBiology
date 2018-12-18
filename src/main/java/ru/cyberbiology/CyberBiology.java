@@ -1,5 +1,6 @@
 package ru.cyberbiology;
 
+import ru.cyberbiology.ui.MainWindow;
 import javax.swing.SwingUtilities;
 
 /**

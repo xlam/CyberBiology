@@ -1,5 +1,6 @@
 package ru.cyberbiology;
 
+import ru.cyberbiology.ui.Painter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;

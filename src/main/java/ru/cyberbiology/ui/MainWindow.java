@@ -1,4 +1,4 @@
-package ru.cyberbiology;
+package ru.cyberbiology.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -38,9 +38,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
+import ru.cyberbiology.BasicBot;
+import ru.cyberbiology.BasicWorld;
+import ru.cyberbiology.World;
 import ru.cyberbiology.util.PerfMeter;
 import ru.cyberbiology.util.ProjectProperties;
 import ru.cyberbiology.util.SnapshotManager;

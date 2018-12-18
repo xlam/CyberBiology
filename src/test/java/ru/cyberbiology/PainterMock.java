@@ -1,5 +1,7 @@
 package ru.cyberbiology;
 
+import ru.cyberbiology.ui.Painter;
+
 /**
  *
  * @author Sergey Sokolov (xlamserg@gmail.com)
