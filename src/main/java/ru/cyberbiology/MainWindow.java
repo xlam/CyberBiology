@@ -485,14 +485,4 @@ public class MainWindow extends JFrame implements Painter {
         }
         return version;
     }
-
-    /**
-     * Точка входа.
-     * @param args параметры командной строки
-     */
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new MainWindow();
-        });
-    }
 }
