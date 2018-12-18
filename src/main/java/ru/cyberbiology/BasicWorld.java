@@ -1,6 +1,5 @@
 package ru.cyberbiology;
 
-import ru.cyberbiology.ui.Painter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -8,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ru.cyberbiology.gene.GeneMutate;
+import ru.cyberbiology.ui.Painter;
 import ru.cyberbiology.util.PerfMeter;
 import ru.cyberbiology.util.ProjectProperties;
 

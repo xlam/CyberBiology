@@ -1,7 +1,7 @@
 package ru.cyberbiology;
 
-import ru.cyberbiology.ui.MainWindow;
 import javax.swing.SwingUtilities;
+import ru.cyberbiology.ui.MainWindow;
 
 /**
  * Точка входа приложения.

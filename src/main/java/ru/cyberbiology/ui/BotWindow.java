@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+import javax.swing.WindowConstants;
 import ru.cyberbiology.BasicBot;
 import ru.cyberbiology.gene.BotGeneController;
 import ru.cyberbiology.util.MiscUtils;
@@ -49,6 +49,11 @@ public class BotWindow extends JFrame {
 
     private final BasicBot bot;
 
+    /**
+     * Создает окно информации о боте.
+     *
+     * @param bot бот
+     */
     public BotWindow(BasicBot bot) {
         super(bot.toString());
         this.bot = bot;
@@ -60,7 +65,7 @@ public class BotWindow extends JFrame {
     private void initComponents() {
         setLayout(new GridBagLayout());
         setSize(200, 200);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         setupHistoryAndProgramPanes();
         setupInfoPane();
