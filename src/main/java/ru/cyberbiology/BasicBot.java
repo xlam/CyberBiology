@@ -2,32 +2,6 @@ package ru.cyberbiology;
 
 import java.util.concurrent.ThreadLocalRandom;
 import ru.cyberbiology.gene.BotGeneController;
-import ru.cyberbiology.gene.GeneCareAbsolutelyDirection;
-import ru.cyberbiology.gene.GeneCareRelativeDirection;
-import ru.cyberbiology.gene.GeneChangeDirectionAbsolutely;
-import ru.cyberbiology.gene.GeneChangeDirectionRelative;
-import ru.cyberbiology.gene.GeneCreateBot;
-import ru.cyberbiology.gene.GeneCreateCell;
-import ru.cyberbiology.gene.GeneEatAbsoluteDirection;
-import ru.cyberbiology.gene.GeneEatRelativeDirection;
-import ru.cyberbiology.gene.GeneFlattenedHorizontally;
-import ru.cyberbiology.gene.GeneFullAroud;
-import ru.cyberbiology.gene.GeneGiveAbsolutelyDirection;
-import ru.cyberbiology.gene.GeneGiveRelativeDirection;
-import ru.cyberbiology.gene.GeneImitate;
-import ru.cyberbiology.gene.GeneIsHealthGrow;
-import ru.cyberbiology.gene.GeneIsMineralGrow;
-import ru.cyberbiology.gene.GeneIsMultiCell;
-import ru.cyberbiology.gene.GeneLookRelativeDirection;
-import ru.cyberbiology.gene.GeneMineralToEnergy;
-import ru.cyberbiology.gene.GeneMutate;
-import ru.cyberbiology.gene.GeneMyHealth;
-import ru.cyberbiology.gene.GeneMyLevel;
-import ru.cyberbiology.gene.GeneMyMineral;
-import ru.cyberbiology.gene.GenePest;
-import ru.cyberbiology.gene.GenePhotosynthesis;
-import ru.cyberbiology.gene.GeneStepInAbsolutelyDirection;
-import ru.cyberbiology.gene.GeneStepInRelativeDirection;
 import ru.cyberbiology.util.ProjectProperties;
 
 public class BasicBot implements Bot {
@@ -70,7 +44,7 @@ public class BasicBot implements Bot {
     public BasicBot mnext;
 
     private final ProjectProperties properties = ProjectProperties.getInstance();
-    private final BotGeneController[] geneController = new BotGeneController[MIND_SIZE];
+    private final BotGeneController[] geneControllers;
 
     public byte[] mind = new byte[MIND_SIZE];   // геном бота содержит 64 команды
 
@@ -93,53 +67,10 @@ public class BasicBot implements Bot {
      */
     public BasicBot(BasicWorld world) {
         this.world = world;
-        setupGeneControllers();
+        geneControllers = world.getGeneControllers();
         direction = RANDOM.nextInt(8);
         health = 5;
         alive = LV_ALIVE;
-    }
-
-    private void setupGeneControllers() {
-        geneController[23] = new GeneChangeDirectionRelative();     // 23 сменить направление относительно
-        geneController[24] = new GeneChangeDirectionAbsolutely();   // 24 сменить направление абсолютно
-        geneController[25] = new GenePhotosynthesis();              // 25 фотосинтез
-        geneController[26] = new GeneStepInRelativeDirection();     // 26 шаг   в относительном направлении
-        geneController[27] = new GeneStepInAbsolutelyDirection();   // 27 шаг   в абсолютном направлении
-        geneController[28] = new GeneEatRelativeDirection();        // 28 шаг  съесть в относительном направлении
-        geneController[29] = new GeneEatAbsoluteDirection();        // 29 шаг  съесть в абсолютном направлении
-        geneController[30] = new GeneLookRelativeDirection();       // 30 шаг  посмотреть в относительном направлении
-        // 31 свободно
-        geneController[32] = new GeneCareRelativeDirection();       // 32 шаг делится   в относительном напралении
-        geneController[42] = new GeneCareRelativeDirection();
-        geneController[33] = new GeneCareAbsolutelyDirection();     // 33 шаг делится   в абсолютном напралении
-        geneController[50] = new GeneCareAbsolutelyDirection();
-        geneController[34] = new GeneGiveRelativeDirection();       // 34 шаг отдать   в относительном напралении
-        geneController[51] = new GeneGiveRelativeDirection();
-        geneController[35] = new GeneGiveAbsolutelyDirection();     // 35 шаг отдать   в абсолютном напралении
-        geneController[52] = new GeneGiveAbsolutelyDirection();
-        geneController[36] = new GeneFlattenedHorizontally();       // 36 выравнится по горизонтали
-        geneController[37] = new GeneMyLevel();                     // 37 высота бота
-        geneController[38] = new GeneMyHealth();                    // 38 здоровье бота
-        geneController[39] = new GeneMyMineral();                   // 39 минералы бота
-        if (properties.getBoolean("EnableMultiCell")) {
-            geneController[40] = new GeneCreateCell();              // 40 создать клетку многоклеточного
-            geneController[46] = new GeneIsMultiCell();             // 46  многоклеточный
-        }
-        geneController[41] = new GeneCreateBot();                   // 40 создать клетку одноклеточного
-        // 42 занято
-        geneController[43] = new GeneFullAroud();                   // 43  окружен ли бот
-        geneController[44] = new GeneIsHealthGrow();                // 44  окружен ли бот
-        if (properties.getProperty("MineralsAccumulation", "").equals("classic")) {
-            geneController[45] = new GeneIsMineralGrow();               // 45  прибавляются ли минералы
-        }
-        // 46 занято
-        geneController[47] = new GeneMineralToEnergy();             // 47  преобразовать минералы в энерию
-        geneController[48] = new GeneMutate();                      // 48  мутировать
-        geneController[49] = new GenePest();                        // 49 паразитировать
-        // 50 занято
-        // 51 занято
-        // 52 занято
-        geneController[53] = new GeneImitate();                     // 53 имитация, подражание
     }
 
     /**
@@ -148,7 +79,7 @@ public class BasicBot implements Bot {
      * @return IBotGeneController контроллер гена
      */
     public BotGeneController getCurrentCommand() {
-        return geneController[adr];
+        return geneControllers[adr];
     }
 
     /**
@@ -158,7 +89,7 @@ public class BasicBot implements Bot {
      * @return контроллер гена, или null
      */
     public BotGeneController getGeneControllerForCommand(int command) {
-        return geneController[command];
+        return geneControllers[command];
     }
 
     /**
@@ -214,7 +145,7 @@ public class BasicBot implements Bot {
             int command = mind[adr];
 
             // Получаем обработчика команды
-            cont = geneController[command];
+            cont = geneControllers[command];
             genesHistory.add(command);
             if (cont != null) { // если обработчик такой команды назначен
                 if (cont.onGene(this)) { // передаем ему управление

@@ -1,5 +1,7 @@
 package ru.cyberbiology;
 
+import ru.cyberbiology.gene.BotGeneController;
+
 public interface World {
 
     public int getWidth();
@@ -20,4 +22,5 @@ public interface World {
 
     public void restoreStats();
 
+    public BotGeneController[] getGeneControllers();
 }
