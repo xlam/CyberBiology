@@ -12,11 +12,11 @@ import org.junit.Before;
 public class GeneQueueTest {
 
     private final int size = 5;
-    private GeneQueue queue;
+    private GenesHistory queue;
 
     @Before
     public void setUp() {
-        queue = new GeneQueue(size);
+        queue = new GenesHistory(size);
     }
 
     @After

@@ -48,7 +48,7 @@ public class BasicBot implements Bot {
 
     public byte[] mind = new byte[MIND_SIZE];   // геном бота содержит 64 команды
 
-    public GeneQueue genesHistory = new GeneQueue(100);
+    public GenesHistory genesHistory = new GenesHistory(100);
 
     /**
      * Поля нужны для сериализации ботов координаты соседних клеток многоклеточного.

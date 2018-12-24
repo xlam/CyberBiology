@@ -11,7 +11,7 @@ package ru.cyberbiology;
  *
  * @author Sergey Sokolov (xlamserg@gmail.com)
  */
-public class GeneQueue {
+public class GenesHistory {
 
     private final int size;
     private final int[] data;
@@ -23,7 +23,7 @@ public class GeneQueue {
      *
      * @param size размер очереди - максимальное количество сохраняемых элементов
      */
-    public GeneQueue(int size) {
+    public GenesHistory(int size) {
         this.size = size;
         data = new int[size];
     }
