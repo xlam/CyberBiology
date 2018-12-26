@@ -13,10 +13,10 @@ import ru.cyberbiology.Bot;
  * @author Nickolay
  *
  */
-public class GeneAttack extends AbstractBotGeneController {
+public class GeneAttack extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         bot.genAttack(); // случайным образом меняет один байт
         bot.incCommandAddress(1);
         return true;//// выходим, так как команда мутировать - завершающая

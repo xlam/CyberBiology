@@ -7,10 +7,10 @@ import ru.cyberbiology.Bot;
  *
  * @author Nickolay
  */
-public class GeneCreateCell extends AbstractBotGeneController {
+public class GeneCreateCell extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         // 0 - если бот не входит в многоклеточную цепочку
         // 1 или 2 - если бот является крайним в цепочке
         // 3 - если бот внутри цепочки

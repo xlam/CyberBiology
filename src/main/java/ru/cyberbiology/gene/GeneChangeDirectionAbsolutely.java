@@ -12,10 +12,10 @@ import ru.cyberbiology.Constant;
  * @author Nickolay
  *
  */
-public class GeneChangeDirectionAbsolutely extends AbstractBotGeneController {
+public class GeneChangeDirectionAbsolutely extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         // записываем новое значение направления
         bot.setDirection(Constant.DIRECTION[bot.getParam()]);  // берем следующий байт и вычисляем остаток от деления на 8
         bot.incCommandAddress(2);                  // адрес текущей команды увеличивается на 2,

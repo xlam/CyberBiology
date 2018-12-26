@@ -7,10 +7,10 @@ import ru.cyberbiology.Bot;
  * 
  * @author Sergey Sokolov (xlamserg@gmail.com)
  */
-public class GenePest extends AbstractBotGeneController {
+public class GenePest extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         bot.pestAttack();   // забирает жизненную энергию другого бота
         bot.incCommandAddress(1);
         return false;       // паразит может "ходить" несколько раз

@@ -8,10 +8,10 @@ import ru.cyberbiology.Constant;
  *
  * @author Nickolay
  */
-public class GeneEatAbsoluteDirection extends AbstractBotGeneController {
+public class GeneEatAbsoluteDirection extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         int drct = Constant.DIRECTION[bot.getParam()];       // вычисляем направление из следующего за командой байта
         bot.indirectIncCmdAddress(bot.eat(drct, 1)); // меняем адрес текущей команды
         return true;// выходим, так как команда шагнуть - завершающая

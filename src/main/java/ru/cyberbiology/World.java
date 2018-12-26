@@ -1,6 +1,6 @@
 package ru.cyberbiology;
 
-import ru.cyberbiology.gene.BotGeneController;
+import ru.cyberbiology.gene.Gene;
 
 public interface World {
 
@@ -22,5 +22,5 @@ public interface World {
 
     public void restoreStats();
 
-    public BotGeneController[] getGeneControllers();
+    public Gene[] getGenes();
 }

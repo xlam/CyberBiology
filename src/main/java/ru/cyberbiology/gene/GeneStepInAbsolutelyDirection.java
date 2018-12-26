@@ -8,10 +8,10 @@ import ru.cyberbiology.Constant;
  *
  * @author Nickolay
  */
-public class GeneStepInAbsolutelyDirection extends AbstractBotGeneController {
+public class GeneStepInAbsolutelyDirection extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         if (bot.isMulti() == 0) {   // бот многоклеточный? перемещаются только одноклеточные
             int drct = Constant.DIRECTION[bot.getParam()];   // вычисляем направление из следующего за командой байта
             bot.indirectIncCmdAddress(bot.move(drct, 1)); // меняем адрес текущей команды

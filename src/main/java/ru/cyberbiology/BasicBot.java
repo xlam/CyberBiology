@@ -1,7 +1,7 @@
 package ru.cyberbiology;
 
 import java.util.concurrent.ThreadLocalRandom;
-import ru.cyberbiology.gene.BotGeneController;
+import ru.cyberbiology.gene.Gene;
 import ru.cyberbiology.util.ProjectProperties;
 
 public class BasicBot implements Bot {
@@ -44,7 +44,7 @@ public class BasicBot implements Bot {
     public BasicBot mnext;
 
     private final ProjectProperties properties = ProjectProperties.getInstance();
-    private final BotGeneController[] geneControllers;
+    private final Gene[] genes;
 
     public byte[] mind = new byte[MIND_SIZE];   // геном бота содержит 64 команды
 
@@ -67,7 +67,7 @@ public class BasicBot implements Bot {
      */
     public BasicBot(BasicWorld world) {
         this.world = world;
-        geneControllers = world.getGeneControllers();
+        genes = world.getGenes();
         direction = RANDOM.nextInt(8);
         health = 5;
         alive = LV_ALIVE;
@@ -78,18 +78,18 @@ public class BasicBot implements Bot {
      *
      * @return IBotGeneController контроллер гена
      */
-    public BotGeneController getCurrentCommand() {
-        return geneControllers[adr];
+    public Gene getCurrentGeneId() {
+        return genes[adr];
     }
 
     /**
      * Возвращает контроллер гена для указанного номера команды.
      *
-     * @param command номер команды
+     * @param id номер команды
      * @return контроллер гена, или null
      */
-    public BotGeneController getGeneControllerForCommand(int command) {
-        return geneControllers[command];
+    public Gene getGeneById(int id) {
+        return genes[id];
     }
 
     /**
@@ -139,22 +139,22 @@ public class BasicBot implements Bot {
 
     private void execGenes() {
 
-        BotGeneController cont;
+        Gene gene;
 
         for (int cyc = 0; cyc < MIND_SIZE / 4; cyc++) { //15
-            int command = mind[adr];
+            int id = mind[adr];
 
             // Получаем обработчика команды
-            cont = geneControllers[command];
-            genesHistory.add(command);
-            if (cont != null) { // если обработчик такой команды назначен
-                if (cont.onGene(this)) { // передаем ему управление
+            gene = genes[id];
+            genesHistory.add(id);
+            if (gene != null) { // если обработчик такой команды назначен
+                if (gene.exec(this)) { // передаем ему управление
                     break; // если обрабочик говорит, что он последний - завершаем цикл?
                 }
             } else {
                 // если ни с одной команд не совпало значит безусловный переход
                 // прибавляем к указателю текущей команды значение команды
-                incCommandAddress(command);
+                incCommandAddress(id);
                 break;
             }
             if (alive != LV_ALIVE || health <= 0) {

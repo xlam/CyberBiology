@@ -17,7 +17,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import ru.cyberbiology.BasicBot;
-import ru.cyberbiology.gene.BotGeneController;
+import ru.cyberbiology.gene.Gene;
 import ru.cyberbiology.util.MiscUtils;
 
 /**
@@ -221,8 +221,8 @@ public class BotWindow extends JFrame {
         // TODO это не годится, нужно переделать!
         jlGenesHistory.setListData(Stream.of(history)
             .map(g -> {
-                BotGeneController cont = bot.getGeneControllerForCommand(Integer.parseInt(g));
-                return g + " [" + ((cont == null) ? "не назначено" : cont.getDescription()) + "]";
+                Gene gene = bot.getGeneById(Integer.parseInt(g));
+                return g + " [" + ((gene == null) ? "не назначено" : gene.getDescription()) + "]";
             })
             .toArray(String[]::new)
         );
@@ -242,10 +242,10 @@ public class BotWindow extends JFrame {
         }
 
         // описание текущей команды
-        int command = bot.mind[bot.adr];
-        BotGeneController cont = bot.getGeneControllerForCommand(command);
-        String c = "<html>[" + command + "]"
-                + ((cont == null) ? " не назначено" : " " + cont.getDescription())
+        int id = bot.mind[bot.adr];
+        Gene gene = bot.getGeneById(id);
+        String c = "<html>[" + id + "]"
+                + ((gene == null) ? " не назначено" : " " + gene.getDescription())
                 + "</html>";
         jlControllerDescription.setText(c);
     }

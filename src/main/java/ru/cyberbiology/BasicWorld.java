@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ru.cyberbiology.gene.BotGeneController;
+import ru.cyberbiology.gene.Gene;
 import ru.cyberbiology.gene.GeneCareAbsolutelyDirection;
 import ru.cyberbiology.gene.GeneCareRelativeDirection;
 import ru.cyberbiology.gene.GeneChangeDirectionAbsolutely;
@@ -65,7 +65,7 @@ public class BasicWorld implements World {
     private Worker thread;
 
     private ProjectProperties properties;
-    private final BotGeneController[] geneControllers = new BotGeneController[Bot.MIND_SIZE];
+    private final Gene[] genes = new Gene[Bot.MIND_SIZE];
 
     protected BasicWorld(Painter painter) {
         this.painter = painter;
@@ -107,51 +107,51 @@ public class BasicWorld implements World {
     }
 
     @Override
-    public BotGeneController[] getGeneControllers() {
-        return geneControllers;
+    public Gene[] getGenes() {
+        return genes;
     }
 
     private void setupGeneControllers() {
-        geneControllers[23] = new GeneChangeDirectionRelative();     // 23 сменить направление относительно
-        geneControllers[24] = new GeneChangeDirectionAbsolutely();   // 24 сменить направление абсолютно
-        geneControllers[25] = new GenePhotosynthesis();              // 25 фотосинтез
-        geneControllers[26] = new GeneStepInRelativeDirection();     // 26 шаг   в относительном направлении
-        geneControllers[27] = new GeneStepInAbsolutelyDirection();   // 27 шаг   в абсолютном направлении
-        geneControllers[28] = new GeneEatRelativeDirection();        // 28 шаг  съесть в относительном направлении
-        geneControllers[29] = new GeneEatAbsoluteDirection();        // 29 шаг  съесть в абсолютном направлении
-        geneControllers[30] = new GeneLookRelativeDirection();       // 30 шаг  посмотреть в относительном направлении
+        genes[23] = new GeneChangeDirectionRelative();     // 23 сменить направление относительно
+        genes[24] = new GeneChangeDirectionAbsolutely();   // 24 сменить направление абсолютно
+        genes[25] = new GenePhotosynthesis();              // 25 фотосинтез
+        genes[26] = new GeneStepInRelativeDirection();     // 26 шаг   в относительном направлении
+        genes[27] = new GeneStepInAbsolutelyDirection();   // 27 шаг   в абсолютном направлении
+        genes[28] = new GeneEatRelativeDirection();        // 28 шаг  съесть в относительном направлении
+        genes[29] = new GeneEatAbsoluteDirection();        // 29 шаг  съесть в абсолютном направлении
+        genes[30] = new GeneLookRelativeDirection();       // 30 шаг  посмотреть в относительном направлении
         // 31 свободно
-        geneControllers[32] = new GeneCareRelativeDirection();       // 32 шаг делится   в относительном напралении
-        geneControllers[42] = new GeneCareRelativeDirection();
-        geneControllers[33] = new GeneCareAbsolutelyDirection();     // 33 шаг делится   в абсолютном напралении
-        geneControllers[50] = new GeneCareAbsolutelyDirection();
-        geneControllers[34] = new GeneGiveRelativeDirection();       // 34 шаг отдать   в относительном напралении
-        geneControllers[51] = new GeneGiveRelativeDirection();
-        geneControllers[35] = new GeneGiveAbsolutelyDirection();     // 35 шаг отдать   в абсолютном напралении
-        geneControllers[52] = new GeneGiveAbsolutelyDirection();
-        geneControllers[36] = new GeneFlattenedHorizontally();       // 36 выравнится по горизонтали
-        geneControllers[37] = new GeneMyLevel();                     // 37 высота бота
-        geneControllers[38] = new GeneMyHealth();                    // 38 здоровье бота
-        geneControllers[39] = new GeneMyMineral();                   // 39 минералы бота
+        genes[32] = new GeneCareRelativeDirection();       // 32 шаг делится   в относительном напралении
+        genes[42] = new GeneCareRelativeDirection();
+        genes[33] = new GeneCareAbsolutelyDirection();     // 33 шаг делится   в абсолютном напралении
+        genes[50] = new GeneCareAbsolutelyDirection();
+        genes[34] = new GeneGiveRelativeDirection();       // 34 шаг отдать   в относительном напралении
+        genes[51] = new GeneGiveRelativeDirection();
+        genes[35] = new GeneGiveAbsolutelyDirection();     // 35 шаг отдать   в абсолютном напралении
+        genes[52] = new GeneGiveAbsolutelyDirection();
+        genes[36] = new GeneFlattenedHorizontally();       // 36 выравнится по горизонтали
+        genes[37] = new GeneMyLevel();                     // 37 высота бота
+        genes[38] = new GeneMyHealth();                    // 38 здоровье бота
+        genes[39] = new GeneMyMineral();                   // 39 минералы бота
         if (properties.getBoolean("EnableMultiCell")) {
-            geneControllers[40] = new GeneCreateCell();              // 40 создать клетку многоклеточного
-            geneControllers[46] = new GeneIsMultiCell();             // 46  многоклеточный
+            genes[40] = new GeneCreateCell();              // 40 создать клетку многоклеточного
+            genes[46] = new GeneIsMultiCell();             // 46  многоклеточный
         }
-        geneControllers[41] = new GeneCreateBot();                   // 40 создать клетку одноклеточного
+        genes[41] = new GeneCreateBot();                   // 40 создать клетку одноклеточного
         // 42 занято
-        geneControllers[43] = new GeneFullAroud();                   // 43  окружен ли бот
-        geneControllers[44] = new GeneIsHealthGrow();                // 44  окружен ли бот
+        genes[43] = new GeneFullAroud();                   // 43  окружен ли бот
+        genes[44] = new GeneIsHealthGrow();                // 44  окружен ли бот
         if (properties.getProperty("MineralsAccumulation", "").equals("classic")) {
-            geneControllers[45] = new GeneIsMineralGrow();               // 45  прибавляются ли минералы
+            genes[45] = new GeneIsMineralGrow();               // 45  прибавляются ли минералы
         }
         // 46 занято
-        geneControllers[47] = new GeneMineralToEnergy();             // 47  преобразовать минералы в энерию
-        geneControllers[48] = new GeneMutate();                      // 48  мутировать
-        geneControllers[49] = new GenePest();                        // 49 паразитировать
+        genes[47] = new GeneMineralToEnergy();             // 47  преобразовать минералы в энерию
+        genes[48] = new GeneMutate();                      // 48  мутировать
+        genes[49] = new GenePest();                        // 49 паразитировать
         // 50 занято
         // 51 занято
         // 52 занято
-        geneControllers[53] = new GeneImitate();                     // 53 имитация, подражание
+        genes[53] = new GeneImitate();                     // 53 имитация, подражание
     }
 
     /**
@@ -305,7 +305,7 @@ public class BasicWorld implements World {
             // Мутации одного гена оказалось недостаточно чтобы
             // встряхнуть заснувший мир
             for (int j = 0; j < mutatesCount; j++) {
-                mutagen.onGene(bot);
+                mutagen.exec(bot);
             }
         }
         if (isStarted) {

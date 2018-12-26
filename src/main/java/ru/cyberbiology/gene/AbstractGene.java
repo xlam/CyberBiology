@@ -7,5 +7,5 @@ package ru.cyberbiology.gene;
  * @author Nickolay
  *
  */
-public abstract class AbstractBotGeneController implements BotGeneController {
+public abstract class AbstractGene implements Gene {
 }

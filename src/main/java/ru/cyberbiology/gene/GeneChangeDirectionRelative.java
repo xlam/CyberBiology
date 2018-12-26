@@ -9,10 +9,10 @@ import ru.cyberbiology.Constant;
  * @author Nickolay
  *
  */
-public class GeneChangeDirectionRelative extends AbstractBotGeneController {
+public class GeneChangeDirectionRelative extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         // вычисляем новое направление
         int param = Constant.DIRECTION[bot.getParam()];          // берём следующи байт за командой и вычисляем остаток от деления на 8
         int newdrct = bot.getDirection() + param;            // полученное число прибавляем к значению направления бота

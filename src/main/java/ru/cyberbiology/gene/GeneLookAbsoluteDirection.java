@@ -8,10 +8,10 @@ import ru.cyberbiology.Constant;
  *
  * @author Nickolay
  */
-public class GeneLookAbsoluteDirection extends AbstractBotGeneController {
+public class GeneLookAbsoluteDirection extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         int drct = Constant.DIRECTION[bot.getParam()];         // вычисляем направление из следующего за командой байта
         bot.indirectIncCmdAddress(bot.seeBots(drct, 1));    // меняем адрес текущей команды
         // в зависимости от того, что было в этом направлении

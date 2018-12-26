@@ -7,7 +7,7 @@ import ru.cyberbiology.Bot;
  *
  * @author Nickolay
  */
-public interface BotGeneController {
+public interface Gene {
 
     /**
      * Реализация одного шага интерпетации гена.
@@ -16,7 +16,7 @@ public interface BotGeneController {
      * @return true, если обработка в данной серии этому боту больше
      *      не требуется.
      */
-    public boolean onGene(Bot bot);
+    public boolean exec(Bot bot);
 
     public String getDescription();
 }

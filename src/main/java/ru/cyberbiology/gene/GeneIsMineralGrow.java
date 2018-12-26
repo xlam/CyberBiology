@@ -7,10 +7,10 @@ import ru.cyberbiology.Bot;
  *
  * @author Nickolay
  */
-public class GeneIsMineralGrow extends AbstractBotGeneController {
+public class GeneIsMineralGrow extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         if (bot.getY() > (bot.getWorld().getHeight() / 2)) {
             bot.indirectIncCmdAddress(1);
         } else {

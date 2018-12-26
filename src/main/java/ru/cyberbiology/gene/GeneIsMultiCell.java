@@ -7,10 +7,10 @@ import ru.cyberbiology.Bot;
  *
  * @author Nickolay
  */
-public class GeneIsMultiCell extends AbstractBotGeneController {
+public class GeneIsMultiCell extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         int mu = bot.isMulti();
         if (mu == 0) {
             bot.indirectIncCmdAddress(1); // бот свободно живущий
