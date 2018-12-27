@@ -165,7 +165,7 @@ public class BasicBot implements Bot {
 
     private void processMultiCellResources() {
 
-        int a = isMulti(this);
+        int a = isMulti();
 
         // распределяем энергию  минералы по многоклеточному организму
         // возможны три варианта, бот находится внутри цепочки
@@ -186,8 +186,8 @@ public class BasicBot implements Bot {
             // если они не являются крайними, то распределяем энергию поровну
             // связанно это с тем, что в крайних ботах в цепочке должно быть больше энергии
             // что бы они плодили новых ботов и удлиняли цепочку
-            int apb = isMulti(pb);
-            int anb = isMulti(nb);
+            int apb = pb.isMulti();
+            int anb = nb.isMulti();
             if ((anb == 3) && (apb == 3)) { // если следующий и предыдущий боты не являются крайними
                 // то распределяем энергию поровну
                 int h = health + nb.health + pb.health;
@@ -200,7 +200,7 @@ public class BasicBot implements Bot {
         // бот является крайним в цепочке и имеет предыдкщего бота
         if (a == 1) {
             BasicBot pb = mprev; // ссылка на предыдущего бота
-            int apb = isMulti(pb);  // проверим, является ли предыдущий бот крайним в цепочке
+            int apb = pb.isMulti();  // проверим, является ли предыдущий бот крайним в цепочке
             if (apb == 3) { // если нет, то распределяем энергию в пользу текущего бота
                 // так как он крайний и ему нужна энергия для роста цепочки
                 int h = health + pb.health;
@@ -212,7 +212,7 @@ public class BasicBot implements Bot {
         // бот является крайним в цепочке и имеет следующего бота
         if (a == 2) {
             BasicBot nb = mnext; // ссылка на следующего бота
-            int anb = isMulti(nb);  // проверим, является ли следующий бот крайним в цепочке
+            int anb = nb.isMulti();  // проверим, является ли следующий бот крайним в цепочке
             if (anb == 3) {         // если нет, то распределяем энергию в пользу текущего бота
                 // так как он крайний и ему нужна энергия для роста цепочки
                 int h = health + nb.health;
@@ -225,7 +225,7 @@ public class BasicBot implements Bot {
 
     private void bornChild() {
 
-        int a = isMulti(this);
+        int a = isMulti();
 
         // Проверим уровень энергии у бота, возможно пришла пора помереть или родить.
         // Вопрос стоит ли так делать, родждение прописано в генных командах
@@ -426,20 +426,16 @@ public class BasicBot implements Bot {
      *
      * @return 0 - нет, 1 - есть MPREV, 2 - есть MNEXT, 3 есть MPREV и MNEXT
      */
-    private int isMulti(BasicBot bot) {
+    @Override
+    public int isMulti() {
         int a = 0;
-        if (bot.mprev != null) {
+        if (mprev != null) {
             a = 1;
         }
-        if (bot.mnext != null) {
+        if (mnext != null) {
             a += 2;
         }
         return a;
-    }
-
-    @Override
-    public int isMulti() {
-        return isMulti(this);
     }
 
     /**
