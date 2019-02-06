@@ -457,6 +457,7 @@ public class BasicBot implements Bot {
      * @param bot бот
      */
     private void deleteBot(BasicBot bot) {
+        bot.alive = LV_FREE;
         BasicBot pbot = bot.mprev;
         BasicBot nbot = bot.mnext;
         if (pbot != null) {
@@ -621,6 +622,7 @@ public class BasicBot implements Bot {
         }
         // если здоровья меньше, чем (минералов у жертвы)*2, то бот погибает от жертвы
         bot.mineral = min1 - (health / 2);  // у жертвы минералы истраченны
+        alive = LV_FREE;
         health = 0; // здоровье уходит в ноль
         return 5;       // возвращаем 5
     }
@@ -785,6 +787,7 @@ public class BasicBot implements Bot {
         }
         int n = findEmptyDirection();    // проверим, окружен ли бот
         if (n == 8) {                       // если бот окружен, то он в муках погибает
+            alive = LV_FREE;
             health = 0;
             return;
         }
@@ -850,6 +853,7 @@ public class BasicBot implements Bot {
         int n = findEmptyDirection(); // проверим, окружен ли бот
 
         if (n == 8) {  // если бот окружен, то он в муках погибает
+            alive = LV_FREE;
             health = 0;
             return;
         }
