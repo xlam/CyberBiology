@@ -913,21 +913,8 @@ public class BasicBot implements Bot {
 
         modified[0] = ma;
         modified[1] = mind[ma];
-
-        // корректируем счетчик паразитных генов
-        // TODO переделать механизм события смены гена,
-        // т.к. подсчет генов это не забота данного метода
-        if (mind[ma] == 49) {
-            pest--;
-        }
-        if (mc == 49) {
-            pest++;
-        }
-
         setMind(ma, mc);
-
         modified[2] = mc;
-
         return modified;
     }
 
@@ -1105,13 +1092,13 @@ public class BasicBot implements Bot {
 
     @Override
     public void setMind(byte ma, byte mc) {
-        if (this.mind[ma] == 49) {
-            this.pest--;
+        if (mind[ma] == 49) {
+            pest--;
         }
         if (mc == 49) {
-            this.pest++;
+            pest++;
         }
-        this.mind[ma] = mc;
+        mind[ma] = mc;
     }
 
     @Override
