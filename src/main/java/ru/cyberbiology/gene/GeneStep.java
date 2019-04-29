@@ -4,17 +4,18 @@ import ru.cyberbiology.Bot;
 import ru.cyberbiology.Constant;
 
 /**
- * Шаг в абсолютном направлении.
+ * Шаг.
  *
  * @author Nickolay
  */
-public class GeneStepInAbsolutelyDirection extends AbstractGene {
+public class GeneStep extends AbstractGene {
 
     @Override
     public boolean exec(Bot bot) {
         if (bot.isMulti() == 0) {   // бот многоклеточный? перемещаются только одноклеточные
             int drct = Constant.DIRECTION[bot.getParam()];   // вычисляем направление из следующего за командой байта
-            bot.indirectIncCmdAddress(bot.move(drct, 1)); // меняем адрес текущей команды
+            int directionType = getDirectionType(bot.getParamByIndex(2));
+            bot.indirectIncCmdAddress(bot.move(drct, directionType)); // меняем адрес текущей команды
             // в зависимости от того, что было в этом направлении
             // смещение условного перехода 2-пусто  3-стена  4-органика 5-бот 6-родня
         } else {
@@ -25,6 +26,6 @@ public class GeneStepInAbsolutelyDirection extends AbstractGene {
 
     @Override
     public String getDescription() {
-        return "шаг   в абсолютном направлении ";
+        return "шаг";
     }
 }

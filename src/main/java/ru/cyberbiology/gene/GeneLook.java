@@ -4,16 +4,17 @@ import ru.cyberbiology.Bot;
 import ru.cyberbiology.Constant;
 
 /**
- * Посмотреть в относительном напралении.
+ * Посмотреть.
  *
  * @author Nickolay
  */
-public class GeneLookRelativeDirection extends AbstractGene {
+public class GeneLook extends AbstractGene {
 
     @Override
     public boolean exec(Bot bot) {
         int drct = Constant.DIRECTION[bot.getParam()];         // вычисляем направление из следующего за командой байта
-        bot.indirectIncCmdAddress(bot.seeBots(drct, 0));    // меняем адрес текущей команды
+        int directionType = getDirectionType(bot.getParamByIndex(2));
+        bot.indirectIncCmdAddress(bot.seeBots(drct, directionType));    // меняем адрес текущей команды
         // в зависимости от того, что было в этом направлении
         // пусто - 2 стена - 3 органик - 4 бот -5 родня -  6
         return false;
@@ -21,6 +22,6 @@ public class GeneLookRelativeDirection extends AbstractGene {
 
     @Override
     public String getDescription() {
-        return "посмотреть  в относительном напралении";
+        return "посмотреть";
     }
 }

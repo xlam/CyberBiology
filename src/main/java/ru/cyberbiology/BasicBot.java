@@ -92,6 +92,12 @@ public class BasicBot implements Bot {
         return genes[id];
     }
 
+    @Override
+    public int getParamByIndex(int index) {
+        int address = (adr + Math.abs(index)) % MIND_SIZE;
+        return mind[address];
+    }
+
     /**
      * Главная функция жизнедеятельности бота. Здесь выполняется код его мозга-генома
      */

@@ -11,6 +11,13 @@ public interface Bot {
      */
     public int getParam();
 
+     /**
+     * Возвращает параметр текущего гена с указанным индексом
+     * @param index индекс параметра относительно адреса текущего гена
+     * @return значение параметра
+     */
+    public int getParamByIndex(int index);
+
     /**
      * Получение направления движения.
      *
