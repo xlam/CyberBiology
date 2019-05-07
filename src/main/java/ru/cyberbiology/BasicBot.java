@@ -8,6 +8,10 @@ public class BasicBot implements Bot {
 
     // максимальное количество генов паразитирования в геноме
     private static final int MAX_PEST_GENES = 32;
+
+    // максимальное количество шагов для незавершающих команд
+    private static final int MAX_STEPS = MIND_SIZE / 4;
+
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     // Далее следуют константы состояния бота, которое отмеченно для каждого бота в массиве bots[].
@@ -147,7 +151,12 @@ public class BasicBot implements Bot {
 
         Gene gene;
 
-        for (int cyc = 0; cyc < MIND_SIZE / 4; cyc++) { //15
+        int steps = getParamByIndex(2);
+        if (steps > MAX_STEPS) {
+            steps = MAX_STEPS;
+        }
+
+        for (int cyc = 0; cyc < steps; cyc++) { //15
             int id = mind[adr];
 
             // Получаем обработчика команды
