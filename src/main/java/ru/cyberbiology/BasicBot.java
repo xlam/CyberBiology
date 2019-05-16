@@ -111,6 +111,9 @@ public class BasicBot implements Bot {
             return;
         }
 
+        // При каждом шаге бота, его направление меняется в зависимости от увиденного.
+        direction = (direction + seeBots(direction, 0)) % 8;
+
         execGenes();
 
         /**
