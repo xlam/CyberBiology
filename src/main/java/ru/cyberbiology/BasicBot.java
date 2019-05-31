@@ -832,7 +832,7 @@ public class BasicBot implements Bot {
             }
         }
 
-        newbot.adr = 0; // указатель текущей команды в новорожденном устанавливается в 0
+        newbot.adr = adr;
         newbot.posX = getRelativeDirectionX(n);
         newbot.posY = getRelativeDirectionY(n);
 
