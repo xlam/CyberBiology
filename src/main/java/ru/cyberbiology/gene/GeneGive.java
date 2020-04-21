@@ -4,16 +4,17 @@ import ru.cyberbiology.Bot;
 import ru.cyberbiology.Constant;
 
 /**
- * Отдать в абсолютном направлении.
+ * Отдать.
  *
  * @author Nickolay
  */
-public class GeneGiveAbsolutelyDirection extends AbstractBotGeneController {
+public class GeneGive extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         int drct = Constant.DIRECTION[bot.getParam()];     // вычисляем направление из следующего за командой байта
-        bot.indirectIncCmdAddress(bot.give(drct, 1));   // меняем адрес текущей команды
+        int directionType = getDirectionType(bot.getParamByIndex(2));
+        bot.indirectIncCmdAddress(bot.give(drct, directionType));   // меняем адрес текущей команды
         // в зависимости от того, что было в этом направлении
         // стена - 2 пусто - 3 органика - 4 удачно - 5
         return false;
@@ -21,6 +22,6 @@ public class GeneGiveAbsolutelyDirection extends AbstractBotGeneController {
 
     @Override
     public String getDescription() {
-        return "отдать  в абсолютном направлении";
+        return "отдать";
     }
 }

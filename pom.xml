@@ -4,14 +4,14 @@
 
     <groupId>ru</groupId>
     <artifactId>cyberbiology</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1-DEV</version>
 
     <name>cyberbiology</name>
     <description>Add project description here</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>ru.cyberbiology.MainWindow</mainClass>
+        <mainClass>ru.cyberbiology.CyberBiology</mainClass>
         <versionName>${project.version}</versionName>
     </properties>
 

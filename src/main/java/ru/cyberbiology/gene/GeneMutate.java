@@ -9,10 +9,10 @@ import ru.cyberbiology.Bot;
  *
  * @author Nickolay
  */
-public class GeneMutate extends AbstractBotGeneController {
+public class GeneMutate extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         bot.modifyMind();
         bot.modifyMind();
         bot.incCommandAddress(1);

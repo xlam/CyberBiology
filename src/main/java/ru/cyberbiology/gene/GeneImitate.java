@@ -9,10 +9,10 @@ import ru.cyberbiology.Constant;
  *
  * @author Sergey Sokolov (xlamserg@gmail.com)
  */
-public class GeneImitate extends AbstractBotGeneController {
+public class GeneImitate extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         // направление действия
         int dir = Constant.DIRECTION[bot.getParam()];
         // адрес начала копирования в геноме другого бота

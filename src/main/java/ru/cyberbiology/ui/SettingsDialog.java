@@ -1,4 +1,4 @@
-package ru.cyberbiology;
+package ru.cyberbiology.ui;
 
 import java.awt.Frame;
 import java.awt.event.WindowEvent;

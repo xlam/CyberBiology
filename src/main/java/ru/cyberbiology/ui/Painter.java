@@ -1,4 +1,6 @@
-package ru.cyberbiology;
+package ru.cyberbiology.ui;
+
+import ru.cyberbiology.World;
 
 /**
  * Интерфейс отрисовщика мира.

@@ -4,27 +4,28 @@ import ru.cyberbiology.Bot;
 import ru.cyberbiology.Constant;
 
 /**
- * Шаг в относительном напралении.
+ * Шаг.
  *
  * @author Nickolay
  */
-public class GeneStepInRelativeDirection extends AbstractBotGeneController {
+public class GeneStep extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         if (bot.isMulti() == 0) {   // бот многоклеточный? перемещаются только одноклеточные
             int drct = Constant.DIRECTION[bot.getParam()];   // вычисляем направление из следующего за командой байта
-            bot.indirectIncCmdAddress(bot.move(drct, 0)); // меняем адрес текущей команды
+            int directionType = getDirectionType(bot.getParamByIndex(2));
+            bot.indirectIncCmdAddress(bot.move(drct, directionType)); // меняем адрес текущей команды
             // в зависимости от того, что было в этом направлении
             // смещение условного перехода 2-пусто  3-стена  4-органика 5-бот 6-родня
         } else {
             bot.incCommandAddress(2);
         }
-        return true;    // выходим, так как команда шагнуть - завершающая
+        return true;// выходим, так как команда шагнуть - завершающая
     }
 
     @Override
     public String getDescription() {
-        return "шаг   в относительном направлении ";
+        return "шаг";
     }
 }

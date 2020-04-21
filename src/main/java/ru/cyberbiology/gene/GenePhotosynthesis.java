@@ -7,10 +7,10 @@ import ru.cyberbiology.Bot;
  *
  * @author Nickolay
  */
-public class GenePhotosynthesis extends AbstractBotGeneController {
+public class GenePhotosynthesis extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         bot.eatSun();               // выполняем команду фотосинтеза
         bot.incCommandAddress(1);   // адрес текущей команды увеличивается на 1,
 

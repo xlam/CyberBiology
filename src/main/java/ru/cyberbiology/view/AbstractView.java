@@ -3,6 +3,7 @@ package ru.cyberbiology.view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.Arrays;
 import javax.swing.JPanel;
 import ru.cyberbiology.BasicBot;
 import ru.cyberbiology.BasicWorld;
@@ -34,20 +35,22 @@ public abstract class AbstractView implements View {
 
         init(world, canvas);
 
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, world.width * botSize, world.height * botSize);
+        graphics.setColor(Color.BLACK);
         graphics.drawRect(0, 0, world.width * botSize + 1, world.height * botSize + 1);
 
-        for (int y = 0; y < world.height; y++) {
-            for (int x = 0; x < world.width; x++) {
-                BasicBot bot = world.getBot(x, y);
-                Color color = getBotColor(bot);
-                graphics.setColor(color);
-                graphics.fillRect(x * botSize, y * botSize, botSize, botSize);
-                if (bot != null && bot.alive == BasicBot.LV_ALIVE) {
-                    graphics.setColor(Color.BLACK);
-                    graphics.drawRect(x * botSize, y * botSize, botSize, botSize);
-                }
-            }
-        }
+        Arrays.stream(world.matrix)
+                .filter(bot -> bot != null)
+                .forEach(bot -> {
+                    graphics.setColor(getBotColor(bot));
+                    graphics.fillRect(bot.posX * botSize, bot.posY * botSize, botSize, botSize);
+                    if (bot.alive == BasicBot.LV_ALIVE) {
+                        graphics.setColor(Color.BLACK);
+                        graphics.drawRect(bot.posX * botSize, bot.posY * botSize, botSize, botSize);
+                    }
+                });
+
         return buf;
     }
 

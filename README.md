@@ -8,7 +8,9 @@
 ## Системные требования
 
 Для установки и запуска требуются установленные и настроенные для Вашей системы:
-- [Java 8 JDK](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+- Java JDK 8, 10, 11
+Проект разрабатывается и тестируется на [OpenJDK](https://openjdk.java.net/install/) 8, 10, 11,
+но, также, должен собираться и на [Oracle JDK](https://www.oracle.com/java/technologies/javase-downloads.html) 8, 10, 11
 - [git](https://git-scm.com/)
 - [maven](https://maven.apache.org/)
 

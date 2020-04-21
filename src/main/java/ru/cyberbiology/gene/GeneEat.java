@@ -4,16 +4,17 @@ import ru.cyberbiology.Bot;
 import ru.cyberbiology.Constant;
 
 /**
- * Съесть в относительном напралении.
+ * Съесть.
  *
  * @author Nickolay
  */
-public class GeneEatRelativeDirection extends AbstractBotGeneController {
+public class GeneEat extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         int drct = Constant.DIRECTION[bot.getParam()];     // вычисляем направление из следующего за командой байта
-        bot.indirectIncCmdAddress(bot.eat(drct, 0));    // меняем адрес текущей команды
+        int directionType = getDirectionType(bot.getParamByIndex(2));
+        bot.indirectIncCmdAddress(bot.eat(drct, directionType));    // меняем адрес текущей команды
         // в зависимости от того, что было в этом направлении
         //смещение условного перехода  стена - 2 пусто - 3 органика - 4 живой - 5
         return true;    // выходим, так как команда шагнуть - завершающая
@@ -21,6 +22,6 @@ public class GeneEatRelativeDirection extends AbstractBotGeneController {
 
     @Override
     public String getDescription() {
-        return "съесть в относительном напралении";
+        return "съесть";
     }
 }

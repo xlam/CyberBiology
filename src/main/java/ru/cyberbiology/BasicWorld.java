@@ -6,7 +6,29 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ru.cyberbiology.gene.Gene;
+import ru.cyberbiology.gene.GeneCare;
+import ru.cyberbiology.gene.GeneChangeDirection;
+import ru.cyberbiology.gene.GeneCreateBot;
+import ru.cyberbiology.gene.GeneCreateCell;
+import ru.cyberbiology.gene.GeneEat;
+import ru.cyberbiology.gene.GeneFlattenedHorizontally;
+import ru.cyberbiology.gene.GeneFullAroud;
+import ru.cyberbiology.gene.GeneGive;
+import ru.cyberbiology.gene.GeneImitate;
+import ru.cyberbiology.gene.GeneIsHealthGrow;
+import ru.cyberbiology.gene.GeneIsMineralGrow;
+import ru.cyberbiology.gene.GeneIsMultiCell;
+import ru.cyberbiology.gene.GeneLook;
+import ru.cyberbiology.gene.GeneMineralToEnergy;
 import ru.cyberbiology.gene.GeneMutate;
+import ru.cyberbiology.gene.GeneMyHealth;
+import ru.cyberbiology.gene.GeneMyLevel;
+import ru.cyberbiology.gene.GeneMyMineral;
+import ru.cyberbiology.gene.GenePest;
+import ru.cyberbiology.gene.GenePhotosynthesis;
+import ru.cyberbiology.gene.GeneStep;
+import ru.cyberbiology.ui.Painter;
 import ru.cyberbiology.util.PerfMeter;
 import ru.cyberbiology.util.ProjectProperties;
 
@@ -38,6 +60,7 @@ public class BasicWorld implements World {
     private Worker thread;
 
     private ProjectProperties properties;
+    private final Gene[] genes = new Gene[Bot.MIND_SIZE];
 
     protected BasicWorld(Painter painter) {
         this.painter = painter;
@@ -47,6 +70,7 @@ public class BasicWorld implements World {
         pests = 0;
         pestGenes = 0;
         properties = ProjectProperties.getInstance();
+        setupGeneControllers();
         painter.setWorld(this);
     }
 
@@ -75,6 +99,42 @@ public class BasicWorld implements World {
     @Override
     public void paint() {
         painter.paint();
+    }
+
+    @Override
+    public Gene[] getGenes() {
+        return genes;
+    }
+
+    private void setupGeneControllers() {
+        genes[23] = new GeneChangeDirection();              // 23 сменить направление
+        genes[25] = new GenePhotosynthesis();               // 25 фотосинтез
+        genes[27] = new GeneStep();                         // 27 шаг
+        genes[28] = new GeneEat();                          // 28 съесть
+        genes[30] = new GeneLook();                         // 30 посмотреть
+        genes[32] = new GeneCare();                         // 32 делится энергией/минералами поровну
+        genes[33] = new GeneCare();
+        genes[35] = new GeneGive();                         // 35 отдать
+        genes[52] = new GeneGive();
+        genes[36] = new GeneFlattenedHorizontally();        // 36 выравнится по горизонтали
+        genes[37] = new GeneMyLevel();                      // 37 высота бота
+        genes[38] = new GeneMyHealth();                     // 38 здоровье бота
+        genes[39] = new GeneMyMineral();                    // 39 минералы бота
+        if (properties.getBoolean("EnableMultiCell")) {
+            genes[40] = new GeneCreateCell();               // 40 создать клетку многоклеточного
+            genes[46] = new GeneIsMultiCell();              // 46 многоклеточный
+        }
+        genes[41] = new GeneCreateBot();                    // 40 создать клетку одноклеточного
+        genes[43] = new GeneFullAroud();                    // 43 окружен ли бот
+        genes[44] = new GeneIsHealthGrow();                 // 44 прибавляется ли энергия
+        if (properties.getProperty("MineralsAccumulation", "").equals("classic")) {
+            genes[45] = new GeneIsMineralGrow();            // 45 прибавляются ли минералы
+        }
+        // 46 занято
+        genes[47] = new GeneMineralToEnergy();              // 47 преобразовать минералы в энерию
+        genes[48] = new GeneMutate();                       // 48 мутировать
+        genes[49] = new GenePest();                         // 49 паразитировать
+        genes[53] = new GeneImitate();                      // 53 имитация, подражание
     }
 
     /**
@@ -228,7 +288,7 @@ public class BasicWorld implements World {
             // Мутации одного гена оказалось недостаточно чтобы
             // встряхнуть заснувший мир
             for (int j = 0; j < mutatesCount; j++) {
-                mutagen.onGene(bot);
+                mutagen.exec(bot);
             }
         }
         if (isStarted) {

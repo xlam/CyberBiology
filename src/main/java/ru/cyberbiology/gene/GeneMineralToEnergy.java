@@ -7,10 +7,10 @@ import ru.cyberbiology.Bot;
  *
  * @author Nickolay
  */
-public class GeneMineralToEnergy extends AbstractBotGeneController {
+public class GeneMineralToEnergy extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         bot.mineral2Energy();
         bot.incCommandAddress(1);
         return true;

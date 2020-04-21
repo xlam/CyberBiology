@@ -7,10 +7,10 @@ import ru.cyberbiology.Bot;
  *
  * @author Nickolay
  */
-public class GeneMyHealth extends AbstractBotGeneController {
+public class GeneMyHealth extends AbstractGene {
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         // байт в геноме может иметь значение от 0 до 63
         // умножая значение байта на 15 получаем значение от 0 до 945
         int param = bot.getParam() * 1000 / Bot.MIND_SIZE;   // берем следующий за командой байт и умножаем на 15

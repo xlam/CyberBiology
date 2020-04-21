@@ -8,12 +8,12 @@ import ru.cyberbiology.Bot;
  *
  * @author Nickolay
  */
-public class GeneFlattenedHorizontally extends AbstractBotGeneController {
+public class GeneFlattenedHorizontally extends AbstractGene {
 
     private static final ThreadLocalRandom RANDOM = ThreadLocalRandom.current();
 
     @Override
-    public boolean onGene(Bot bot) {
+    public boolean exec(Bot bot) {
         if (RANDOM.nextInt(101) < 50) {  // кидаем монетку
             bot.setDirection(3);    // если ноль, то поворачиваем в одну сторону
         } else {
